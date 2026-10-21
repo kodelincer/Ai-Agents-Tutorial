@@ -1,13 +1,13 @@
 (function () {
   const { H, D } = window.ACADEMY;
   window.ACADEMY.module({
-    id: 'm12', num: 12, title: 'Projects, capstone and roadmap',
+    id: 'm13', num: 13, title: 'Projects, capstone and roadmap',
     summary: 'Agentic projects for our organisation, a capstone that builds a human-in-the-loop helpdesk agent, the adoption roadmap, and a closing look at machine vs human intelligence.',
     deck: [42, 52, 53],
     outcomes: ['Pick and scope a first agent project with clear success metrics', 'Build and demo a human-in-the-loop helpdesk triage agent with Hermes', 'Explain the crawl-walk-run roadmap and how we measure value', 'Discuss the limits of machine intelligence with colleagues and management'],
     lessons: [
       {
-        id: 'm12-1', title: 'Agentic projects for our organisation', mins: 20, deck: [53, 52],
+        id: 'm13-1', title: 'Agentic projects for our organisation', mins: 20, deck: [53, 52],
         slides: [
           {
             t: 'Project portfolio',
@@ -37,7 +37,7 @@
         ],
       },
       {
-        id: 'm12-2', title: 'Capstone: a human-in-the-loop helpdesk agent', mins: 120, lab: true,
+        id: 'm13-2', title: 'Capstone: a human-in-the-loop helpdesk agent', mins: 120, lab: true,
         slides: [
           {
             t: 'The brief',
@@ -45,7 +45,8 @@
               H.prose(
                 '<b>Goal:</b> a Hermes agent that watches a lab ticket queue, triages each new ticket, gathers read-only diagnostics, drafts a reply and a work note, and asks a human before any change.',
                 '<b>Team size:</b> 2–3 engineers, mixed helpdesk / network / datacenter.',
-                '<b>Time:</b> two sessions of about two hours, plus a 10-minute demo.'
+                '<b>Time:</b> two sessions of about two hours, plus a 10-minute demo.',
+                'Network, datacenter, web and security groups may instead extend their <a href="#m12-7">Module 12 playbook</a> into the capstone. Keep the same rubric and the injection test.'
               ),
               H.fig(D.flow([
                 { t: 'Lab ticket', s: 'tickets.csv / ITSM' },
@@ -86,7 +87,7 @@
         ],
       },
       {
-        id: 'm12-3', title: 'Adoption roadmap and measuring value', mins: 15,
+        id: 'm13-3', title: 'Adoption roadmap and measuring value', mins: 15,
         slides: [
           {
             t: 'Crawl, walk, run',
@@ -110,7 +111,7 @@
         ],
       },
       {
-        id: 'm12-4', title: 'Philosophy: machine inference vs human intelligence', mins: 15, deck: [42],
+        id: 'm13-4', title: 'Philosophy: machine inference vs human intelligence', mins: 15, deck: [42],
         slides: [
           {
             t: 'What these systems are, and are not',

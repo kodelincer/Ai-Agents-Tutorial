@@ -49,6 +49,133 @@
       ],
     },
   };
+  Object.assign(SCEN, {
+    netdrift: {
+      title: 'CRON 02:00 · Nightly config backup found drift on dist-sw-03',
+      tools: ['net_backup', 'git_diff', 'net_show', 'netbox_lookup', 'itsm_search_changes', 'create_ticket', 'notify_channel', 'net_config*'],
+      steps: [
+        ['action', 'net_backup', 'net_backup(group="distribution")', '12/12 devices backed up (read-only account svc-hermes-ro) · 1 device changed: dist-sw-03'],
+        ['action', 'git_diff', 'git_diff("configs/dist-sw-03.cfg", since="yesterday")', '+ interface Gi1/0/24\n+  switchport access vlan 999\n+  description TEMP-VENDOR\n- interface Gi1/0/24\n-  shutdown'],
+        ['thought', 'An unused port was enabled in VLAN 999. I need to know whether an approved change covers it.'],
+        ['action', 'itsm_search_changes', 'itsm_search_changes(ci="dist-sw-03", window="last 24h")', 'no approved change for dist-sw-03 in the last 24 h'],
+        ['action', 'net_show', 'net_show("dist-sw-03", "show mac address-table interface Gi1/0/24")', '999  a4:5e:60:12:9c:01  DYNAMIC  Gi1/0/24'],
+        ['action', 'netbox_lookup', 'netbox_lookup(mac="a4:5e:60:12:9c:01")', 'not in inventory'],
+        ['thought', 'Unapproved change plus an unknown device. Policy: report to network on-call and security. Do not shut the port myself; that is a change and my account is read-only anyway.'],
+        ['approval', 'net_config', 'net_config("dist-sw-03", "interface Gi1/0/24 / shutdown")', 'Not allowed by policy tier 3 (production change outside a change window). Hermes asks; the right answer is Deny.',
+          [['thought', 'Even if approved here, the device account is read-only, so the command would be rejected by TACACS+. The change belongs in the change process.'],
+            ['action', 'create_ticket', 'create_ticket(queue="Network L2", priority="P2", ...)', 'INC-21307 created'],
+            ['final', 'Unapproved config change on dist-sw-03 Gi1/0/24 (VLAN 999, unknown MAC). Evidence and diff attached to INC-21307; network on-call and SOC notified. No changes made by the agent.']],
+          [['action', 'create_ticket', 'create_ticket(queue="Network L2", priority="P2", summary="Unapproved change on dist-sw-03 Gi1/0/24", evidence=[diff, mac, no CR])', 'INC-21307 created'],
+            ['action', 'notify_channel', 'notify_channel("#net-oncall", "INC-21307 …") · notify_channel("#soc", "INC-21307 …")', 'sent'],
+            ['final', 'Drift reported: dist-sw-03 Gi1/0/24 enabled in VLAN 999 without a change, unknown device attached. INC-21307 raised for Network L2 and SOC with the diff and MAC evidence. No changes made.']]],
+      ],
+    },
+    web5xx: {
+      title: 'ALERT · portal.acme.local 5xx rate 18% (threshold 2%)',
+      tools: ['http_probe', 'tail_log', 'journalctl', 'systemctl_status', 'db_ping', 'systemctl_restart*', 'notify_channel'],
+      steps: [
+        ['action', 'http_probe', 'http_probe("https://portal.acme.local/health", count=5)', '502 502 200 502 502 · avg 3.1 s'],
+        ['action', 'tail_log', 'tail_log("/var/log/nginx/portal_error.log", lines=200, grep="upstream")', '148 × "connect() failed (111: Connection refused) while connecting to upstream 127.0.0.1:8081"'],
+        ['action', 'systemctl_status', 'systemctl_status("portal-api")', 'active (running) · restarted 9 times in 20 min · Main PID changes'],
+        ['action', 'journalctl', 'journalctl("portal-api", since="30 min ago", grep="Error")', 'OutOfMemoryError: Java heap space (×9) · heap max 512m'],
+        ['thought', 'The API is crash-looping on heap exhaustion. A restart alone will not help. The fix is a heap or config change, which is a change. Gather evidence and ask for a short-term mitigation.'],
+        ['action', 'db_ping', 'db_ping("portal-db")', 'OK 3 ms (rules out the database)'],
+        ['approval', 'systemctl_restart', 'systemctl_restart("portal-api")', 'Restarting a production service needs approval (tier 2). It may give ~15 minutes until the heap fills again.',
+          [['action', 'systemctl_restart', 'systemctl_restart("portal-api")', 'restarted · /health 200 in 0.4 s'],
+            ['action', 'notify_channel', 'notify_channel("#web-oncall", "…")', 'sent'],
+            ['final', 'Mitigated: portal-api restarted with approval; 5xx back to 0%. Root cause: Java heap exhaustion (512m) since 10:40 deploy. Drafted a change to raise -Xmx to 1g and asked dev to check the memory leak in release 4.12.']],
+          [['action', 'notify_channel', 'notify_channel("#web-oncall", "portal-api OOM crash loop, evidence attached")', 'sent'],
+            ['final', 'Diagnosis sent to web on-call: portal-api crash-looping on Java heap exhaustion since the 10:40 deploy; database healthy. No restart performed (denied). Suggested rollback to release 4.11 or a heap increase via change.']]],
+      ],
+    },
+    phish: {
+      title: 'REPORT · user forwarded “Your mailbox is 98% full”',
+      tools: ['parse_eml', 'check_auth_results', 'url_reputation', 'hash_lookup', 'search_mail_logs', 'draft_block_rule*', 'create_ticket'],
+      steps: [
+        ['action', 'parse_eml', 'parse_eml("report-55812.eml")', 'From: "IT Support" <it-support@acme-helpdesk.co> · Reply-To: …@mail.ru · 1 URL · no attachments'],
+        ['action', 'check_auth_results', 'check_auth_results("report-55812.eml")', 'SPF: fail · DKIM: none · DMARC: fail (lookalike domain acme-helpdesk.co, registered 3 days ago)'],
+        ['thought', 'Display name imitates IT, lookalike domain, auth fails. Check the URL by reputation only. Policy: never open it and never upload company content to public scanners.'],
+        ['action', 'url_reputation', 'url_reputation("hxxps://acme-helpdesk.co/owa/login")', 'known credential-phishing kit · first seen 2 days ago'],
+        ['action', 'search_mail_logs', 'search_mail_logs(sender_domain="acme-helpdesk.co", last="72h")', '41 recipients · 3 clicked (proxy logs)'],
+        ['thought', 'Confirmed phishing campaign; 3 users clicked. Blocking the domain is a change to the mail gateway, so it needs approval. Password resets for clickers are handled by the identity team, not by me.'],
+        ['approval', 'draft_block_rule', 'apply_block_rule(domain="acme-helpdesk.co", scope="mail + web proxy")', 'Tier 2: security control change. Approve to apply via the security-gateway API.',
+          [['action', 'draft_block_rule', 'apply_block_rule(domain="acme-helpdesk.co")', 'blocked on mail gateway and web proxy'],
+            ['action', 'create_ticket', 'create_ticket(queue="SOC", priority="P2", ...)', 'SEC-3381 created with IOCs; identity team tasked to reset 3 users'],
+            ['final', 'Confirmed phishing (lookalike domain, SPF/DMARC fail, known kit). Domain blocked with approval. 41 recipients, 3 clicks → SEC-3381 with IOCs; identity team resetting the 3 accounts.']],
+          [['action', 'create_ticket', 'create_ticket(queue="SOC", priority="P2", iocs=[...], recommended="block domain")', 'SEC-3381 created'],
+            ['final', 'Confirmed phishing campaign; 41 recipients, 3 clicks. Block not applied (denied). SEC-3381 holds IOCs and the recommended block for the SOC analyst on duty.']]],
+      ],
+    },
+  });
+
+  /* ---------------- Policy tier game ---------------- */
+  const TIERS = [['T0', 'Auto: read / diagnose'], ['T1', 'Auto: low-risk, in runbook'], ['T2', 'Needs human approval'], ['T3', 'Forbidden for agents']];
+  const ACTS = {
+    network: [
+      ['show interfaces counters errors on all access switches', 0, 'Read-only show command through the net-show wrapper with the read-only TACACS account.'],
+      ['Nightly backup of running configs to git', 0, 'Read-only; the backup script uses the read-only account and only writes to the configs repo.'],
+      ['Clear interface counters on a user access port', 1, 'Low impact and reversible, and listed in the runbook. Some teams still treat it as T2: decide it in the policy, not in the moment.'],
+      ['Shut down an access port with an unknown device in VLAN 999', 2, 'A production change. The agent drafts it with evidence; the on-call engineer approves and applies it.'],
+      ['Add VLAN 210 to the trunk on core-sw-02', 2, 'A planned change: CR, CAB approval, change window. The agent prepares config, rollback and checks; the pipeline or a human applies.'],
+      ['reload / write erase / change AAA or SNMP community', 3, 'Never by an agent. Denied by approvals.deny and by TACACS+ command authorization.'],
+    ],
+    helpdesk: [
+      ['Look up a user’s lockout status and lockout source', 0, 'Read-only queries through the JEA endpoint.'],
+      ['Unlock a standard user account after the callback identity check', 1, 'In the runbook; JEA only exposes Unlock-ADAccount, and AD delegation limits it to the Users OU.'],
+      ['Reset a user’s password', 2, 'Identity-sensitive. A human verifies identity and approves; never through chat alone.'],
+      ['Add a user to a file-share security group', 2, 'Access change. Needs the data owner’s approval in the ticket.'],
+      ['Add someone to Domain Admins', 3, 'Never. The agent’s account has no rights on admin groups, and privileged access goes through PAM.'],
+      ['Draft a reply to a ticket from the KB', 0, 'Text only. A human or a rule decides whether it is sent.'],
+    ],
+    datacenter: [
+      ['Read hardware health from iDRAC/iLO over Redfish', 0, 'BMC account with the ReadOnly role.'],
+      ['Compress IIS logs older than 30 days under policy RET-03', 1, 'Reversible and covered by a written retention policy.'],
+      ['Restart a production VM that is hung', 2, 'Service impact. Approval by the on-call engineer.'],
+      ['Run a test restore of last night’s backup into the isolated restore lab', 1, 'Writes only to the restore lab. Proves backups work.'],
+      ['Delete old VM snapshots on the production cluster', 2, 'Destructive; needs approval and an owner check.'],
+      ['Power-cycle a host through the BMC', 3, 'Not for agents in production. BMC account is ReadOnly.'],
+    ],
+    web: [
+      ['curl the health endpoints and read nginx error logs', 0, 'Read-only. Log access via the adm group.'],
+      ['Check TLS certificate expiry dates', 0, 'openssl against public endpoints; read-only.'],
+      ['certbot renew --dry-run', 1, 'A dry run changes nothing.'],
+      ['Restart the portal-api service', 2, 'systemctl restart triggers a Hermes approval on the ssh backend.'],
+      ['Open a pull request that bumps a vulnerable dependency', 1, 'A PR changes nothing until a human reviews and merges it.'],
+      ['Push directly to main or deploy to production', 3, 'Denied: branch protection plus approvals.deny on deploy commands.'],
+    ],
+    security: [
+      ['Parse a reported phishing email and check SPF/DKIM/DMARC', 0, 'Analysis of a copy; nothing leaves the building.'],
+      ['Look up a URL or file hash in a reputation service', 0, 'Hash and URL lookups only; never upload company files to public scanners.'],
+      ['Diff Domain Admins membership against the approved baseline', 0, 'Read-only, daily.'],
+      ['Block a phishing domain on the mail gateway', 2, 'A security control change, approved by the SOC analyst on duty.'],
+      ['Isolate an endpoint in EDR', 2, 'High impact on the user. Approval required; for a confirmed ransomware playbook some SOCs pre-approve it, and that is written policy.'],
+      ['Disable EDR, logging or an alert rule to reduce noise', 3, 'Never. Defence-impairment is forbidden for agents.'],
+    ],
+  };
+  W.policyGame = function (el, o) {
+    const b = A.frame(el, 'Which policy tier is this action?', 'Exercise');
+    const id = uid('pg');
+    const role = o.role || 'network';
+    b.innerHTML = `<div class="w-row"><label>Team <select id="${id}-r">${Object.keys(ACTS).map((k) => `<option value="${k}" ${k === role ? 'selected' : ''}>${k}</option>`).join('')}</select></label></div><div id="${id}-l" style="display:grid;gap:8px"></div><div class="w-row"><button type="button" class="btn small primary" id="${id}-c">Check</button><span class="label" id="${id}-s"></span></div>`;
+    let ans = [];
+    const draw = () => {
+      const L = ACTS[$('#' + id + '-r', b).value]; ans = L.map(() => null);
+      $('#' + id + '-l', b).innerHTML = L.map((x, i) => `<div class="inj" data-i="${i}"><div class="txt"><b>${esc(x[0])}</b></div><span class="seg">${TIERS.map((t, j) => `<button type="button" data-v="${j}" title="${esc(t[1])}">${t[0]}</button>`).join('')}</span><div class="why" hidden></div></div>`).join('');
+      $('#' + id + '-s', b).textContent = 'T0 read · T1 low-risk auto · T2 approval · T3 forbidden';
+    };
+    $('#' + id + '-r', b).onchange = draw;
+    b.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-v]');
+      if (btn) { const c = btn.closest('[data-i]'); ans[+c.dataset.i] = +btn.dataset.v; $$('.seg button', c).forEach((x) => x.classList.toggle('on', x === btn)); }
+      if (e.target.id === id + '-c') {
+        const L = ACTS[$('#' + id + '-r', b).value]; let ok = 0;
+        L.forEach((x, i) => { const w = $(`[data-i="${i}"] .why`, b), r = ans[i] === x[1]; if (r) ok++; w.hidden = false; w.innerHTML = `<span class="pill ${r ? 'ok' : ans[i] == null ? 'mut' : 'crit'}">${ans[i] == null ? 'Not answered' : r ? 'Matches policy' : 'Policy says ' + TIERS[x[1]][0]}</span> <b>${TIERS[x[1]][0]} · ${TIERS[x[1]][1]}.</b> ${x[2]}`; });
+        $('#' + id + '-s', b).textContent = `${ok} / ${L.length} match the policy`;
+      }
+    });
+    draw();
+  };
+
   W.agentLoop = function (el, o) {
     const b = A.frame(el, 'Agent loop simulator: think → act → observe', 'Simulation');
     const id = uid('al');

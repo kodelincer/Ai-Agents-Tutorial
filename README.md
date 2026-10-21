@@ -6,8 +6,9 @@ work, and how to install, configure and safely delegate work to
 [Hermes Agent](https://github.com/NousResearch/hermes-agent).
 
 It expands the original deck in [`source/Ai_Agents.pptx`](source/Ai_Agents.pptx)
-(54 slides) into 13 modules, 68 lessons and 160 slides, with diagrams, speaker
-notes, checkpoint quizzes and 18 in-browser exercises.
+(54 slides) into 14 modules, 75 lessons and 195 slides in two parts
+(Fundamentals, then Hands-on with agents), with diagrams, speaker notes on every
+slide, a synced speaker view, checkpoint quizzes and 19 in-browser exercises.
 
 ## Audience
 
@@ -18,6 +19,7 @@ helpdesk, datacenter or network maintenance. No machine-learning background is n
 
 | # | Module | Original deck slides |
 |---|--------|----------------------|
+| **Part 1** | **Fundamentals** | |
 | 0 | Welcome and course map | 1–3 |
 | 1 | AI foundations: ML, neural networks, pipelines, roles and Ops | 4–8, 29, 39 |
 | 2 | How LLMs think: tokens, embeddings, attention, probability, reasoning | 9–11, 13, 20, 24, 38 |
@@ -27,10 +29,12 @@ helpdesk, datacenter or network maintenance. No machine-learning background is n
 | 6 | Prompt and context engineering | 30 |
 | 7 | AI agents: loop, tools, MCP, harness, frameworks, governance | 27, 37, 38, 44–47 |
 | 8 | Coding agents: Claude Code, Copilot | 26, 48, 51, 52 |
+| **Part 2** | **Hands-on with agents** | |
 | 9 | Hermes Agent labs 1–10: install → tools → skills → memory → MCP → cron → gateway → hardening | 27, 49, 50 |
 | 10 | Multi-agent teams: delegation, profiles, kanban, human-in-the-loop | 50, 53 |
 | 11 | Security: prompt injection, defences, unlearning | 40 |
-| 12 | Projects, capstone, roadmap, philosophy | 42, 52, 53 |
+| 12 | Role playbooks: guardrail policy as code + scenarios for network, helpdesk, datacenter, web/dev and security teams | 52, 53 |
+| 13 | Projects, capstone, roadmap, philosophy | 42, 52, 53 |
 
 The in-app **Deck-to-lesson map** page lists every original slide and where it is taught.
 
@@ -42,7 +46,8 @@ VRAM/hardware estimator · model-name decoder · prompt builder · context-windo
 budget · prompting vs RAG vs fine-tuning chooser · autonomy levels · prompt-injection
 spotting game · agent-loop simulator with human approval · MCP message walkthrough ·
 practice Hermes terminal · SKILL.md builder · Hermes config builder · multi-agent
-team designer.
+team designer · policy-tier game for each role (network, helpdesk, datacenter,
+web/dev, security).
 
 All of them run in the browser with no backend and no API keys.
 
@@ -57,6 +62,7 @@ Open the site, pick a lesson, then:
 | `N` | Speaker notes |
 | `F` | Full screen |
 | `/` | Search lessons and glossary |
+| `S` | Speaker view: second window with notes, next slide and timer, synced |
 | `Esc` | Leave presenter mode |
 
 Progress and quiz scores are stored in each viewer's own browser (localStorage).
@@ -101,6 +107,7 @@ assets/js/core.js             H.* HTML helpers and D.* SVG diagram generators
 assets/js/widgets.js          concept exercises
 assets/js/widgets-labs.js     agent and Hermes lab exercises
 assets/js/content/mNN-*.js    one file per module
+assets/js/notes.js            speaker notes (one place to edit what you say per slide)
 assets/js/pages.js            glossary, cheat sheet, instructor guide, deck map
 assets/js/app.js              routing, presenter mode, progress, quizzes, search
 tools/build_single.py         single-file bundler

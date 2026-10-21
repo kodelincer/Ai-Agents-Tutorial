@@ -50,6 +50,11 @@
     ['Transformer', 'The neural network architecture behind modern LLMs, built from attention and feed-forward blocks.'],
     ['Vector database', 'A database that stores embeddings and finds the nearest ones quickly (pgvector, Qdrant, Milvus…).'],
     ['VLM', 'Vision-language model: an LLM that also accepts images.'],
+    ['Policy tiers (T0–T3)', 'Our guardrail policy: T0 read/diagnose, T1 low-risk runbook actions, T2 changes needing human approval, T3 forbidden for agents.'],
+    ['JEA', 'Just Enough Administration: a PowerShell endpoint that exposes only selected cmdlets and parameters to an account.'],
+    ['TACACS+ command authorization', 'AAA feature that permits or denies each CLI command per user on network devices; our read-only agent account may run show commands only.'],
+    ['Jump host', 'A hardened server in the management network through which agents (via the ssh backend) reach devices and servers.'],
+    ['Change package', 'What an agent hands to CAB: config, rollback, pre/post checks, risk and impact. Humans approve; the pipeline applies.'],
     ['VRAM', 'GPU memory. Model weights + KV cache must fit here (or in unified memory) to run fast.'],
   ];
 
@@ -79,26 +84,31 @@
     title: 'Instructor guide', eyebrow: 'For whoever runs the course',
     lead: 'How to run this course for the IT infrastructure team: schedule, lab setup, and how to update the content.',
     render: () =>
-      H.table(['Session', 'Modules', 'Format', 'Time'], [
-        ['1', '0 Welcome · 1 Foundations', 'Talk + discussion', '2 h'],
-        ['2', '2 How LLMs think · 3 Training', 'Talk + widgets', '2.5 h'],
-        ['3', '4 Knowledge/RAG · 5 Models & hardware (incl. Ollama lab)', 'Talk + lab', '3 h'],
-        ['4', '6 Prompting · 7 Agents', 'Talk + exercises', '2.5 h'],
-        ['5', '8 Coding agents · 9 Labs 1–4', 'Hands-on', '3 h'],
-        ['6', '9 Labs 5–10', 'Hands-on', '3.5 h'],
-        ['7', '10 Teams · 11 Security', 'Exercises', '2.5 h'],
-        ['8–9', '12 Capstone build + demos', 'Team project', '2 × 2 h'],
+      H.note('key', 'Teach it in two parts. <b>Part 1 · Fundamentals</b> (Modules 0–8) gives everyone the same mental model: what LLMs are, why they hallucinate, what an agent and a harness are. <b>Part 2 · Hands-on</b> (Modules 9–13) builds real agents for each team\'s daily work inside our guardrail policy. Do not skip Part 1: engineers who skip it over-trust agents.', 'Course design') +
+      H.table(['Session', 'Part', 'Modules', 'Format', 'Time'], [
+        ['1', '1', '0 Welcome · 1 Foundations', 'Talk + discussion', '2 h'],
+        ['2', '1', '2 How LLMs think · 3 Training', 'Talk + exercises', '2.5 h'],
+        ['3', '1', '4 Knowledge/RAG · 5 Models & hardware', 'Talk + Ollama demo', '3 h'],
+        ['4', '1', '6 Prompting · 7 Agents · 8 Coding agents', 'Talk + exercises', '3 h'],
+        ['5', '2', '9 Hermes labs 1–5 (install → skills)', 'Hands-on', '3 h'],
+        ['6', '2', '9 Hermes labs 6–10 (memory → hardening)', 'Hands-on', '3 h'],
+        ['7', '2', '10 Teams · 11 Security', 'Exercises + red team', '2.5 h'],
+        ['8', '2', '12 Role playbooks: guardrail policy + your team\'s scenarios', 'Hands-on by role group', '3 h'],
+        ['9', '2', '12 Workshop + 13 Capstone build', 'Team project', '3 h'],
+        ['10', '2', '13 Demos, roadmap, closing', 'Demos + discussion', '2 h'],
       ]) +
       H.split(
         H.prose('<h3>Before the course</h3>', H.list([
           'One lab VM per pair (Ubuntu 24.04, 4 vCPU, 8 GB RAM, Docker) on an isolated lab VLAN.',
+          'For Module 12: a lab jump host per role group, two virtual switches (containerlab, EVE-NG or CML), a lab AD with a JEA endpoint, a lab web server, and a read-only TACACS+ account. Agree the T0–T3 policy tiers with the CISO and change manager beforehand.',
           'Model access: a shared OpenRouter or company API key in the vault with a spending limit, and/or a GPU host running Ollama with 64K context.',
           'A lab Slack/Teams workspace or private channel for gateway labs.',
           'Ask each team for 10 anonymised tickets and one runbook. They become the eval set and the skills.',
         ])),
         H.prose('<h3>Presenting</h3>', H.list([
           'Open a lesson and press <kbd>P</kbd>. Arrow keys move through slides and continue into the next lesson.',
-          'Press <kbd>N</kbd> for speaker notes (they are hidden in presenter mode, so keep a second window in normal mode for notes).',
+          'Press <kbd>S</kbd> (or “Speaker view”) to open a second window with notes, the next slide and a timer. It follows the main window and its Prev/Next buttons drive it: put it on your laptop screen and the presentation on the projector.',
+          'Press <kbd>N</kbd> to show notes under the slide instead.',
           'Every “Try it” panel works offline in the browser: let people drive them.',
           'End each module with its checkpoint quiz; discuss the wrong answers.',
         ]))

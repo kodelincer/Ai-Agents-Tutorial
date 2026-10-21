@@ -41,7 +41,7 @@
                 ['Security', 'Phishing triage, alert enrichment, drafting containment steps for approval.', 'SecOps'],
               ], 4)
             ),
-            n: 'Ask each team what they would delegate first. Write the answers down: we use them again in Module 12 when we pick capstone projects.',
+            n: 'Ask each team what they would delegate first. Write the answers down: we use them again in Module 12 (role playbooks) and Module 13 (capstone).',
           },
           {
             t: 'What you will be able to do',
@@ -52,6 +52,7 @@
                 ['Feed it knowledge', 'Prompting, RAG and memory, and when fine-tuning is worth it.'],
                 ['Install and harden Hermes Agent', 'Tools, skills, MCP servers, cron jobs and a chat gateway.'],
                 ['Build a team of agents', 'Profiles, delegation and a kanban board, with humans approving the risky steps.'],
+                ['Automate your own daily work', 'Role playbooks for network, helpdesk, datacenter, web/dev and security, inside our guardrail policy.'],
                 ['Keep it safe', 'Prompt injection, least privilege, sandboxes and audit trails.'],
               ]),
               H.note('key', 'By the end you will have a working <b>helpdesk triage agent</b> on a lab VM, a <b>skill</b> written from one of our real runbooks, and a <b>design</b> for a multi-agent IT team.', 'Capstone') +
@@ -67,7 +68,8 @@
             t: 'The learning path',
             b: H.stack(
               H.fig(D.stack([
-                { t: '12 · Projects and roadmap', s: 'helpdesk agent, IT orchestrator, network and security agents', c: 'acc' },
+                { t: '13 · Projects and roadmap', s: 'capstone, IT orchestrator, adoption plan', c: 'acc' },
+                { t: '12 · Role playbooks', s: 'network, helpdesk, datacenter, web/dev, security scenarios + guardrail policy', c: 'acc' },
                 { t: '10–11 · Agent teams and security', s: 'delegation, human-in-the-loop, prompt injection' },
                 { t: '9 · Hermes Agent labs', s: 'install, tools, skills, memory, MCP, cron, gateway', c: 'tl' },
                 { t: '7–8 · Agents and coding agents', s: 'agent loop, harness, MCP, Claude Code' },
@@ -75,7 +77,7 @@
                 { t: '1–3 · Foundations', s: 'ML, neural networks, tokens, transformers, training', c: 'ink' },
               ], { h: 50 }), 'Each layer builds on the one below it. You can jump straight to the labs, but the agents make more sense once you know what the model inside them is doing.')
             ),
-            n: 'Explain that Modules 1–6 are “how the brain works” and Modules 7–12 are “how to give the brain hands and a job”. Engineers who skip the foundations tend to over-trust agents.',
+            n: 'Explain that Modules 1–6 are “how the brain works” and Modules 7–13 are “how to give the brain hands and a job”. Engineers who skip the foundations tend to over-trust agents.',
           },
           {
             t: 'Topics from the original deck',

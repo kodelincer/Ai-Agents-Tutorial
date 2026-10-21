@@ -197,7 +197,7 @@
                 { h: 'MLOps', c: 'tl', items: ['Code + data + model', 'Data versioning, training pipelines', 'Drift monitoring', 'Retrain on new data'] },
                 { h: 'LLMOps / AgentOps', c: 'acc', items: ['Prompts, tools, skills, models', 'Evals with test sets + LLM judges', 'Cost, latency and safety monitoring', 'Trace every tool call'] },
               ], { bh: 40 })),
-              H.note('it', 'You already run DevOps for infrastructure. LLMOps adds new things to version (prompts, skills, model choice) and new things to monitor (token cost, hallucination rate, unsafe actions). Module 12 turns this into our operating model.')
+              H.note('it', 'You already run DevOps for infrastructure. LLMOps adds new things to version (prompts, skills, model choice) and new things to monitor (token cost, hallucination rate, unsafe actions). Module 13 turns this into our operating model.')
             ),
           },
         ],

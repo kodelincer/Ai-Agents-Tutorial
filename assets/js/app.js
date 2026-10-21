@@ -16,6 +16,12 @@
   lessons.forEach((l, i) => { l.prev = lessons[i - 1]; l.next = lessons[i + 1]; });
   const byLesson = Object.fromEntries(lessons.map((l) => [l.id, l]));
   const byModule = Object.fromEntries(A.modules.map((m) => [m.id, m]));
+  // The course is taught in two parts: fundamentals first, then hands-on agent work.
+  const PARTS = [
+    { key: 'fund', label: 'Part 1 · Fundamentals', test: (m) => m.num <= 8, desc: 'How AI, LLMs and agents work: the knowledge every colleague needs before touching a real agent.' },
+    { key: 'prac', label: 'Part 2 · Hands-on with agents', test: (m) => m.num >= 9, desc: 'Install Hermes Agent, build skills, teams and role playbooks for our daily work, inside our security guardrails.' },
+  ];
+  A.modules.forEach((m) => (m.part = PARTS.find((p) => p.test(m))));
 
   // ---------- progress ----------
   const seen = store.get('seen', {});
@@ -75,9 +81,10 @@
     let h = `<div class="nav-group"><span class="label">Start here</span>
       <a class="nav-link ${cur === 'home' ? 'active' : ''}" href="#home"><span class="num">··</span>Course home</a>
       <a class="nav-link ${cur === 'instructor' ? 'active' : ''}" href="#instructor"><span class="num">··</span>Instructor guide</a></div>
-      <div class="nav-group"><span class="label">Modules</span>`;
-    A.modules.forEach((m) => {
+      <div class="nav-group">`;
+    A.modules.forEach((m, i) => {
       const st = modStats(m);
+      if (i === 0 || A.modules[i - 1].part !== m.part) h += `${i ? '</div><div class="nav-group">' : ''}<span class="label">${esc(m.part.label)}</span>`;
       const open = curMod === m;
       h += `<a class="nav-link ${open ? 'active' : ''}" href="#${m.id}"><span class="num">M${pad(m.num)}</span><span>${esc(m.title)}</span><span class="meter ${st.pct === 100 ? 'done' : ''}">${st.pct}%</span></a>`;
       if (open) {
@@ -124,11 +131,11 @@
         <div>
           <div class="eyebrow">IT Infrastructure Academy · Course 01</div>
           <h1>Put <em>AI agents</em> to work in IT operations</h1>
-          <p class="lead">A hands-on course for helpdesk, datacenter and network engineers. Learn how LLMs work and what an agent harness is, then install Hermes Agent and build a team of agents you can delegate real tickets to, with a human in the loop.</p>
+          <p class="lead">An instructor-led course for network, helpdesk, datacenter, web and security engineers. Part 1 teaches how LLMs and agents work. Part 2 puts it into practice: install Hermes Agent, then build agents that take over daily tasks inside our security guardrails, with a human in the loop.</p>
           <p class="fa">خودکار سازی فرآیندها با ایجنت‌های هوش مصنوعی</p>
           <div class="hero-actions">
             <a class="btn primary" href="#${first.id}">${started ? 'Continue: ' + esc(first.title) : 'Start the course'} →</a>
-            <a class="btn" href="#m9">Jump to the Hermes labs</a>
+            <a class="btn" href="#m9">Jump to Part 2: hands-on</a>
           </div>
         </div>
         <div class="hero-art">${heroArt()}</div>
@@ -154,13 +161,14 @@
 
       <section class="wrap" style="gap:var(--s-3)">
         <div class="section-h"><h2>Course map</h2><span class="label">Lit ports = slides you have opened</span></div>
-        <div class="modgrid">${A.modules
+        ${PARTS.map((p) => { const ms = A.modules.filter((m) => m.part === p); const mins = ms.reduce((a, m) => a + m.lessons.reduce((b, l) => b + (l.mins || 10), 0), 0);
+          return `<div class="part-h"><h3>${esc(p.label)}</h3><span class="chip">${ms.length} modules · ~${Math.round(mins / 60)} h</span><p class="muted">${esc(p.desc)}</p></div><div class="modgrid">${ms
           .map((m) => {
             const st = modStats(m);
             const ports = m.lessons.map((l) => `<i class="${lessonDone(l) ? 'ok' : (seen[l.id] || []).length ? 'on' : ''}"></i>`).join('');
             return `<a class="modcard" href="#${m.id}"><span class="eyebrow"><span>Module ${pad(m.num)}</span><span>${st.quiz ? 'Quiz ' + st.quiz.score + '/' + st.quiz.total : m.lessons.length + ' lessons'}</span></span><h3>${esc(m.title)}</h3><p>${esc(m.summary)}</p><div class="ports" aria-label="${st.pct}% opened">${ports}</div></a>`;
           })
-          .join('')}</div>
+          .join('')}</div>`; }).join('')}
       </section>
 
       <section class="split">
@@ -222,6 +230,7 @@
           <span class="spacer"></span>
           <button class="btn small" id="notesBtn" type="button" aria-pressed="false">Notes <kbd>N</kbd></button>
           <button class="btn small" id="allBtn" type="button" aria-pressed="false">All slides</button>
+          <button class="btn small" id="speakerBtn" type="button" title="Open speaker notes in a second window">Speaker view <kbd>S</kbd></button>
           <button class="btn small" id="presentBtn" type="button">Present <kbd>P</kbd></button>
           <button class="btn small primary" id="nextBtn" type="button">Next →</button>
         </div>
@@ -257,6 +266,7 @@
     $('#counter').textContent = cur.all ? `${l.slides.length} slides` : `Slide ${i + 1} of ${l.slides.length}`;
     $('#prevBtn').disabled = !cur.all && i === 0 && !l.prev;
     $('#nextBtn').textContent = !cur.all && i < l.slides.length - 1 ? 'Next →' : 'Next lesson →';
+    broadcast();
     $('#patch').innerHTML = `<span class="label">Slides</span>${l.slides
       .map((_, j) => `<button type="button" class="port ${(seen[l.id] || []).includes(j) ? 'seen' : ''} ${j === i && !cur.all ? 'current' : ''}" data-go="${j}" title="${esc(stripTags(l.slides[j].t))}" aria-label="Go to slide ${j + 1}">${j + 1}</button>`)
       .join('')}`;
@@ -286,6 +296,7 @@
     else if (t.id === 'notesBtn') { cur.notes = !cur.notes; store.set('notes', cur.notes); drawSlide(); }
     else if (t.id === 'allBtn') { cur.all = !cur.all; drawSlide(); }
     else if (t.id === 'presentBtn') present(true);
+    else if (t.id === 'speakerBtn') openSpeaker();
     else if (t.dataset.go) { cur.i = +t.dataset.go; cur.all = false; drawSlide(); }
   });
   function present(on) {
@@ -339,6 +350,48 @@
     score();
   }
 
+  // ---------- speaker view (second window, synced with BroadcastChannel) ----------
+  let chan = null;
+  try { chan = new BroadcastChannel('ai-agents-academy'); } catch (e) { /* not supported */ }
+  function broadcast() {
+    const l = cur.lesson; if (!chan || !l) return;
+    const nxt = l.slides[cur.i + 1] ? stripTags(l.slides[cur.i + 1].t) : l.next ? 'Next lesson: ' + l.next.title : 'End of course';
+    chan.postMessage({ type: 'state', module: `Module ${pad(l.module.num)} · ${l.module.title}`, lesson: l.title, i: cur.i, n: l.slides.length, title: stripTags(l.slides[cur.i].t), notes: l.slides[cur.i].n || '', next: nxt, mins: l.mins || 10 });
+  }
+  if (chan) chan.onmessage = (e) => {
+    const d = e.data || {};
+    if (d.type === 'go' && cur.lesson) go(d.delta);
+    if (d.type === 'hello' && cur.lesson) broadcast();
+  };
+  function openSpeaker() {
+    let w = null;
+    try { w = window.open(location.pathname + location.search + '#speaker', 'aaa-speaker', 'width=760,height=640'); } catch (e) { /* blocked */ }
+    if (!w) toast('Pop-up blocked: open this page in a second window and add #speaker to the address');
+  }
+  function viewSpeaker() {
+    return `<div class="wrap speaker-view"><div class="section-h"><h2>Speaker view</h2><span class="label" id="spClock">00:00</span></div>
+      <div class="w-row"><button class="btn small" type="button" id="spPrev">← Prev</button><button class="btn small primary" type="button" id="spNext">Next →</button><button class="btn small" type="button" id="spReset">Reset timer</button></div>
+      <div id="spBody" class="prose"><p class="muted">Waiting for the presentation window. Open a lesson in the other window; this view follows it.</p></div></div>`;
+  }
+  function startSpeaker() {
+    let t0 = Date.now();
+    const tick = () => { const s = Math.floor((Date.now() - t0) / 1000); const el = $('#spClock'); if (el) el.textContent = `${pad(Math.floor(s / 60))}:${pad(s % 60)} elapsed`; };
+    setInterval(tick, 1000);
+    $('#spPrev').onclick = () => chan && chan.postMessage({ type: 'go', delta: -1 });
+    $('#spNext').onclick = () => chan && chan.postMessage({ type: 'go', delta: 1 });
+    $('#spReset').onclick = () => { t0 = Date.now(); tick(); };
+    if (!chan) { $('#spBody').innerHTML = '<p>This browser does not support synced windows. Use <kbd>N</kbd> in the main window instead.</p>'; return; }
+    chan.onmessage = (e) => {
+      const d = e.data || {}; if (d.type !== 'state') return;
+      $('#spBody').innerHTML = `<span class="label">${esc(d.module)}</span><h3>${esc(d.lesson)} <span class="chip">~${d.mins} min</span></h3>
+        <div class="callout key"><span class="label">Slide ${d.i + 1} of ${d.n}</span><b style="font-size:1.25rem">${esc(d.title)}</b></div>
+        <div class="notes" style="font-size:1.1rem"><span class="label">Speaker notes</span>${d.notes || '<span class="muted">No notes for this slide.</span>'}</div>
+        <p class="muted">Up next: ${esc(d.next)}</p>`;
+    };
+    chan.postMessage({ type: 'hello' });
+    document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') chan.postMessage({ type: 'go', delta: 1 }); if (e.key === 'ArrowLeft') chan.postMessage({ type: 'go', delta: -1 }); });
+  }
+
   // ---------- simple pages ----------
   function viewPage(name) {
     const p = A.pages[name];
@@ -349,7 +402,7 @@
   const stripTags = (s) => String(s).replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/g, ' ').replace(/\s+/g, ' ').trim();
   function route() {
     const h = decodeURIComponent(location.hash.replace(/^#/, '')) || 'home';
-    document.body.classList.remove('nav-open');
+    document.body.classList.remove('nav-open', 'speaker');
     const wasPresenting = document.body.classList.contains('presenting');
     cur.lesson = null;
     let title = 'AI Agents Academy';
@@ -365,6 +418,8 @@
         main.innerHTML = viewQuiz(m); runQuiz(m); renderNav({ quizOf: m, module: m }); title = 'Quiz · ' + m.title;
       } else if (byModule[h]) {
         main.innerHTML = viewModule(byModule[h]); renderNav({ mod: byModule[h] }); title = byModule[h].title + ' · AI Agents Academy';
+      } else if (h === 'speaker') {
+        main.innerHTML = viewSpeaker(); document.body.classList.add('speaker'); startSpeaker(); title = 'Speaker view · AI Agents Academy';
       } else if (A.pages[h]) {
         main.innerHTML = viewPage(h); renderNav(h); title = A.pages[h].title + ' · AI Agents Academy';
       } else {
@@ -413,6 +468,7 @@
     else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
     else if (e.key === 'n' || e.key === 'N') { cur.notes = !cur.notes; store.set('notes', cur.notes); drawSlide(); }
     else if (e.key === 'p' || e.key === 'P') present(!document.body.classList.contains('presenting'));
+    else if (e.key === 's' || e.key === 'S') openSpeaker();
     else if (e.key === 'f' || e.key === 'F') { try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {}); } catch (err) { /* optional */ } }
     else if (e.key === 'Escape' && document.body.classList.contains('presenting')) present(false);
   });

@@ -451,3 +451,7 @@ dialog.search::backdrop { background: rgba(5, 10, 15, .5); }
 .wrap, .stage, .slide, .slide .body, .w-body, .trace, .allslides, .prose, .choice { grid-template-columns: minmax(0, 1fr); }
 .toolchips { min-width: 0; }
 .trace pre, .tr pre { overflow-wrap: anywhere; }
+.part-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; padding-top: var(--s-3); }
+.part-h p { flex-basis: 100%; font-size: .95rem; }
+body.speaker .sidebar, body.speaker .topbar { display: none; }
+body.speaker .shell { display: block; }
