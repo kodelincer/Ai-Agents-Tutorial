@@ -56,6 +56,7 @@
   // Helper output is remembered while collecting strings, so only leaf text is extracted.
   const out = (html) => { if (A.collect) A.produced.add(html); return html; };
   A.produced = new Set();
+  A.out = out;
 
   // ---------- HTML helpers ----------
   const H = (A.H = {

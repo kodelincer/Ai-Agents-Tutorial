@@ -137,7 +137,7 @@
           'End each module with its checkpoint quiz; discuss the wrong answers.',
         ]))
       ) +
-      H.prose('<h3>Updating the content</h3>', 'Lessons live in <code>assets/js/content/mNN-*.js</code>. Each slide is <code>{ t: title, b: html, n: notes }</code>. Use the helpers in <code>assets/js/core.js</code> (<code>H.cards</code>, <code>H.code</code>, <code>H.table</code>, <code>D.flow</code>, <code>D.hub</code>…) and the widgets in <code>widgets.js</code>. See <code>README.md</code> in the repository for the full guide. Push to the main branch and GitHub Pages republishes the site.'),
+      H.prose('<h3>Updating the content</h3>', 'Lessons live in <code>assets/js/content/mNN-*.js</code>. Each slide is <code>{ t: title, b: html, n: notes }</code>. Use the helpers in <code>assets/js/core.js</code> (<code>H.cards</code>, <code>H.code</code>, <code>H.table</code>, <code>D.flow</code>, <code>D.hub</code>…) and the widgets in <code>widgets.js</code>. Every new text must exist in both languages: add the Persian translation in <code>assets/i18n/fa/</code> and run <code>node tools/i18n.js check</code>. See <code>README.md</code> in the repository for the full guide. Push to the main branch and GitHub Pages republishes the site.'),
   };
 
   // Original deck slide titles (Ai_Agents.pptx) → lessons that teach them
@@ -147,11 +147,11 @@
     lead: 'Every slide of the original <i>Ai_Agents.pptx</i> deck (kept in the repository under <code>source/</code>) and the lessons that teach it.',
     render: () => {
       const map = {};
-      A.modules.forEach((m) => m.lessons.forEach((l) => (l.deck || []).forEach((d) => (map[d] = map[d] || []).push(l))));
-      A.modules.forEach((m) => (m.deck || []).forEach((d) => { if (!map[d]) map[d] = [m.lessons[0]]; }));
+      A.modules.forEach((m) => m.lessons.forEach((l) => (l.deck || []).forEach((d) => (map[d] = map[d] || []).push([m, l]))));
+      A.modules.forEach((m) => (m.deck || []).forEach((d) => { if (!map[d]) map[d] = [[m, m.lessons[0]]]; }));
       return H.table(['Deck slide', 'Topic', 'Taught in'], DECK.map((t, i) => [
-        `<span class="label">${String(i + 1).padStart(2, '0')}</span>`, esc(tr(t)),
-        (map[i + 1] || []).map((l) => `<a href="#${l.id}">M${String(l.module ? l.module.num : '').padStart(2, '0')} · ${esc(l.title)}</a>`).join('<br>') || '<span class="muted">—</span>',
+        A.out(`<span class="label">${String(i + 1).padStart(2, '0')}</span>`), A.out(esc(tr(t))),
+        A.out((map[i + 1] || []).map(([m, l]) => `<a href="#${l.id}">M${String(m.num).padStart(2, '0')} · ${esc(tr(l.title))}</a>`).join('<br>') || '<span class="muted">—</span>'),
       ]));
     },
   };
