@@ -11,6 +11,8 @@
       'Extend both tools with project instructions, skills, MCP servers and subagents',
       'Build a small custom agent with the Claude Agent SDK and automate runs with headless mode, CI and schedules',
       'Describe how computer use and browser control work and when to allow them',
+      'Delegate a task with a written brief, work in small verified steps, and review what comes back',
+      'Explain what Claude Desktop can do beyond code and the conditions for letting an agent act on a device',
     ],
     lessons: [
       {
@@ -441,6 +443,337 @@
           },
         ],
       },
+      {
+        id: 'm8-10', title: 'Lab: a guided first session on a real repository', mins: 30, lab: true,
+        slides: [
+          {
+            t: 'The practice repository',
+            b: H.split(
+              H.steps([
+                ['Make a folder and start git', '<code>mkdir disk-report &amp;&amp; cd disk-report &amp;&amp; git init</code>'],
+                ['Create the three files', 'Copy <code>disk_report.py</code>, <code>servers.csv</code> and <code>test_disk_report.py</code> from these slides.'],
+                ['Commit them', '<code>git add . &amp;&amp; git commit -m "start"</code>. A clean starting point means you can always see what the agent changed.'],
+                ['Run the tests yourself first', '<code>python3 -m unittest</code>. Two things fail. Do not fix them: that is the agent\'s job.'],
+              ]),
+              H.code('"""Report servers whose disks are nearly full."""\nimport csv\nimport sys\n\nTHRESHOLD = 85  # percent\n\n\ndef percent_used(used_gb, total_gb):\n    return round(used_gb / total_gb * 100)\n\n\ndef servers_over(rows, threshold=THRESHOLD):\n    """Return (name, percent) for servers above the threshold, fullest first."""\n    result = []\n    for row in rows:\n        pct = percent_used(float(row["used_gb"]), float(row["total_gb"]))\n        if pct > threshold:\n            result.append((row["name"], pct))\n    return sorted(result, key=lambda item: item[1])\n\n\ndef main(path):\n    with open(path, newline="") as f:\n        for name, pct in servers_over(csv.DictReader(f)):\n            print(f"{name}: {pct}%")\n\n\nif __name__ == "__main__":\n    main(sys.argv[1])', 'python', 'disk_report.py')
+            ),
+            n: 'Give people five minutes to set up. Python 3 is all they need, no extra packages. The script has two real bugs that the tests expose: the sort order is wrong, and a disk with total size zero crashes it. Do not tell anyone the bugs; the exercise is watching the agent find them.',
+          },
+          {
+            t: 'The data and the tests',
+            b: H.split(
+              H.code('name,used_gb,total_gb\ndc-01,420,500\ndc-02,910,1000\nweb-01,180,200\nweb-02,60,200\nlab-03,0,0', 'text', 'servers.csv'),
+              H.code('import unittest\n\nfrom disk_report import percent_used, servers_over\n\n\nclass DiskReportTests(unittest.TestCase):\n    def test_percent_used(self):\n        self.assertEqual(percent_used(50, 200), 25)\n\n    def test_fullest_first(self):\n        rows = [\n            {"name": "a", "used_gb": "90", "total_gb": "100"},\n            {"name": "b", "used_gb": "99", "total_gb": "100"},\n        ]\n        self.assertEqual(servers_over(rows), [("b", 99), ("a", 90)])\n\n    def test_zero_size_disk_is_skipped(self):\n        rows = [{"name": "lab-03", "used_gb": "0", "total_gb": "0"}]\n        self.assertEqual(servers_over(rows), [])\n\n\nif __name__ == "__main__":\n    unittest.main()', 'python', 'test_disk_report.py')
+            ),
+            n: 'When both files are in place, running python3 disk_report.py servers.csv crashes with a ZeroDivisionError, and the unit tests show one failure and one error. After the fixes the report should list dc-02 at 91% and then web-01 at 90%.',
+          },
+          {
+            t: 'Step 1: explore before you change anything',
+            b: H.code('cd disk-report\nclaude                      # or: codex\n\n/init                       # writes CLAUDE.md (Codex: AGENTS.md) describing the repo', 'bash', 'start') +
+              H.code('Explain what this repo does and how to run its tests.\nDo not change any files.', 'text', 'prompt 1') +
+              H.code('Run the tests and tell me which fail and why.\nDo not fix anything yet.', 'text', 'prompt 2') +
+              H.note('tip', 'Start in a mode that cannot edit: press <kbd>Shift+Tab</kbd> until you reach plan mode, or start with <code>claude --permission-mode plan</code>. In Codex use <code>/plan</code>. Read what the agent says it will do before you allow anything.'),
+            n: 'The habit to build is explore first, change second. Notice whether the agent runs the tests itself and whether its explanation of each failure matches what you saw. Ask the room: did it find both bugs from reading, or only after running the tests?',
+          },
+          {
+            t: 'Step 2: change one thing at a time',
+            b: H.code('Fix the failing sort-order test first.\nShow me the plan, make the smallest change, run the tests, and stop.', 'text', 'prompt 3') +
+              H.code('Now fix the crash for disks with total size 0.\nSkip those servers. Add no new dependencies. Run the tests and stop.', 'text', 'prompt 4') +
+              H.steps([
+                ['Read the diff', 'In the terminal: <code>git diff</code>. In Codex: <code>/diff</code>. Do you understand every changed line?'],
+                ['Undo if it went wrong', '<kbd>Esc</kbd> <kbd>Esc</kbd> rewinds in Claude Code, or <code>git restore .</code> from the shell.'],
+                ['Commit each good step', '<code>git commit -am "fix sort order"</code>'],
+              ]),
+            n: 'Two small prompts beat one big one. After each, stop and review. Let one person deliberately reject a change and use Esc Esc so everyone sees that undo exists. Point out that the agent was told to stop; agents tend to keep going unless you say where to stop.',
+          },
+          {
+            t: 'Step 3: verify yourself and reflect',
+            b: H.code('python3 -m unittest\npython3 disk_report.py servers.csv\ngit log --oneline\ngit diff HEAD~2', 'bash', 'check it yourself') +
+              H.table(['Question', 'Your answer'], [
+                ['Did the agent run the tests, or only say it did?', ''],
+                ['Did it change any file outside the two you expected?', ''],
+                ['Is there anything it did not verify? (Ask it.)', ''],
+                ['Which instruction did you give that made the biggest difference?', ''],
+              ]) + H.note('key', 'Trust the evidence you can check: the tests you ran, the diff you read, the output on screen. Not the agent\'s summary.'),
+            n: 'Collect two or three answers to the last question; they become the class rules of thumb. Usually: tell it to stop, tell it not to touch things, and ask what it did not verify. Next session adds a repeatable routine and a task-brief template.',
+          },
+        ],
+      },
+      {
+        id: 'm8-11', title: 'The daily workflow: plan, implement, verify, commit', mins: 25,
+        slides: [
+          {
+            t: 'A loop you can repeat all day',
+            b: H.fig(D.cycle([
+              { t: 'Plan', s: 'read-only; agree the approach' },
+              { t: 'Implement', s: 'small step, smallest change', c: 'acc' },
+              { t: 'Verify', s: 'tests, linters, read the diff', c: 'tl' },
+              { t: 'Commit', s: 'one good step at a time', c: 'ok' },
+            ], { t: 'Your task', s: 'one sentence' }, { h: 400 }), 'Each lap should be small enough to review in a couple of minutes.'),
+            n: 'This is the same loop as the agent loop, with a human in the verify step. Skipping plan makes the agent guess; skipping verify makes you trust a summary; skipping commit makes the next mistake impossible to isolate.',
+          },
+          {
+            t: 'Small steps you can undo',
+            b: H.split(
+              H.steps([
+                ['Work on a branch', '<code>git switch -c fix-disk-report</code>. Never let the agent work on main.'],
+                ['Commit after every good step', 'Then a bad step costs one <code>git restore</code>.'],
+                ['Rewind inside the tool', '<kbd>Esc</kbd> <kbd>Esc</kbd> in Claude Code jumps back to an earlier point in the session.'],
+                ['Parallel tasks get their own folder', 'A git worktree is a second working copy of the same repository.'],
+              ]),
+              H.code('# a second copy of the repo on a new branch, in a sibling folder\ngit worktree add ../fix-dns -b fix-dns\ncd ../fix-dns\nclaude            # a separate agent, a separate set of files\n\n# when finished\ncd ../disk-report\ngit worktree remove ../fix-dns', 'bash', 'two agents, no collisions')
+            ),
+            n: 'Worktrees are the answer to “can I run two agents at once?” Yes, as long as they do not edit the same files. Each gets its own folder and branch, and you merge the branches like any other.',
+          },
+          {
+            t: 'Keep the context clean',
+            b: H.cards([
+              ['New task, new session', 'Use <code>/clear</code> between unrelated tasks so old details do not leak in or cost tokens.', 'reset'],
+              ['Compact long sessions', '<code>/compact</code> summarises the conversation so far and frees space.', 'shrink'],
+              ['Write repeated rules down', 'Put them in CLAUDE.md or AGENTS.md once instead of retyping them.', 'memory'],
+              ['Point, do not paste', 'Mention a file with <code>@path</code> instead of pasting its contents. Never paste secrets.', 'precise'],
+              ['Hand off in writing', 'Before you stop, ask for a short summary of where things stand and paste it into the next session.', 'continuity'],
+            ], 3) + H.note('tip', 'Everything in the context is resent on every step and billed (session 3). A clean context is cheaper and also makes the agent more accurate.'),
+            n: 'Link back to the cost slides from session 3. A session that has run for hours carries every file it ever read. Starting fresh at task boundaries is the easiest saving.',
+          },
+          {
+            t: 'Verify like a sceptic',
+            b: H.table(['The agent says…', 'You check…'], [
+              ['“All tests pass”', 'Run them yourself. Did it add or delete tests?'],
+              ['“I fixed the bug”', 'Read the diff. Is the fix at the cause or a patch over the symptom?'],
+              ['“No other files were touched”', '<code>git status</code> and <code>git diff --stat</code>'],
+              ['“This is safe”', 'Ask for the risks, and read every command it ran.'],
+              ['“Done”', 'Ask: what did you not verify?'],
+            ]),
+            n: 'Agents are honest most of the time and confidently wrong some of the time, in exactly the places you did not look. The last question, what did you not verify, is the cheapest review step there is.',
+          },
+          {
+            t: 'Failure modes and the fix',
+            b: H.table(['Symptom', 'Likely cause', 'Fix'], [
+              ['Changes far more than you asked', 'The goal had no boundary', 'Say what is out of scope; ask for a plan first'],
+              ['Claims success without running anything', 'No acceptance check was given', 'Name the command that must pass'],
+              ['Edits the wrong file or invents a function', 'It could not see the right context', 'Point it at the files with @path; ask it to read first'],
+              ['Loops on the same failing fix', 'The approach is wrong', 'Stop, rewind, and give it a different hint or a smaller step'],
+              ['Gets slower and vaguer over time', 'The context is full of old material', '/compact or start a new session with a summary'],
+            ]),
+            n: 'Ask the class which of these they hit in the guided lab. Each one maps to a line in the task brief we write in the next lesson.',
+          },
+        ],
+      },
+      {
+        id: 'm8-12', title: 'Delegating well: the task brief', mins: 25,
+        slides: [
+          {
+            t: 'A brief the agent can succeed with',
+            b: H.code('Goal:        one sentence: what is true when you are done.\nContext:     where to look: files, docs, the ticket.\nConstraints: what must not change; tools it may use; no network;\n             read-only on anything production.\nChecks:      commands that must pass, for example\n             python3 -m unittest\nOut of scope: what to leave alone.\nReport:      what to show me: summary, diff, risks, and what\n             you did NOT verify.', 'text', 'task brief template') +
+              H.note('key', 'Think of it as a ticket for a capable colleague on their first day: they have not seen your system and cannot ask the hallway.'),
+            n: 'This is the same structure as the prompt anatomy in session 7, tuned for coding agents. The two lines people forget are Checks and the last part of Report. Without a check the agent has no way to know it is done; without the report line it will not volunteer its blind spots.',
+          },
+          {
+            t: 'A weak brief and a strong one',
+            b: H.table(['Weak', 'Strong'], [
+              ['“Fix the disk report.”', 'Goal: the report lists servers above 85% used, fullest first, and does not crash on a disk of size 0.\nContext: disk_report.py and test_disk_report.py in this folder.\nConstraints: standard library only; do not change the CSV format.\nChecks: python3 -m unittest must pass.\nOut of scope: output formatting.\nReport: the diff, and anything you did not test.'],
+              ['“Make the script better.”', 'Goal: add a --threshold option, default 85, with a test. Nothing else.'],
+              ['“Clean up this repo.”', 'Goal: list, do not change, files unused for a year. Output a table.'],
+            ]),
+            n: 'Read the first row aloud. The strong brief takes thirty seconds longer to write and saves a round trip. Ask the room to rewrite one of their real tasks in this shape for the project lab.',
+          },
+          {
+            t: 'Size the task',
+            b: H.cards([
+              ['Too big', '“Rewrite the module.” The agent will make large, hard-to-review changes. Split it into steps, ask for a plan, approve each step.', 'split'],
+              ['Right-sized', 'One behaviour, one or two files, a test that proves it. You can read the whole diff in a few minutes.', 'delegate'],
+              ['Too small', 'Renaming one variable. Do it yourself; the brief costs more than the work.', 'just do it'],
+            ], 3) + H.note('tip', 'For anything that touches more than about three files, ask for a plan first and approve it before any edit.'),
+            n: 'A useful rule: if you cannot say how you would check the result in one sentence, the task is not ready to delegate.',
+          },
+          {
+            t: 'Review what comes back',
+            b: H.steps([
+              ['Read the report', 'Does it match your goal? Does it admit anything it did not verify?'],
+              ['Read the diff', 'Every line. Look for deleted tests, widened permissions and new dependencies.'],
+              ['Run the checks yourself', 'Not the agent: you.'],
+              ['Look outside the scope', '<code>git status</code>: files changed that you did not expect?'],
+              ['Ask a hard question', '“What is the most likely way this breaks in production?”'],
+            ]),
+            n: 'Make the point that review is the human job in delegation. The faster the agent writes, the more the quality of the work depends on how well you review.',
+          },
+          {
+            t: 'When not to delegate',
+            b: H.note('crit', 'Do not hand these to an agent on its own: <b>secrets and credentials</b>, <b>changes to production systems</b>, <b>security-critical code you cannot review</b>, and <b>any task whose goal you cannot state clearly</b>.') +
+              H.cards([
+                ['Use an agent to write', 'The script, the config change, the runbook, the test. Then a human reviews and applies it through change management.', 'yes'],
+                ['Keep a human on', 'The apply step, the approval, the credential, the final decision.', 'human'],
+              ], 2),
+            n: 'This is the policy line from the guardrail session in advance: the agent writes and tests, humans review and apply. Ask whether anyone has already seen a colleague break this rule with a chatbot.',
+          },
+        ],
+      },
+      {
+        id: 'm8-13', title: 'Choosing and combining coding agents', mins: 20,
+        slides: [
+          {
+            t: 'Choose by the job and the constraints',
+            b: H.table(['Question', 'What to weigh'], [
+              ['What do we already pay for?', 'A subscription, an API key, or a gateway (session 3). Cost per task matters more than a list price.'],
+              ['Where will it run?', 'Desktop app, terminal, IDE, or in the cloud. Some work needs a machine that can reach internal systems.'],
+              ['Which safety model do we prefer?', 'Permission modes plus allow and deny rules (Claude Code), or a sandbox plus an approval policy (Codex).'],
+              ['Which conventions does the team use?', 'CLAUDE.md or AGENTS.md; both tools can share skills (session 14).'],
+              ['Which integrations are needed?', 'GitHub actions, MCP servers, scheduled runs.'],
+              ['What may leave our network?', 'Prompts and code go to a provider. Check the data policy first.'],
+            ]),
+            n: 'Avoid ranking the tools in front of the class; they change monthly and the right answer depends on constraints. Walk through one real team constraint per row and let the class decide.',
+          },
+          {
+            t: 'Use two on one change',
+            b: H.code('# Claude Code reviews the current branch\ngit diff main... | claude -p "Review this diff for bugs, missing tests and risky commands. Be specific."\n\n# Codex reviews the same branch against main, no interactive session\ncodex review --base main', 'bash', 'a second opinion') +
+              H.note('key', 'An agent reviewing its own work tends to approve it. A different agent, with a fresh context and the diff only, finds different problems.'),
+            n: 'Run the Claude command live on the diff from the guided lab if time allows. The point is not which is better, it is that two independent reviewers are better than one. Do not give the reviewer write permission.',
+          },
+          {
+            t: 'Other agents you will meet',
+            b: H.table(['Tool', 'What it is'], [
+              ['Cursor', 'An editor built around an AI agent.'],
+              ['GitHub Copilot', 'An assistant inside editors and GitHub, with an agent mode.'],
+              ['Gemini CLI', 'Google\'s command-line coding agent.'],
+              ['OpenCode and others', 'Open-source terminal agents that can use many models.'],
+            ]) + H.note('tip', 'The ideas in this course carry over: a loop, tools, permissions, project instructions, review. For any new tool ask what it can run, where it runs, and what it asks before it acts.'),
+            n: 'These names come from the original deck. Do not demo them. Teach the three questions at the bottom, which apply to any new agent a vendor shows you next month.',
+          },
+          {
+            t: 'Keeping the cost under control',
+            b: H.cards([
+              ['Right model for the step', 'A strong model for planning and hard bugs, a cheaper one for mechanical edits.', 'model'],
+              ['Short sessions', '/clear between tasks, /compact when long, point at files instead of pasting.', 'context'],
+              ['Stable instructions', 'A fixed CLAUDE.md or AGENTS.md at the front of the prompt benefits from caching (session 3).', 'cache'],
+              ['Watch the usage', 'Look at the usage or cost display the tool offers, and set a budget before unattended runs.', 'visibility'],
+            ], 2),
+            n: 'This pulls session 3 into the coding context. A coding agent is an agent loop: the cost rules are the same. Ask how someone would find out what a long refactor cost them.',
+          },
+        ],
+      },
+      {
+        id: 'm8-14', title: 'Project lab: ship a small tool with a coding agent', mins: 90, lab: true,
+        slides: [
+          {
+            t: 'The project: a log summariser',
+            b: H.prose(
+              'Build <code>logsum.py</code>: a small command-line tool that reads a log file and prints a summary. You write the brief, the agent builds it in steps, and you review everything.',
+              '<b>Rules of the lab:</b> work on a branch, commit after each step, ask for a plan before you allow edits, run the checks yourself, and keep the agent in plan mode for the first prompt.'
+            ) + H.table(['Phase', 'Time', 'You deliver'], [
+              ['1 · Brief', '10 min', 'A written task brief and an agreed plan'],
+              ['2 · Build', '45 min', 'Three working, tested, committed steps'],
+              ['3 · Review and harden', '20 min', 'Edge cases handled, risks listed'],
+              ['4 · Present', '15 min', 'A two-minute demo and a short honest report'],
+            ]),
+            n: 'Run this as a timed workshop. People may work in pairs. One person writes the brief and reviews, the other drives the terminal; swap at phase 3. Walk the room and watch for people accepting the first plan without reading it.',
+          },
+          {
+            t: 'Sample input and expected result',
+            b: H.split(
+              H.code('2026-10-22T09:14:03 dc-02 sshd[812]: ERROR Failed password for root from 10.0.0.5\n2026-10-22T09:14:09 dc-02 sshd[812]: ERROR Failed password for root from 10.0.0.5\n2026-10-22T09:15:00 dc-02 cron[301]: INFO job backup started\n2026-10-22T09:15:42 dc-02 backup[455]: WARN disk usage 91% on /srv\n2026-10-22T09:16:10 sw-01 snmpd[77]: INFO link up on Gi0/12\n2026-10-22T09:16:55 sw-01 snmpd[77]: ERROR link down on Gi0/3\n2026-10-22T09:17:02 dc-02 backup[455]: ERROR backup failed: no space left on device\n2026-10-22T09:18:20 web-03 nginx[990]: WARN upstream timed out\n2026-10-22T09:18:21 web-03 nginx[990]: ERROR upstream timed out\n2026-10-22T09:19:00 web-03 nginx[990]: INFO reload complete', 'text', 'sample.log'),
+              H.code('Lines: 10   ERROR: 5   WARN: 2   INFO: 3\n\nService   ERROR  WARN  INFO\nsshd          2     0     0\nbackup        1     1     0\nnginx         1     1     1\nsnmpd         1     0     1\ncron          0     0     1\n\nRepeated failed logins:\n  10.0.0.5  (2 times)', 'text', 'expected output')
+            ),
+            n: 'These numbers are checkable: 10 lines, 5 errors, 2 warnings, 3 info. Services are sorted by error count, highest first, and ties by name. The failed-login section lists any address with two or more failed passwords. The exact table layout is the agent\'s choice as long as the counts match.',
+          },
+          {
+            t: 'Phases 1 and 2: brief, plan, then three small steps',
+            b: H.table(['Step', 'Ask the agent for', 'Check'], [
+              ['A', 'Parse each line into time, host, service, level, message. Skip and count malformed lines.', 'Unit tests for good and bad lines'],
+              ['B', 'Counts per level and per service, sorted as shown. Print the table.', 'Output matches the expected result for sample.log'],
+              ['C', 'Find addresses with two or more failed passwords. Read the file path from the command line, with a clear error if it is missing.', 'Tests plus a manual run'],
+            ]) + H.note('tip', 'Write the brief with the template from the last lesson. Paste it in plan mode, read the plan, and only then allow edits. Commit after each step.'),
+            n: 'If a pair gets stuck on step B, ask the agent to write the test first from the expected output, then make it pass. Test-first is the most reliable way to keep an agent honest.',
+          },
+          {
+            t: 'Phase 3: review and harden',
+            b: H.steps([
+              ['Ask for the risks', 'What inputs could break it? A blank line, a 5 GB file, a line in another format, a binary file.'],
+              ['Add tests for those cases', 'Each one a failing test first, then a fix.'],
+              ['Read all the code', 'Every function. Remove anything you cannot explain.'],
+              ['Check the scope', '<code>git diff --stat main</code>: only the files you expect?'],
+              ['Write the README', 'How to run it, what it prints, what it does not do. Ask the agent, then edit.'],
+            ]),
+            n: 'The tool reads files only. Say plainly that if someone proposes sending the log anywhere, or running it on a production server, that is a different conversation with the guardrail policy.',
+          },
+          {
+            t: 'Phase 4: present and score',
+            b: H.table(['Criterion', 'Done well'], [
+              ['It works', 'Output matches the expected result on sample.log and handles bad input'],
+              ['It is tested', 'Tests cover each step and the edge cases; they pass when you run them'],
+              ['It was reviewed', 'You can explain every function and what you changed from the agent\'s version'],
+              ['Scope was respected', 'No unexpected files, no new dependencies, one clean branch'],
+              ['The report is honest', 'It lists what was not verified and one thing the agent got wrong'],
+            ]) + H.note('key', 'Two minutes each: show it running, show one thing you rejected or changed, and say what you would not trust it with.'),
+            n: 'Score the last row highest. The skill we are building is not getting an agent to write code; it is knowing what to check. Collect each group\'s rejected change as a class list of agent mistakes.',
+          },
+        ],
+      },
+      {
+        id: 'm8-15', title: 'Claude Desktop in the real world: from a corrupt router flash to everyday jobs', mins: 20,
+        slides: [
+          {
+            t: 'A true story: a home router with a corrupt flash',
+            b: H.prose(
+              'At home, a <b>MikroTik</b> router\'s flash storage became corrupt. Instead of repairing it step by step, the instructor told <b>Claude Desktop</b> to fix it and did none of the steps by hand.'
+            ) +
+              H.cards([
+                ['What was asked', 'A plain-language goal: get the router working again.', 'goal'],
+                ['Who did the work', 'The agent, end to end, on a device the instructor owns.', 'agent'],
+                ['What it shows', 'A general assistant with the right access can do multi-step technical work, not just answer questions.', 'lesson'],
+              ], 3),
+            n: 'Instructor: tell the real sequence here in your own words. What did you ask for? What did Claude look at first? Where did it ask you something? How long did it take, and what did the router look like afterwards? Tell it as a story, not a feature list: the problem, the decision to hand it over, what you watched happen, the result. Be candid about what you did not know in advance and what could have gone wrong. Then ask the class what they would have needed to feel safe doing the same on a work device.',
+          },
+          {
+            t: 'The shape of any repair like this',
+            b: H.fig(D.flow([
+              { t: 'Goal', s: 'in plain words' },
+              { t: 'Diagnose', s: 'look before touching', c: 'tl' },
+              { t: 'Plan', s: 'options, risks, rollback' },
+              { t: 'Act', s: 'with a human watching', c: 'acc' },
+              { t: 'Verify', s: 'does it really work?', c: 'ok' },
+              { t: 'Report', s: 'what changed' },
+            ], { h: 100 }), 'The same six steps as the agent loop. What made the story work is the quality of each step, not magic.') + H.note('key', 'It worked because the goal was clear, the device was low-stakes and the result was easy to check. Take any one of those away and you want more control.'),
+            n: 'This slide is deliberately generic: it describes the structure that any successful hand-over has. Map your own story onto the six boxes while you talk. Ask which box would worry them most on a production router.',
+          },
+          {
+            t: 'What else Claude Desktop can do',
+            b: H.cards([
+              ['Chat, files and documents', 'Analyse files, and create documents, spreadsheets, slide decks and PDFs.', 'work'],
+              ['Code', 'The Code tab runs Claude Code in the app, on your repositories (sessions 11 to 15).', 'code'],
+              ['Computer use', 'It can look at the screen and click and type in desktop apps, with your approval.', 'screen'],
+              ['Browsers', 'A built-in browser pane, and Claude in Chrome for pages where you are signed in.', 'web'],
+              ['Connectors', 'Mail, calendar, drive and other services through connectors and MCP servers.', 'apps'],
+              ['Scheduled tasks', 'Recurring jobs that run on a timetable you set.', 'cron'],
+              ['Skills and plugins', 'Reusable instructions and tools your team shares.', 'reuse'],
+            ], 4) + H.note('warn', 'Which of these exist, and how they are switched on, changes with each release. Check the current app and its documentation, and use only what your organisation has approved.'),
+            n: 'Show two of these live if you can: ask it to build something small from a file, and show the permission prompt when it uses the computer. Stress that every capability on this slide is a thing it can do to your systems as well as a convenience.',
+          },
+          {
+            t: 'From a home lab to a production network',
+            b: H.table(['', 'At home (the story)', 'At work'], [
+              ['Stakes', 'One device, nothing depends on it', 'Users, services and SLAs depend on it'],
+              ['Access', 'The owner decided', 'Least privilege; policy tiers T0 to T3; approvals'],
+              ['Undo', 'Reinstall if needed', 'Export the config and save a backup before any change'],
+              ['Out-of-band access', 'Physical access', 'Console or management network that does not depend on the device'],
+              ['Record', 'Memory', 'Logs, change record, who approved what'],
+            ]) + H.code('# RouterOS: before touching a router, keep a way back\n/export file=before-change\n/system backup save name=before-change', 'text', 'MikroTik RouterOS'),
+            n: 'This is the bridge back to the course rules. The agent can do the repair; what changes at work is everything around it. The two RouterOS commands are standard: export writes a readable config file and backup save writes a binary backup. Store both off the device.',
+          },
+          {
+            t: 'Try it safely: your own small hand-over',
+            b: H.steps([
+              ['Choose a harmless target', 'A lab VM, a spare router or a throwaway container. Not a production device.'],
+              ['Take a snapshot or backup first', 'Know exactly how you would restore.'],
+              ['State the goal, not the steps', 'For example: “the web server on this VM does not start; find out why and fix it”.'],
+              ['Ask for a diagnosis and a plan before any change', 'Approve each risky step. Know the stop key: <kbd>Esc</kbd>.'],
+              ['Check the result yourself', 'Do not rely on the agent\'s “fixed”.'],
+              ['Write down what you would need before doing this at work', 'Access, approvals, a backup, a way back in.'],
+            ]),
+            n: 'If time allows, pairs do this in the lab with a VM they break on purpose. The last step is the deliverable: a short list of conditions for using an agent this way at work. Collect them on the board.',
+          },
+        ],
+      },
     ],
     quiz: [
       { q: 'What is the main way a coding agent “observes” whether its change worked?', a: ['It asks the user every time', 'It runs tests, linters and the code itself', 'It trusts its first answer', 'It reads the model card'], c: 1, why: 'Tests and tools give real feedback in the loop. That is why TDD works so well with agents.' },
@@ -451,6 +784,9 @@
       { q: 'A nightly job must read a local file share and write a report. Which scheduling option fits?', a: ['A cloud scheduled task, which runs on a fresh clone in the cloud', 'A Desktop scheduled task or cron with claude -p / codex exec on a machine that can reach the share', '/loop in a session you close at 6 pm', 'A GitHub issue comment'], c: 1, why: 'Cloud tasks cannot see local files. Desktop tasks or cron on a reachable machine can.' },
       { q: 'What is the safest first choice when an agent needs data from a system?', a: ['Computer use, clicking through the GUI', 'An API or MCP server with a read-only account', 'Sharing your admin password', 'Copying screenshots into the chat'], c: 1, why: 'APIs and MCP are faster, auditable and harder to mislead. Computer use is for GUI-only tools.' },
       { q: 'How should a coding agent touch production infrastructure?', a: ['Directly with terraform apply', 'It should not: it writes and tests code, humans review and apply through change management', 'Only at night', 'Through a shared admin account'], c: 1, why: 'Deny apply/deploy commands; production changes go through review and the change process.' },
+      { q: 'Which part of a task brief gives a coding agent a way to know it is done?', a: ['The goal sentence', 'Checks: commands that must pass', 'The out-of-scope list', 'The context'], c: 1, why: 'Without a named check the agent cannot tell success from a plausible-looking change. Name the command that must pass.' },
+      { q: 'An agent reports "all tests pass, nothing else changed". What do you do?', a: ['Merge it', 'Run the tests yourself and check git status and the diff', 'Ask it to say it again', 'Switch to a bigger model'], c: 1, why: 'Trust evidence you can check, not the summary: run the checks, read the diff and look for files outside the scope.' },
+      { q: 'An agent repaired your own home router end to end. Which of these matters most when you do the same at work?', a: ['The router brand', 'Policy tiers, approvals, a backup and a way back in, because users depend on the device', 'The speed of the repair', 'The colour of the app'], c: 1, why: 'The agent can do the repair; the safety comes from least privilege, approval, a backup taken first and an out-of-band way back in.' },
     ],
   });
 })();

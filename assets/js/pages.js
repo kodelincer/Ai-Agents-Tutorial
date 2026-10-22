@@ -62,6 +62,26 @@
     ['Transformer', 'The neural network architecture behind modern LLMs, built from attention and feed-forward blocks.'],
     ['Vector database', 'A database that stores embeddings and finds the nearest ones quickly (pgvector, Qdrant, Milvus…).'],
     ['VLM', 'Vision-language model: an LLM that also accepts images.'],
+    ['Prompt caching', 'The provider remembers the front of a prompt it has already processed, so later calls that start with the same text are cheaper and faster.'],
+    ['Cache read / cache write', 'A cache read is a discounted charge for prompt text found in the cache. A cache write is the charge, sometimes a premium, for storing new text in it.'],
+    ['Cache lifetime (TTL)', 'How long a cached prefix is kept without use. After it expires the next call pays the write price again.'],
+    ['Gateway (LLM)', 'A service that gives one key and one OpenAI-style API for many models and providers, for example OpenRouter or AvalAI.'],
+    ['OpenRouter', 'An LLM gateway: one account and key, model names like vendor/model, and a usage block with cost on every response.'],
+    ['AvalAI', 'An LLM gateway used from Iran with an OpenAI-style API. Check its own documentation for the current base URL, models and prices.'],
+    ['Base URL', 'The address a client sends API calls to. With an OpenAI-compatible gateway you change only the base URL, the key and the model name.'],
+    ['finish_reason', 'The field that says why a reply ended: stop (finished), length (hit max tokens, so it is cut off) or tool_calls (wants a tool run).'],
+    ['max_tokens', 'A cap on how long the answer may be. Always set one: it is your cost ceiling.'],
+    ['top_p / top_k', 'Sampling limits that restrict the next-token choice to the most likely tokens. Change temperature or top_p, not both.'],
+    ['Stateless', 'The model remembers nothing between calls. The app resends the history every time, which is why cost grows with length.'],
+    ['Reasoning tokens', 'Hidden thinking tokens of a reasoning model. You do not see them but they are billed as output.'],
+    ['Task brief', 'A written instruction for a coding agent: goal, context, constraints, checks, out-of-scope and what to report.'],
+    ['Claude Desktop', 'Anthropic\'s desktop app: chat, the Code tab, computer use, browsers, connectors and scheduled tasks.'],
+    ['Open WebUI', 'A self-hosted chat platform that works with Ollama and OpenAI-compatible APIs and adds document chat, tools and custom assistants.'],
+    ['LangChain', 'A framework of building blocks for LLM applications and agents, with one interface for many model providers.'],
+    ['LangGraph', 'A low-level framework for stateful, long-running agents written as graphs, with human-in-the-loop pauses and durable execution.'],
+    ['LlamaIndex', 'An open-source framework for agentic applications over your own documents (loading, indexing, querying).'],
+    ['Honcho', 'Open-source memory service that stores conversations, reasons over them and builds a model of each user or agent that you can query.'],
+    ['Multica', 'A source-available board where AI coding agents take issues like teammates, running through agent CLIs on machines you control.'],
     ['Policy tiers (T0–T3)', 'Our guardrail policy: T0 read/diagnose, T1 low-risk runbook actions, T2 changes needing human approval, T3 forbidden for agents.'],
     ['JEA', 'Just Enough Administration: a PowerShell endpoint that exposes only selected cmdlets and parameters to an account.'],
     ['TACACS+ command authorization', 'AAA feature that permits or denies each CLI command per user on network devices; our read-only agent account may run show commands only.'],
@@ -85,6 +105,7 @@
       H.code('hermes skills browse | search <q> | inspect <slug>\nhermes skills install <slug>\nhermes skills list | check | update | audit\nhermes skills uninstall <name>\nhermes skills tap add <org/repo>', 'bash', 'skills'),
       H.code('hermes mcp              # picker\nhermes mcp catalog\nhermes mcp install <name>\n/reload-mcp             # in a session', 'bash', 'MCP') +
       H.code('hermes cron create "every day at 06:00" "…" --skill <name> --name "…"\nhermes cron list | run <id> | pause <id> | resume <id> | remove <id>\nhermes cron doctor\nhermes pause / hermes resume     # global emergency stop', 'bash', 'cron') +
+      H.code('hermes memory setup | status        # external memory provider\n/memory pending | approve <id> | reject <id> | approval on\n/skills pending | diff <id> | approve <id> | reject <id>\nhermes cron edit <id> --pin | --unpin | --reasoning-effort low\nhermes cron edit <id> --add-skill <name>\nhermes backup           # export your whole setup', 'bash', 'memory, approvals, cost') +
       H.code('hermes gateway setup | start | status\nhermes pairing          # approve DM pairing codes\nhermes send …           # one-shot message to a platform', 'bash', 'gateway') +
       H.code('hermes profile create <name> --description "…"\n<name> setup | chat | gateway start\nhermes profile list\nhermes kanban boards create <slug> --name "…" --switch\nhermes kanban create "…" --assignee <profile>\nhermes kanban list | show <id> | tail <id>', 'bash', 'teams') +
       H.code('/help /tools /model /new /retry /undo /compress\n/usage /skills /<skill> /plan /learn /cron\n/approve /deny /stop /sethome /status   # in chat platforms', 'text', 'slash commands') +
@@ -108,24 +129,21 @@
     title: 'Instructor guide', eyebrow: 'For whoever runs the course',
     lead: 'How to run this course for the IT infrastructure team: schedule, lab setup, and how to update the content.',
     render: () =>
-      H.note('key', 'Teach it in two parts. <b>Part 1 · Fundamentals</b> (Modules 0–8) gives everyone the same mental model: what LLMs are, why they hallucinate, what an agent and a harness are. <b>Part 2 · Hands-on</b> (Modules 9–13) builds real agents for each team\'s daily work inside our guardrail policy. Do not skip Part 1: engineers who skip it over-trust agents.', 'Course design') +
-      H.table(['Session', 'Part', 'Modules', 'Format', 'Time'], [
-        ['1', '1', '0 Welcome · 1 Foundations', 'Talk + discussion', '2 h'],
-        ['2', '1', '2 How LLMs think · 3 Training', 'Talk + exercises', '2.5 h'],
-        ['3', '1', '4 Knowledge/RAG · 5 Models & hardware', 'Talk + Ollama demo', '3 h'],
-        ['4', '1', '6 Prompting · 7 Agents · 8 Claude Code and Codex', 'Talk + live demo + exercises', '3.5 h'],
-        ['5', '2', '9 Hermes labs 1–5 (install → skills)', 'Hands-on', '3 h'],
-        ['6', '2', '9 Hermes labs 6–10 (memory → hardening)', 'Hands-on', '3 h'],
-        ['7', '2', '10 Teams · 11 Security', 'Exercises + red team', '2.5 h'],
-        ['8', '2', '12 Role playbooks: guardrail policy + your team\'s scenarios', 'Hands-on by role group', '3 h'],
-        ['9', '2', '12 Workshop + 13 Capstone build', 'Team project', '3 h'],
-        ['10', '2', '13 Demos, roadmap, closing', 'Demos + discussion', '2 h'],
+      H.note('key', 'The course is 29 two-hour sessions in seven phases. Phase A gives everyone the same vocabulary and shows how to use and pay for models. Phase B explains how the machine works; its deeper sessions are optional. Phases D and E, coding agents and Hermes Agent, get most of the time. Phases F and G cover teams, security and your own playbooks. Do not skip session 24 on security. The <a href="#sessions">session plan</a> lists every lesson, and you can drop the optional sessions when time is short.', 'Course design') +
+      H.table(['Phase', 'Sessions', 'Format', 'What to prepare'], [
+        ['A · Big picture and using LLMs', '1–3', 'Talk, figures, a short lab', 'A gateway account (OpenRouter or AvalAI) with a small spending limit; one key per pair'],
+        ['B · Understanding the machine', '4–8', 'Talk + exercises (4 and 6 optional)', 'An Ollama host for the local-models lab'],
+        ['C · AI agents', '9–10', 'Talk + simulators', 'Nothing special'],
+        ['D · Coding agents', '11–15', 'Hands-on labs, a project lab', 'Claude Code and Codex accounts; Python 3 and git; the practice repository from session 11; a lab VM or spare router for session 13'],
+        ['E · Hermes Agent', '16–21', 'Hands-on labs, a project lab', 'One lab VM per pair with Docker; a lab chat workspace for the gateway'],
+        ['F · Beyond one agent', '22–25', 'Talk + exercises + red team', 'Session 22 is a talk only; the guardrail policy agreed with your security team'],
+        ['G · Playbooks, workshop, capstone', '26–29', 'Team project', 'Anonymised tickets and one runbook from each team'],
       ]) +
       H.split(
         H.prose('<h3>Before the course</h3>', H.list([
           'One lab VM per pair (Ubuntu 24.04, 4 vCPU, 8 GB RAM, Docker) on an isolated lab VLAN.',
           'For Module 12: a lab jump host per role group, two virtual switches (containerlab, EVE-NG or CML), a lab AD with a JEA endpoint, a lab web server, and a read-only TACACS+ account. Agree the T0–T3 policy tiers with the CISO and change manager beforehand.',
-          'Model access: a shared OpenRouter or company API key in the vault with a spending limit, and/or a GPU host running Ollama with 64K context.',
+          'Model access: a shared OpenRouter, AvalAI or company API key in the vault with a spending limit, and/or a GPU host running Ollama with 64K context. Before session 3, open the gateway\'s own documentation and check the base URL, model names and prices shown in the slides.',
           'A lab Slack/Teams workspace or private channel for gateway labs.',
           'Ask each team for 10 anonymised tickets and one runbook. They become the eval set and the skills.',
         ])),
@@ -134,10 +152,10 @@
           'Press <kbd>S</kbd> (or “Speaker view”) to open a second window with notes, the next slide and a timer. It follows the main window and its Prev/Next buttons drive it: put it on your laptop screen and the presentation on the projector.',
           'Press <kbd>N</kbd> to show notes under the slide instead.',
           'Every “Try it” panel works offline in the browser: let people drive them.',
-          'End each module with its checkpoint quiz; discuss the wrong answers.',
+          'The last lesson of each session ends on the session page; module quizzes appear in the session where a module ends. Discuss the wrong answers.',
         ]))
       ) +
-      H.prose('<h3>Updating the content</h3>', 'Lessons live in <code>assets/js/content/mNN-*.js</code>. Each slide is <code>{ t: title, b: html, n: notes }</code>. Use the helpers in <code>assets/js/core.js</code> (<code>H.cards</code>, <code>H.code</code>, <code>H.table</code>, <code>D.flow</code>, <code>D.hub</code>…) and the widgets in <code>widgets.js</code>. Every new text must exist in both languages: add the Persian translation in <code>assets/i18n/fa/</code> and run <code>node tools/i18n.js check</code>. See <code>README.md</code> in the repository for the full guide. Push to the main branch and GitHub Pages republishes the site.'),
+      H.prose('<h3>Updating the content</h3>', 'Lessons live in <code>assets/js/content/mNN-*.js</code> and the teaching order lives in <code>assets/js/sessions.js</code>: every lesson id must appear in exactly one session. Each slide is <code>{ t: title, b: html, n: notes }</code>. Use the helpers in <code>assets/js/core.js</code> (<code>H.cards</code>, <code>H.code</code>, <code>H.table</code>, <code>D.flow</code>, <code>D.hub</code>…) and the widgets in <code>widgets.js</code>. Every new text must exist in both languages: add the Persian translation in <code>assets/i18n/fa/</code> and run <code>node tools/i18n.js check</code>. See <code>README.md</code> in the repository for the full guide. Push to the main branch and GitHub Pages republishes the site.'),
   };
 
   // Original deck slide titles (Ai_Agents.pptx) → lessons that teach them
