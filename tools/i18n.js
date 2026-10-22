@@ -54,6 +54,20 @@ A.modules.forEach((m) => {
   m.lessons.forEach((l) => { t(l.title); l.slides.forEach((s) => { t(s.t); if (s.n) t(s.n); }); });
   (m.quiz || []).forEach((q) => { t(q.q); q.a.forEach(t); t(q.why); });
 });
+// Sessions: titles, summaries and goals
+group = 'sessions';
+(A.sessions || []).forEach((s) => { A.tr(s.title); A.tr(s.summary); (s.goals || []).forEach((g) => A.tr(g)); });
+// Every lesson must be taught in exactly one session, and every session lesson must exist.
+const planProblems = [];
+{
+  const ids = new Set(A.modules.flatMap((m) => m.lessons.map((l) => l.id)));
+  const count = {};
+  (A.sessions || []).forEach((s) => s.lessons.forEach((id) => {
+    count[id] = (count[id] || 0) + 1;
+    if (!ids.has(id)) planProblems.push(`session ${s.n} lists unknown lesson ${id}`);
+  }));
+  ids.forEach((id) => { if (!count[id]) planProblems.push(`lesson ${id} is in no session`); else if (count[id] > 1) planProblems.push(`lesson ${id} is in ${count[id]} sessions`); });
+}
 // Reference pages
 group = 'pages';
 Object.values(A.pages).forEach((p) => {
@@ -70,7 +84,7 @@ const nMissing = Object.values(missing).reduce((a, g) => a + Object.keys(g).leng
 
 // Inline rule: every L( call in UI/widget code must pass two string arguments.
 const inlineProblems = [];
-for (const f of ['assets/js/app.js', 'assets/js/widgets.js', 'assets/js/widgets-labs.js', 'assets/js/core.js', 'assets/js/pages.js']) {
+for (const f of ['assets/js/app.js', 'assets/js/widgets.js', 'assets/js/widgets-labs.js', 'assets/js/core.js', 'assets/js/pages.js', 'assets/js/sessions.js']) {
   const src = fs.readFileSync(path.join(ROOT, f), 'utf8');
   for (const m of src.matchAll(/\bL\((['"`])((?:\\.|(?!\1).)*)\1\s*\)/g)) inlineProblems.push(`${f}: L(${m[1]}${m[2].slice(0, 50)}…) has no Persian`);
 }
@@ -88,7 +102,8 @@ if (mode === 'missing') {
   console.log(`content strings: ${total} · translated: ${total - nMissing} · missing: ${nMissing}`);
   Object.entries(missing).forEach(([g, o]) => console.log(`  ${g}: ${Object.keys(o).length} missing`));
   inlineProblems.forEach((p) => console.log('  ' + p));
+  planProblems.forEach((p) => console.log('  session plan: ' + p));
   const unused = Object.keys(fa).filter((k) => !found.has(k));
   if (unused.length) console.log(`  note: ${unused.length} dictionary entries are no longer used`);
-  process.exit(nMissing || inlineProblems.length ? 1 : 0);
+  process.exit(nMissing || inlineProblems.length || planProblems.length ? 1 : 0);
 }

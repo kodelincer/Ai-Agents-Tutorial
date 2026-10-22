@@ -277,6 +277,14 @@
     'hermes cron list': 'ID        SCHEDULE            NAME                    NEXT RUN\njob_7f2a  every day 06:00     Daily infra health      tomorrow 06:00\njob_91c3  every monday 08:00  Cert expiry report      Mon 08:00',
     'hermes gateway status': 'gateway: running (pid 4127)\n  slack     connected   home channel #it-ops-agents\n  telegram  not configured',
     'hermes profile list': 'PROFILE        MODEL                     GATEWAY\ndefault        your-provider/your-model  —\ntriage         your-provider/your-model  slack\nnetwork        local/qwen3:32b           —',
+    'hermes sessions list': 'ID          STARTED           MSGS  TITLE\n20261022-a1 today 09:14        18  Disk report for dc-02\n20261021-c7 yesterday 16:40    42  Switch VLAN audit\n20261020-b3 Tue 11:02           9  Draft change request',
+    'hermes --continue': `<span class="dim">${L('Resumes the most recent session in the current profile.', 'آخرین نشست پروفایل جاری را از سر می‌گیرد.')}</span>`,
+    'hermes insights': 'Last 7 days\n  sessions   23      tokens in   1.9M   tokens out  210K\n  est. cost  $4.18   cached share of input  71%\n  top model  your-provider/your-model',
+    'hermes update': '✓ checking for updates …\n✓ updated to the latest stable release\n<span class="dim">  ' + L('(your output will differ)', '(خروجی شما متفاوت خواهد بود)') + '</span>',
+    'hermes backup': '✓ backup written: hermes-backup-20261022.zip\n<span class="dim">  ' + L('Copy it to the new machine and restore there. Treat it as a secret: it contains your keys.', 'آن را به ماشین جدید منتقل و آنجا بازیابی کنید. با آن مثل یک راز رفتار کنید: کلیدهای شما در آن است.') + '</span>',
+    'hermes memory status': 'built-in memory   MEMORY.md 1,240/2,200   USER.md 610/1,375\nexternal provider  none  <span class="dim">(' + L('run: hermes memory setup', 'اجرا کنید: hermes memory setup') + ')</span>',
+    'hermes memory setup': `<span class="hl">Memory provider</span>\n  ❯ none (built-in memory only)\n    Honcho\n    Mem0 · Hindsight · Supermemory · …\n<span class="dim">  ${L('(interactive; external providers run alongside built-in memory)', '(تعاملی؛ ارائه‌دهنده‌های خارجی کنار حافظه‌ی داخلی کار می‌کنند)')}</span>`,
+    'hermes cron doctor': '✓ scheduler running\n✓ 2 jobs valid\n<span class="er">✗ job_91c3: skill "cert-report" not found</span>\n  fix: hermes skills list, then  hermes cron edit job_91c3 --skill <name>',
     'ls ~/.hermes': 'config.yaml  .env  SOUL.md  memories/  skills/  sessions/  cron/  logs/  profiles/  hermes-agent/',
     'cat ~/.hermes/config.yaml': 'model:\n  provider: openrouter\n  default: anthropic/claude-opus-4.6\nterminal:\n  backend: docker\n  docker_image: python:3.11-slim\napprovals:\n  mode: smart\n  cron_mode: deny\nmcp_servers:\n  filesystem:\n    command: npx\n    args: ["-y", "@modelcontextprotocol/server-filesystem", "/srv/runbooks"]',
     'ollama pull qwen3:32b': 'pulling manifest\npulling 3291abe70f16… 100% ▕████████████████▏  20 GB\nverifying sha256 digest\nsuccess',
@@ -483,5 +491,53 @@
     };
     b.addEventListener('click', (e) => { const btn = e.target.closest('[data-i]'); if (btn) show(+btn.dataset.i); });
     show(0);
+  };
+
+  /* ---------------- Prompt-cache cost calculator ---------------- */
+  W.cacheCost = function (el) {
+    const b = A.frame(el, L('What does prompt caching save on an agent task?', 'کش پرامپت در یک کار ایجنت چقدر صرفه‌جویی می‌کند؟'));
+    const id = uid('cc');
+    const PRE = [
+      [L('Anthropic-style: read 0.1×, write 1.25×', 'سبک Anthropic: خواندن 0.1×، نوشتن 1.25×'), 0.1, 1.25],
+      [L('OpenAI GPT-5-style: read 0.1×, no write fee', 'سبک OpenAI GPT-5: خواندن 0.1×، بدون هزینه‌ی نوشتن'), 0.1, 1],
+      [L('GPT-4.1-style: read 0.25×, no write fee', 'سبک GPT-4.1: خواندن 0.25×، بدون هزینه‌ی نوشتن'), 0.25, 1],
+    ];
+    const num = (k, v, min, max, step, label) => `<label style="display:grid;gap:2px;font-size:.85rem"><span>${label} <b data-v="${k}"></b></span><input type="range" data-k="${k}" min="${min}" max="${max}" value="${v}" step="${step}"></label>`;
+    b.innerHTML = `<div class="w-row"><label>${L('Cache pricing', 'قیمت‌گذاری کش')} <select id="${id}-p">${PRE.map((p, i) => `<option value="${i}">${esc(p[0])}</option>`).join('')}</select></label>
+      <label><input type="checkbox" id="${id}-x"> ${L('Cache expires between steps (slow tools, long pauses)', 'کش بین گام‌ها منقضی می‌شود (ابزار کند، مکث طولانی)')}</label></div>
+      <div class="w-grid2">
+        ${num('pin', 3, 0.1, 15, 0.1, L('Input price $/1M tokens', 'قیمت ورودی دلار / یک میلیون توکن'))}
+        ${num('pout', 15, 0.1, 75, 0.1, L('Output price $/1M tokens', 'قیمت خروجی دلار / یک میلیون توکن'))}
+        ${num('n', 10, 1, 40, 1, L('Steps in the task', 'تعداد گام‌های کار'))}
+        ${num('pre', 8000, 500, 40000, 500, L('Stable prefix (system prompt + tools) tokens', 'توکن‌های پیشوند ثابت (پرامپت سیستم + ابزارها)'))}
+        ${num('add', 1500, 100, 8000, 100, L('New tokens per step (messages + tool output)', 'توکن جدید در هر گام (پیام‌ها + خروجی ابزار)'))}
+        ${num('out', 400, 50, 3000, 50, L('Output tokens per step', 'توکن خروجی در هر گام'))}
+      </div>
+      <div class="stats" id="${id}-o"></div><div id="${id}-t"></div>`;
+    const val = (k) => +$('[data-k="' + k + '"]', b).value;
+    const money = (x) => '$' + (x < 1 ? x.toFixed(3) : x.toFixed(2));
+    const draw = () => {
+      const [, r, w] = PRE[+$('#' + id + '-p', b).value];
+      const expire = $('#' + id + '-x', b).checked;
+      const pin = val('pin') / 1e6, pout = val('pout') / 1e6, n = val('n'), pre = val('pre'), add = val('add'), out = val('out');
+      let plain = 0, cached = 0, tokIn = 0;
+      for (let i = 1; i <= n; i++) {
+        const ctx = pre + i * add;
+        tokIn += ctx;
+        plain += ctx * pin + out * pout;
+        // Step 1 writes everything. Later steps read what the previous step wrote and write only the new part.
+        if (i === 1 || expire) cached += ctx * pin * w + out * pout;
+        else cached += (pre + (i - 1) * add) * pin * r + add * pin * w + out * pout;
+      }
+      $$('[data-v]', b).forEach((e) => { e.textContent = fmt(val(e.dataset.v)); });
+      const save = plain ? (1 - cached / plain) * 100 : 0;
+      $('#' + id + '-o', b).innerHTML = `<div class="stat"><b dir="ltr">${fmt(tokIn)}</b><span>${L('input tokens sent in total', 'مجموع توکن‌های ورودی ارسال‌شده')}</span></div><div class="stat"><b dir="ltr">${money(plain)}</b><span>${L('without caching', 'بدون کش')}</span></div><div class="stat"><b dir="ltr">${money(cached)}</b><span>${L('with caching', 'با کش')}</span></div><div class="stat"><b dir="ltr">${save >= 0 ? '−' : '+'}${Math.abs(save).toFixed(0)}%</b><span>${L('change in cost', 'تغییر هزینه')}</span></div>`;
+      $('#' + id + '-t', b).innerHTML = expire
+        ? `<div class="callout warn"><span class="label">${L('Caching can cost more', 'کش می‌تواند گران‌تر باشد')}</span><div>${L('If the cache expires before the next step, you pay the write price every time and never get a read discount. Keep steps close together, or turn caching off for slow jobs.', 'اگر کش پیش از گام بعدی منقضی شود، هر بار قیمت نوشتن را می‌پردازید و هرگز تخفیف خواندن نمی‌گیرید. گام‌ها را نزدیک به هم نگه دارید یا برای کارهای کند کش را خاموش کنید.')}</div></div>`
+        : `<div class="callout tip"><span class="label">${L('Why it works', 'چرا کار می‌کند')}</span><div>${L('An agent resends the same prefix on every step. The first step pays to write it; later steps read it at the discount. Prices here are illustrative: look up today\'s prices and cache rules for your model.', 'ایجنت در هر گام همان پیشوند را دوباره می‌فرستد. گام اول هزینه‌ی نوشتن را می‌دهد؛ گام‌های بعدی آن را با تخفیف می‌خوانند. قیمت‌ها در اینجا نمونه‌اند: قیمت‌های امروز و قواعد کش مدل خود را بررسی کنید.')}</div></div>`;
+    };
+    b.addEventListener('input', draw);
+    b.addEventListener('change', draw);
+    draw();
   };
 })();
