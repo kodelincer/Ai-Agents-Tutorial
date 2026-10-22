@@ -96,7 +96,7 @@
     ],
     quiz: [
       { q: 'Which addition most improves a vague prompt like “look at this ticket”?', a: ['Adding “please”', 'Adding role, context, a clear task, constraints and an output format', 'Writing it in capitals', 'Making it shorter'], c: 1, why: 'Structured prompts give the model the context and success criteria it cannot guess.' },
-      { q: 'Why wrap pasted logs or emails in tags such as <log>…</log>?', a: ['It looks nicer', 'It separates data from instructions, which helps accuracy and reduces prompt-injection risk', 'Models require XML', 'It reduces tokens'], c: 1, why: 'Clear delimiters tell the model “this is data to analyse, not instructions to follow”.' },
+      { q: 'Why wrap pasted logs or emails in tags such as &lt;log&gt;…&lt;/log&gt;?', a: ['It looks nicer', 'It separates data from instructions, which helps accuracy and reduces prompt-injection risk', 'Models require XML', 'It reduces tokens'], c: 1, why: 'Clear delimiters tell the model “this is data to analyse, not instructions to follow”.' },
       { q: 'An agent has 120 MCP tools enabled. What is the main cost?', a: ['None, tools are free', 'Every tool schema is sent in the context on every call: more tokens, more cost, more confusion', 'The GPU overheats', 'The tools run slower'], c: 1, why: 'Tool definitions live in the context. Enable only what the agent needs.' },
       { q: 'What is context engineering?', a: ['Writing longer prompts', 'Deciding what the harness puts into the context window (memory, tools, docs, history), in what order, and what stays out', 'Training a model on context', 'Increasing the context window size'], c: 1, why: 'For agents, curating the whole context matters more than wording one prompt.' },
     ],

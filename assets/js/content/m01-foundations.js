@@ -112,10 +112,11 @@
                 const pos = L.map(([n, x]) => Array.from({ length: n }, (_, i) => [x, 210 + (i - (n - 1) / 2) * 70]));
                 for (let l = 0; l < pos.length - 1; l++) pos[l].forEach((a) => pos[l + 1].forEach((c) => (s += `<line x1="${a[0]}" y1="${a[1]}" x2="${c[0]}" y2="${c[1]}" class="ln" style="opacity:.35"/>`)));
                 pos.forEach((layer, l) => layer.forEach(([x, y]) => (s += `<circle cx="${x}" cy="${y}" r="20" class="${l === 0 ? 'box-tl' : l === pos.length - 1 ? 'box-acc' : 'box'}"/>`)));
-                ['Inputs', 'Hidden layer', 'Hidden layer', 'Outputs'].forEach((t, i) => (s += `<text x="${L[i][1]}" y="400" class="m" text-anchor="middle">${t.toUpperCase()}</text>`));
-                s += `<text x="140" y="40" class="s" text-anchor="middle">CPU %, errors/min, latency</text><text x="860" y="70" class="s" text-anchor="middle">P(incident) · P(normal)</text>`;
+                const tr = window.ACADEMY.tr, dir = window.ACADEMY.D.dirAttr;
+                ['Inputs', 'Hidden layer', 'Hidden layer', 'Outputs'].forEach((t, i) => (s += `<text x="${L[i][1]}" y="400" class="m" text-anchor="middle"${dir}>${tr(t).toUpperCase()}</text>`));
+                s += `<text x="140" y="40" class="s" text-anchor="middle"${dir}>${tr('CPU %, errors/min, latency')}</text><text x="860" y="70" class="s" text-anchor="middle"${dir}>${tr('P(incident) · P(normal)')}</text>`;
                 return s;
-              })(), 'A small feed-forward neural network')),
+              })(), window.ACADEMY.tr('A small feed-forward neural network'))),
               H.prose(
                 'Each circle is a <b>neuron</b>: it multiplies its inputs by <b>weights</b>, adds them up and passes the result through a simple non-linear function.',
                 '<b>Training</b> adjusts millions or billions of weights so the outputs match the right answers (backpropagation + gradient descent).',

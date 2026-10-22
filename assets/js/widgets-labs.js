@@ -420,4 +420,39 @@
     b.addEventListener('change', run);
     run();
   };
+
+  /* ---------------- Coding-agent safety modes (Claude Code + Codex) ---------------- */
+  W.modes = function (el) {
+    const L = A.L;
+    const b = A.frame(el, L('Which mode for this task?', 'برای این کار کدام حالت؟'), L('Exercise', 'تمرین'));
+    const id = uid('md');
+    const S = [
+      [L('Explore an unfamiliar repo', 'بررسی یک مخزن ناآشنا'), 'ok', L('Read-only', 'فقط خواندنی'),
+        'claude --permission-mode plan', 'codex -s read-only -a on-request',
+        L('The agent reads and proposes a plan; nothing changes until you approve. The best start for any infrastructure repo.', 'ایجنت می‌خواند و برنامه پیشنهاد می‌دهد؛ تا شما تأیید نکنید چیزی تغییر نمی‌کند. بهترین شروع برای هر مخزن زیرساختی.')],
+      [L('Iterate on a script in a branch', 'تکرار روی یک اسکریپت در یک شاخه'), 'ok', L('Edits, you review the diff', 'ویرایش، شما diff را بازبینی می‌کنید'),
+        'claude --permission-mode acceptEdits\n/sandbox   # Bash in an OS sandbox', 'codex -s workspace-write -a on-request',
+        L('File edits run without prompts, commands still ask (or run inside the sandbox). Git makes every change reviewable and revertible.', 'ویرایش فایل‌ها بدون پرسش انجام می‌شود و فرمان‌ها همچنان سؤال می‌شوند (یا داخل sandbox اجرا می‌شوند). Git هر تغییر را قابل بازبینی و بازگشت می‌کند.')],
+      [L('Long refactor, fewer prompts', 'بازسازی طولانی، پرسش کمتر'), 'warn', L('Needs guardrails', 'نیازمند حفاظ'),
+        'claude --permission-mode auto\n# + deny rules for apply/deploy', 'codex -s workspace-write -a on-request\n# network off in the sandbox',
+        L('A classifier or the sandbox replaces most prompts. Keep deny rules for dangerous commands and work in a branch.', 'یک طبقه‌بند یا sandbox جای بیشتر پرسش‌ها را می‌گیرد. قواعد deny را برای فرمان‌های خطرناک نگه دارید و در یک شاخه کار کنید.')],
+      [L('Nightly CI job: lint and tests', 'کار شبانه CI: lint و تست'), 'ok', L('Exact allowlist', 'فهرست مجاز دقیق'),
+        'claude -p "Run the tests and report" \\\n  --permission-mode dontAsk \\\n  --allowedTools "Read" "Bash(npm test)"', 'codex exec -s workspace-write -a never \\\n  "Run the tests and report"',
+        L('Nobody is there to answer a prompt, so only pre-approved tools run and everything else is refused.', 'کسی برای پاسخ به پرسش حاضر نیست؛ پس فقط ابزارهای از پیش مجاز اجرا می‌شوند و بقیه رد می‌شوند.')],
+      [L('Fully unattended in a throwaway container', 'کاملاً بدون ناظر در یک کانتینر یک‌بارمصرف'), 'crit', L('Container or VM only', 'فقط کانتینر یا VM'),
+        'claude -p "…" --dangerously-skip-permissions\n# non-root user, no secrets, no prod network', 'codex exec --yolo "…"\n# = --dangerously-bypass-approvals-and-sandbox',
+        L('All checks are off. The isolation must come from the disposable container or VM itself, never from your workstation.', 'همه بررسی‌ها خاموش است. جداسازی باید از خود کانتینر یا VM یک‌بارمصرف بیاید، هرگز از ایستگاه کاری شما.')],
+      [L('Change a production server or device', 'تغییر یک سرور یا دستگاه عملیاتی'), 'crit', L('Agent drafts, humans apply', 'ایجنت پیش‌نویس می‌کند، انسان اعمال می‌کند'),
+        'claude --permission-mode plan\n# deny: terraform apply, ansible-playbook', 'codex -s read-only\n# output: change request + diff',
+        L('No mode is right for direct production changes. The agent writes and tests the change; it goes through review and the change process.', 'هیچ حالتی برای تغییر مستقیم در محیط عملیاتی مناسب نیست. ایجنت تغییر را می‌نویسد و تست می‌کند؛ تغییر از مسیر بازبینی و فرایند تغییر می‌گذرد.')],
+    ];
+    b.innerHTML = `<div class="w-row" id="${id}-s" style="flex-wrap:wrap;gap:6px">${S.map((x, i) => `<button type="button" data-i="${i}" class="btn small">${esc(x[0])}</button>`).join('')}</div><div id="${id}-o" style="display:grid;gap:10px"></div>`;
+    const show = (i) => {
+      const x = S[i];
+      $$('#' + id + '-s button', b).forEach((btn) => btn.classList.toggle('primary', +btn.dataset.i === i));
+      $('#' + id + '-o', b).innerHTML = `<div class="w-row"><h3 style="margin:0">${esc(x[0])}</h3><span class="pill ${x[1]}">${esc(x[2])}</span></div><p>${esc(x[5])}</p><div class="w-grid2"><div>${A.H.code(x[3], 'bash', 'Claude Code')}</div><div>${A.H.code(x[4], 'bash', 'Codex')}</div></div>`;
+    };
+    b.addEventListener('click', (e) => { const btn = e.target.closest('[data-i]'); if (btn) show(+btn.dataset.i); });
+    show(0);
+  };
 })();

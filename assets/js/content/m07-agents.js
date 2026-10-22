@@ -173,7 +173,7 @@
               H.prose(
                 'The model is the engine; the <b>harness</b> is the rest of the car: steering, brakes, dashboard and seatbelts.',
                 'Two agents using the <b>same model</b> can behave very differently because of their harness: which tools they get, how context is managed, and what safety checks run.',
-                'Claude Code, Codex, Cursor, OpenClaw and Hermes are all harnesses. In Module 9 we install one and configure each layer.'
+                'Claude Code, Codex, Cursor and Hermes Agent are all harnesses. In Module 9 we install Hermes and configure each layer.'
               )
             ),
             n: 'The deck lists “Agents and their harnesses or concepts” as a key goal. This is the slide to pause on. Ask: which layer would you, as an infrastructure engineer, own? (Guardrails, tools, interfaces.)',
@@ -203,7 +203,7 @@
             b: H.fig(D.columns([
               { h: 'Code-first frameworks', items: ['LangChain / LangGraph', 'LlamaIndex', 'AutoGen / AG2', 'CrewAI', 'Haystack', 'OpenAI / Claude Agent SDKs'] },
               { h: 'Low-code SaaS', c: 'tl', items: ['Microsoft Copilot Studio', 'Gemini Enterprise agents', 'ServiceNow AI Agents', 'n8n, Power Automate + AI'] },
-              { h: 'Ready-made agent harnesses', c: 'acc', items: ['Hermes Agent', 'OpenClaw', 'Claude Code', 'Codex CLI, Gemini CLI'] },
+              { h: 'Ready-made agent harnesses', c: 'acc', items: ['Hermes Agent', 'Claude Code', 'Codex CLI', 'Gemini CLI'] },
             ], { bh: 38 })) + H.table(['', 'Choose when…'], [
               ['Code-first', 'You are building a product or a very specific pipeline and have developers. Full control, full responsibility.'],
               ['Low-code SaaS', 'You live in Microsoft 365 or Google Workspace and need governed business agents fast. Microsoft has done the heavy lifting.'],

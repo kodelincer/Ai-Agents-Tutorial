@@ -83,7 +83,7 @@
             t: 'Topics from the original deck',
             b: H.split(
               H.list(['Fundamentals of machine learning and neural networks', 'Data science and data mining basics', 'Transformers, attention, large language models', 'The probabilistic nature of AI and hallucination', 'Foundation models, fine-tuning, instruction and preference tuning', 'Prompt engineering and generative AI', 'Tokenization, token IDs and the usage meter', 'Word and positional embeddings', 'Encoders, decoders and classification fine-tuning']),
-              H.list(['Internal vs external knowledge, vector databases, RAG', 'Validation and benchmarks', 'DevOps vs MLOps vs LLMOps', 'LLMs as reasoning engines', 'Hardware: how much compute a model needs', 'Agentic systems, agents, coding agents, Claude Code', 'OpenClaw and Hermes', 'Open-ended vs closed-ended tasks'])
+              H.list(['Internal vs external knowledge, vector databases, RAG', 'Validation and benchmarks', 'DevOps vs MLOps vs LLMOps', 'LLMs as reasoning engines', 'Hardware: how much compute a model needs', 'Agentic systems, agents, coding agents, Claude Code', 'Hermes Agent', 'Open-ended vs closed-ended tasks'])
             ) + H.note('tip', 'The <a href="#deckmap">deck-to-lesson map</a> lists every original slide and the lesson that teaches it.'),
           },
           {

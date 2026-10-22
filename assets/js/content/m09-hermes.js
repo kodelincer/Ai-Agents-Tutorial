@@ -8,14 +8,14 @@
     outcomes: ['Install, configure and troubleshoot Hermes Agent on a lab VM', 'Connect it to a cloud model or a local model with enough context', 'Configure toolsets and a sandboxed terminal backend', 'Write and install a SKILL.md from one of our runbooks', 'Add an MCP server, schedule a cron job and connect a chat gateway', 'Harden the setup with approvals, allowlists and least privilege'],
     lessons: [
       {
-        id: 'm9-1', title: 'OpenClaw and Hermes: personal agent harnesses', mins: 15, deck: [27, 49, 50],
+        id: 'm9-1', title: 'Hermes Agent: our agent harness', mins: 15, deck: [27, 49, 50],
         slides: [
           {
-            t: 'What OpenClaw and Hermes are',
+            t: 'What Hermes Agent is',
             b: H.split(
               H.prose(
-                '<b>OpenClaw</b> and <b>Hermes Agent</b> are open-source, self-hosted <b>AI assistant harnesses</b>. You install them on your own machine or server, plug in any model (API token or local), and talk to them from a terminal or from chat apps.',
-                '<b>Hermes Agent</b> (Nous Research, MIT licence) adds a built-in <b>learning loop</b>: it writes skills from experience, keeps curated memory, searches its past sessions, and can migrate an existing OpenClaw setup (<code>hermes claw migrate</code>).',
+                '<b>Hermes Agent</b> (Nous Research, MIT licence) is an open-source, self-hosted <b>AI agent harness</b>. You install it on your own machine or server, plug in any model (API token or local), and talk to it from a terminal or from chat apps.',
+                'It has a built-in <b>learning loop</b>: it writes skills from experience, keeps curated memory and searches its past sessions, so it gets better at our work over time.',
                 'We use Hermes in this course because it runs on Linux servers, supports local models, has sandboxed terminal backends, human approvals, MCP, cron and team features (profiles, kanban).'
               ),
               H.cards([

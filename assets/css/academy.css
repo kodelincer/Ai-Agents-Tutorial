@@ -455,3 +455,42 @@ dialog.search::backdrop { background: rgba(5, 10, 15, .5); }
 .part-h p { flex-basis: 100%; font-size: .95rem; }
 body.speaker .sidebar, body.speaker .topbar { display: none; }
 body.speaker .shell { display: block; }
+
+/* ---------- Persian / right-to-left ---------- */
+:root[lang="fa"] {
+  --f-display: "Vazirmatn", "Tahoma", "Segoe UI", sans-serif;
+  --f-body: "Vazirmatn", "Tahoma", "Segoe UI", sans-serif;
+}
+:root[lang="fa"] body { line-height: 1.85; }
+:root[lang="fa"] h1, :root[lang="fa"] h2, :root[lang="fa"] h3, :root[lang="fa"] h4 { font-stretch: normal; letter-spacing: 0; line-height: 1.45; }
+:root[lang="fa"] .hero h1 { line-height: 1.3; font-stretch: normal; }
+/* Persian letters must join: never letter-space or uppercase them */
+:root[lang="fa"] .eyebrow, :root[lang="fa"] .tag, :root[lang="fa"] .label, :root[lang="fa"] th, :root[lang="fa"] .tr .k,
+:root[lang="fa"] .chip, :root[lang="fa"] .src { letter-spacing: 0; text-transform: none; font-family: var(--f-body); font-size: .78rem; }
+:root[lang="fa"] svg .t, :root[lang="fa"] svg .t-inv { font-stretch: normal; font-size: 16px; }
+:root[lang="fa"] svg .m { letter-spacing: 0; font-family: var(--f-body); font-size: 12px; }
+:root[lang="fa"] .brand-name { font-stretch: normal; font-family: "Archivo", "Arial Narrow", sans-serif; }
+svg { direction: ltr; }
+code, kbd { unicode-bidi: isolate; direction: ltr; }
+.code, .code pre, .term, .out, .tok-ids, .term-in input, .widget textarea, .cmdchip { direction: ltr; text-align: left; }
+.fa-only { display: none; }
+:root[lang="fa"] .fa-only { display: revert; }
+:root[lang="fa"] .en-only { display: none; }
+[dir="rtl"] .sidebar { border-right: 0; border-left: 1px solid var(--line); padding-left: 12px; padding-right: max(12px, env(safe-area-inset-right, 0px)); }
+[dir="rtl"] .nav-lessons { margin: 2px 2.6em 6px 0; border-left: 0; border-right: 1px solid var(--line); padding-left: 0; padding-right: 8px; }
+[dir="rtl"] .nav-link .meter { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .list { padding-left: 0; padding-right: 1.2em; }
+[dir="rtl"] .callout.key { border-left: 0; border-right: 3px solid var(--ink); border-radius: var(--r) 0 0 var(--r); }
+[dir="rtl"] .quote { border-left: 0; border-right: 3px solid var(--amber-fill); padding-left: 0; padding-right: var(--s-4); }
+[dir="rtl"] .why { border-left: 0; border-right: 3px solid var(--teal); }
+[dir="rtl"] .hbar .n { text-align: left; }
+[dir="rtl"] .port::after { right: auto; left: 3px; }
+[dir="rtl"] th, [dir="rtl"] td { text-align: right; }
+[dir="rtl"] .opt, [dir="rtl"] .nav-link { text-align: right; }
+[dir="rtl"] .hero .fa { direction: ltr; }
+@media (max-width: 960px) {
+  [dir="rtl"] .sidebar { left: auto; right: 0; transform: translateX(102%); }
+  [dir="rtl"] body.nav-open .sidebar { transform: none; }
+}
+.lang-btn { font-weight: 700; min-width: 44px; }
+@media (max-width: 460px) { .brand-name { display: none; } }

@@ -1,11 +1,23 @@
 /* Reference pages: glossary, Hermes cheat sheet, instructor guide, deck-to-lesson map. */
 (function () {
-  const A = window.ACADEMY, H = A.H, esc = A.esc;
+  const A = window.ACADEMY, H = A.H, esc = A.esc, tr = A.tr, L = A.L;
 
   A.glossary = [
     ['Agent', 'Software where an LLM decides which tools to call, in a loop, to reach a goal. LLM + tools + loop + memory + guardrails.'],
     ['Agentic RAG', 'RAG where the agent decides when and what to search, using a search tool, and can search again.'],
     ['AGENTS.md', 'Project instruction file read by many agents (Hermes, Codex, Copilot and others) at session start.'],
+    ['Agent SDK (Claude)', 'Python and TypeScript library that gives your own programs the agent loop, tools, permissions and MCP support that power Claude Code.'],
+    ['Approval policy (Codex)', 'When Codex asks you before acting: untrusted, on-request or never. Works together with the sandbox mode.'],
+    ['CLAUDE.md', 'Project instruction file that Claude Code loads at session start: conventions, how to test, what never to touch.'],
+    ['Claude Code', 'Anthropic\'s coding agent. Runs in the terminal, the Claude desktop app, IDEs, the web and CI.'],
+    ['Codex', 'OpenAI\'s coding agent. Runs in the terminal, the Codex desktop app, IDEs and Codex Cloud.'],
+    ['Computer use', 'An agent controlling a real desktop through screenshots, mouse and keyboard. For GUI-only tools; the slowest and riskiest way to act.'],
+    ['Headless mode', 'Running a coding agent non-interactively from a script or pipeline: claude -p or codex exec.'],
+    ['Hook', 'Your own script that the harness runs at a fixed point, for example before a tool call. It can block the action, so it enforces rules deterministically.'],
+    ['Permission mode', 'Claude Code setting for how much runs without asking: Manual, acceptEdits, plan, auto, dontAsk, bypassPermissions.'],
+    ['Plan mode', 'A mode in which the agent may read and investigate but must present a plan for approval before it edits anything.'],
+    ['Sandbox mode (Codex)', 'Operating-system limit on what Codex commands can touch: read-only, workspace-write or danger-full-access.'],
+    ['Worktree', 'A separate git working copy of the same repository, so parallel agents do not overwrite each other\'s files.'],
     ['Approval (human-in-the-loop)', 'The harness pauses a risky action until a person approves or denies it.'],
     ['Attention', 'The transformer mechanism that lets each token weigh and mix in information from other tokens.'],
     ['Base / foundation model', 'A model after pre-training only. Good at continuing text, not at following instructions.'],
@@ -59,9 +71,9 @@
   ];
 
   A.pages.glossary = {
-    title: 'Glossary', eyebrow: 'Reference', lead: `${A.glossary.length} terms used in the course. Type to filter.`,
-    render: () => `<input class="searchbox" id="gq" type="search" placeholder="Filter terms…" oninput="(function(v){document.querySelectorAll('.gitem').forEach(function(e){e.hidden=v&&e.textContent.toLowerCase().indexOf(v)<0})})(this.value.toLowerCase())">
-      <div class="gloss">${A.glossary.slice().sort((a, b) => a[0].localeCompare(b[0])).map((g) => `<div class="gitem"><b>${esc(g[0])}</b><p>${g[1]}</p></div>`).join('')}</div>`,
+    title: 'Glossary', eyebrow: 'Reference', get lead() { return L('{0} terms used in the course. Type to filter.', '{0} اصطلاح به‌کاررفته در دوره. برای فیلتر کردن تایپ کنید.', A.glossary.length); },
+    render: () => `<input class="searchbox" id="gq" type="search" placeholder="${L('Filter terms…', 'فیلتر اصطلاحات…')}" oninput="(function(v){document.querySelectorAll('.gitem').forEach(function(e){e.hidden=v&&e.textContent.toLowerCase().indexOf(v)<0})})(this.value.toLowerCase())">
+      <div class="gloss">${A.glossary.slice().sort((a, b) => a[0].localeCompare(b[0])).map((g) => { const t = tr(g[0]); return `<div class="gitem"><b>${esc(t)}${t !== g[0] ? `<br><small class="muted" dir="ltr">${esc(g[0])}</small>` : ''}</b><p>${tr(g[1])}</p></div>`; }).join('')}</div>`,
   };
 
   A.pages.cheatsheet = {
@@ -80,6 +92,18 @@
     ),
   };
 
+  A.pages.codingsheet = {
+    title: 'Claude Code and Codex cheat sheet', eyebrow: 'Reference', lead: 'The coding-agent commands from Module 8 on one page. Checked against the official Claude Code docs and the Codex source in October 2026. Run <code>claude --help</code> or <code>codex --help</code> for your version.',
+    render: () => H.split(
+      H.code('# install\ncurl -fsSL https://claude.ai/install.sh | bash      # macOS, Linux, WSL\nirm https://claude.ai/install.ps1 | iex             # Windows\n\nclaude                     # interactive session\nclaude "explain this repo" # start with a prompt\nclaude -c                  # continue the last session\nclaude -r                  # pick a session to resume\nclaude --permission-mode plan\nclaude -p "…" --allowedTools "Read" --output-format json\nclaude mcp add <name> -- <command>\nclaude mcp add --transport http <name> <url>', 'bash', 'Claude Code: CLI') +
+      H.code('/init /memory /permissions /model /mcp /agents\n/compact /clear /resume /sandbox /schedule /loop\n/install-github-app /help\n\nShift+Tab   cycle permission modes\nEsc         stop    ·  Esc Esc  rewind\n@file       attach  ·  !cmd     run a shell command', 'text', 'Claude Code: in a session') +
+      H.code('CLAUDE.md, ~/.claude/CLAUDE.md          instructions\n.claude/settings.json                   team rules, hooks\n.claude/settings.local.json             personal overrides\n.claude/skills/<name>/SKILL.md          skills\n.claude/agents/<name>.md                subagents\n.mcp.json                               team MCP servers', 'text', 'Claude Code: files'),
+      H.code('# install\ncurl -fsSL https://chatgpt.com/codex/install.sh | sh  # macOS, Linux\nnpm install -g @openai/codex\n\ncodex                      # interactive session\ncodex app                  # desktop app\ncodex -s read-only -a on-request\ncodex exec "…"             # non-interactive\ncodex exec --json "…"      # JSONL events\ncodex exec --output-schema s.json -o out.json "…"\ncodex review --base main\ncodex resume --last\ncodex mcp add <name> -- <command>\ncodex doctor', 'bash', 'Codex: CLI') +
+      H.code('/init /permissions /plan /model /diff /review\n/skills /mcp /agents /compact /status /resume\n\n@file        mention a file\n$skill-name  use a skill', 'text', 'Codex: in a session') +
+      H.code('~/.codex/config.toml                    settings, profiles, MCP\nAGENTS.md, ~/.codex/AGENTS.md           instructions\n.agents/skills/<name>/SKILL.md          skills\n\nsandbox:  read-only | workspace-write | danger-full-access\napproval: untrusted | on-request | never', 'text', 'Codex: files and modes')
+    ),
+  };
+
   A.pages.instructor = {
     title: 'Instructor guide', eyebrow: 'For whoever runs the course',
     lead: 'How to run this course for the IT infrastructure team: schedule, lab setup, and how to update the content.',
@@ -89,7 +113,7 @@
         ['1', '1', '0 Welcome · 1 Foundations', 'Talk + discussion', '2 h'],
         ['2', '1', '2 How LLMs think · 3 Training', 'Talk + exercises', '2.5 h'],
         ['3', '1', '4 Knowledge/RAG · 5 Models & hardware', 'Talk + Ollama demo', '3 h'],
-        ['4', '1', '6 Prompting · 7 Agents · 8 Coding agents', 'Talk + exercises', '3 h'],
+        ['4', '1', '6 Prompting · 7 Agents · 8 Claude Code and Codex', 'Talk + live demo + exercises', '3.5 h'],
         ['5', '2', '9 Hermes labs 1–5 (install → skills)', 'Hands-on', '3 h'],
         ['6', '2', '9 Hermes labs 6–10 (memory → hardening)', 'Hands-on', '3 h'],
         ['7', '2', '10 Teams · 11 Security', 'Exercises + red team', '2.5 h'],
@@ -117,7 +141,7 @@
   };
 
   // Original deck slide titles (Ai_Agents.pptx) → lessons that teach them
-  const DECK = ['Title: AI Agent Automation', 'Course topics overview', 'References and websites', 'Layers of AI', 'Fundamentals of machine learning', 'Mathematics requirements', 'Fundamentals of neural networks', 'ML frameworks', 'Tokens and embeddings', 'Text/vision embedding models', 'Large language models', 'How they train', 'Text classification', 'Cost of training', 'Training dataset and samples', 'Best practices', 'Domain-specific vs general-purpose model', 'Knowledge: internal vs external', 'Semantic search & RAG', 'LLM types: embeddings vs generative', 'Interface: TTS and STT', 'Multimodal models', 'Popular LLM providers', 'Generative AI: closed vs open-ended', 'Open-source LLMs', 'Coding agents', 'Agent frameworks & tools', 'Local LLM apps', 'ML engineer vs AI engineer', 'Prompt/context engineering', 'Prompting vs RAG vs fine-tuning', 'LLM naming conventions', 'RAG and reranking', 'Fine-tuning techniques', 'Inference optimization', 'Benchmarks and evaluations', 'MCP protocol / servers', 'LLM: chatbot vs reasoning engine', 'ML pipelines', 'Security', 'Memory', 'Philosophy', 'Hardware as backend infra', 'AI agent factory', 'Introduction to AI agents', 'Building generative AI agents', 'Microsoft Agent 365', 'Coding agent intro: Claude Code, Copilot', 'OpenClaw: AI agents collaboration', 'Fundamental components', 'Claude Code', 'Contracts', 'AI agentic projects', 'Figures from AI Engineering (pp. 79, 82)'];
+  const DECK = ['Title: AI Agent Automation', 'Course topics overview', 'References and websites', 'Layers of AI', 'Fundamentals of machine learning', 'Mathematics requirements', 'Fundamentals of neural networks', 'ML frameworks', 'Tokens and embeddings', 'Text/vision embedding models', 'Large language models', 'How they train', 'Text classification', 'Cost of training', 'Training dataset and samples', 'Best practices', 'Domain-specific vs general-purpose model', 'Knowledge: internal vs external', 'Semantic search & RAG', 'LLM types: embeddings vs generative', 'Interface: TTS and STT', 'Multimodal models', 'Popular LLM providers', 'Generative AI: closed vs open-ended', 'Open-source LLMs', 'Coding agents', 'Agent frameworks & tools', 'Local LLM apps', 'ML engineer vs AI engineer', 'Prompt/context engineering', 'Prompting vs RAG vs fine-tuning', 'LLM naming conventions', 'RAG and reranking', 'Fine-tuning techniques', 'Inference optimization', 'Benchmarks and evaluations', 'MCP protocol / servers', 'LLM: chatbot vs reasoning engine', 'ML pipelines', 'Security', 'Memory', 'Philosophy', 'Hardware as backend infra', 'AI agent factory', 'Introduction to AI agents', 'Building generative AI agents', 'Microsoft Agent 365', 'Coding agent intro: Claude Code, Copilot', 'AI agents collaboration (Hermes)', 'Fundamental components', 'Claude Code', 'Contracts', 'AI agentic projects', 'Figures from AI Engineering (pp. 79, 82)'];
   A.pages.deckmap = {
     title: 'Deck-to-lesson map', eyebrow: 'Reference',
     lead: 'Every slide of the original <i>Ai_Agents.pptx</i> deck (kept in the repository under <code>source/</code>) and the lessons that teach it.',
@@ -126,7 +150,7 @@
       A.modules.forEach((m) => m.lessons.forEach((l) => (l.deck || []).forEach((d) => (map[d] = map[d] || []).push(l))));
       A.modules.forEach((m) => (m.deck || []).forEach((d) => { if (!map[d]) map[d] = [m.lessons[0]]; }));
       return H.table(['Deck slide', 'Topic', 'Taught in'], DECK.map((t, i) => [
-        `<span class="label">${String(i + 1).padStart(2, '0')}</span>`, esc(t),
+        `<span class="label">${String(i + 1).padStart(2, '0')}</span>`, esc(tr(t)),
         (map[i + 1] || []).map((l) => `<a href="#${l.id}">M${String(l.module ? l.module.num : '').padStart(2, '0')} · ${esc(l.title)}</a>`).join('<br>') || '<span class="muted">—</span>',
       ]));
     },
