@@ -2,13 +2,18 @@
 
 A presentable, interactive web course that teaches IT infrastructure colleagues
 (helpdesk, datacenter and network teams) how large language models and AI agents
-work, and how to install, configure and safely delegate work to
+work, how to use the coding agents Claude Code and Codex, and how to install,
+configure and safely delegate work to
 [Hermes Agent](https://github.com/NousResearch/hermes-agent).
 
+**Bilingual: English and Persian (فارسی).** The language button in the top bar
+switches the whole course, including diagrams and exercises, and Persian is shown
+right-to-left. Add `#fa` or `#en` to a link to open it in a given language.
+
 It expands the original deck in [`source/Ai_Agents.pptx`](source/Ai_Agents.pptx)
-(54 slides) into 14 modules, 75 lessons and 195 slides in two parts
+(54 slides) into 14 modules, 81 lessons and 219 slides in two parts
 (Fundamentals, then Hands-on with agents), with diagrams, speaker notes on every
-slide, a synced speaker view, checkpoint quizzes and 19 in-browser exercises.
+slide, a synced speaker view, checkpoint quizzes and 20 in-browser exercises.
 
 ## Audience
 
@@ -28,7 +33,7 @@ helpdesk, datacenter or network maintenance. No machine-learning background is n
 | 5 | Models, hardware, quantization, local LLMs, multimodal, evals | 21–23, 25, 28, 32, 35, 36, 43 |
 | 6 | Prompt and context engineering | 30 |
 | 7 | AI agents: loop, tools, MCP, harness, frameworks, governance | 27, 37, 38, 44–47 |
-| 8 | Coding agents: Claude Code, Copilot | 26, 48, 51, 52 |
+| 8 | Coding agents: Claude Code and Codex (desktop and CLI): install, permission modes and sandboxes, skills, MCP, subagents, Agent SDK, headless runs, hooks, CI, schedules, computer use | 26, 48, 51, 52 |
 | **Part 2** | **Hands-on with agents** | |
 | 9 | Hermes Agent labs 1–10: install → tools → skills → memory → MCP → cron → gateway → hardening | 27, 49, 50 |
 | 10 | Multi-agent teams: delegation, profiles, kanban, human-in-the-loop | 50, 53 |
@@ -47,7 +52,7 @@ budget · prompting vs RAG vs fine-tuning chooser · autonomy levels · prompt-i
 spotting game · agent-loop simulator with human approval · MCP message walkthrough ·
 practice Hermes terminal · SKILL.md builder · Hermes config builder · multi-agent
 team designer · policy-tier game for each role (network, helpdesk, datacenter,
-web/dev, security).
+web/dev, security) · Claude Code / Codex safety-mode chooser.
 
 All of them run in the browser with no backend and no API keys.
 
@@ -85,7 +90,7 @@ Opening `index.html` directly from disk also works.
 python3 tools/build_single.py        # → dist/ai-agents-academy.html
 ```
 
-One self-contained HTML file (about 370 KB) for a laptop without network access,
+One self-contained HTML file (about 1 MB, both languages) for a laptop without network access,
 email, or a USB stick. Fonts fall back to system fonts when offline.
 
 ### Publishing on GitHub Pages
@@ -108,8 +113,10 @@ assets/js/widgets.js          concept exercises
 assets/js/widgets-labs.js     agent and Hermes lab exercises
 assets/js/content/mNN-*.js    one file per module
 assets/js/notes.js            speaker notes (one place to edit what you say per slide)
-assets/js/pages.js            glossary, cheat sheet, instructor guide, deck map
+assets/js/pages.js            glossary, cheat sheets, instructor guide, deck map
 assets/js/app.js              routing, presenter mode, progress, quizzes, search
+assets/i18n/fa/*.js           Persian translations of the content, one file per module
+tools/i18n.js                 bilingual checker (CI fails if a Persian translation is missing)
 tools/build_single.py         single-file bundler
 source/Ai_Agents.pptx         the original deck
 ```
@@ -137,11 +144,37 @@ Useful helpers: `H.lead`, `H.prose`, `H.list`, `H.steps`, `H.cards`, `H.table`,
 `D.flow`, `D.stack`, `D.nested`, `D.hub`, `D.cycle`, `D.columns`, `D.seq`, `D.quad`.
 Diagrams use theme tokens, so they work in light and dark mode.
 
-To add a module, create `assets/js/content/m13-*.js` and add a `<script>` tag for it
-in `index.html` between the `BUNDLE` markers.
+To add a module, create `assets/js/content/m14-*.js` and `assets/i18n/fa/m14.js`,
+and add `<script>` tags for both in `index.html` between the `BUNDLE` markers.
+
+### Both languages, always
+
+Every visible text must exist in English and Persian.
+
+- **Lesson content, notes, quizzes and pages** are written in English in the module
+  files. Their Persian lives in `assets/i18n/fa/<module>.js`, keyed by a hash of the
+  English text. After adding or changing English text:
+
+  ```bash
+  node tools/i18n.js missing m08     # list strings without Persian (JSON)
+  # add the translations to assets/i18n/fa/m08.js
+  node tools/i18n.js check           # must report missing: 0
+  ```
+
+  Keep HTML tags, `<code>` contents, `\n` line breaks and product names unchanged.
+  Use `'='` when the Persian is identical (a product name, a command).
+- **Interface and widget strings** are written inline as `L('English', 'فارسی')`.
+- `node tools/i18n.js review` writes `docs/i18n-review.md` with both languages side by
+  side for proofreading.
+
+The Pages workflow runs `node tools/i18n.js check` and refuses to publish if anything
+is missing.
 
 ## Sources
 
+Claude Code facts were checked against <https://code.claude.com/docs> and Codex facts
+against the [openai/codex](https://github.com/openai/codex) repository in October 2026;
+both tools change monthly, so check the official docs before a session.
 Hermes Agent commands and configuration were checked against the official
 documentation at <https://hermes-agent.nousresearch.com/docs/> and the
 [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) repository

@@ -494,3 +494,10 @@ code, kbd { unicode-bidi: isolate; direction: ltr; }
 }
 .lang-btn { font-weight: 700; min-width: 44px; }
 @media (max-width: 460px) { .brand-name { display: none; } }
+
+/* Mixed-direction text inside LTR boxes (code, outputs, textareas): each paragraph follows its own script. */
+.bidi { unicode-bidi: plaintext; text-align: start; }
+.out.bidi, .widget textarea.bidi, .cmdchip.bidi, code.bidi { text-align: start; }
+/* Natural-language chips and outputs use the text font, so Persian letters join correctly. */
+.cmdchip.bidi, .out.bidi, .term.bidi .dim, .txt.bidi { font-family: var(--f-body, inherit); letter-spacing: 0; }
+:root[lang="fa"] .cmdchip.bidi, :root[lang="fa"] .out.bidi { font-family: 'Vazirmatn', var(--f-body, sans-serif); }

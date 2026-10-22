@@ -26,7 +26,9 @@ jobs:
         with:
           node-version: 22
       - name: Syntax-check scripts
-        run: for f in assets/js/*.js assets/js/content/*.js; do node --check "$f"; done
+        run: for f in assets/js/*.js assets/js/content/*.js assets/i18n/fa/*.js tools/*.js; do node --check "$f"; done
+      - name: Check every text exists in English and Persian
+        run: node tools/i18n.js check
       - name: Build the single-file offline edition
         run: python3 tools/build_single.py
       - name: Assemble site
