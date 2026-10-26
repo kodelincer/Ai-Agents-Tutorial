@@ -68,6 +68,7 @@
             t: 'The learning path',
             b: H.stack(
               H.fig(D.stack([
+                { t: '14 · The agent ecosystem (Part 3)', s: 'DeepSeek Harness, OpenCode, Multica, Orca, OpenRouter, OmniRoute, 9router', c: 'ink' },
                 { t: '13 · Projects and roadmap', s: 'capstone, IT orchestrator, adoption plan', c: 'acc' },
                 { t: '12 · Role playbooks', s: 'network, helpdesk, datacenter, web/dev, security scenarios + guardrail policy', c: 'acc' },
                 { t: '10–11 · Agent teams and security', s: 'delegation, human-in-the-loop, prompt injection' },
@@ -77,7 +78,7 @@
                 { t: '1–3 · Foundations', s: 'ML, neural networks, tokens, transformers, training', c: 'ink' },
               ], { h: 50 }), 'Each layer builds on the one below it. You can jump straight to the labs, but the agents make more sense once you know what the model inside them is doing.')
             ),
-            n: 'Explain that Modules 1–6 are “how the brain works” and Modules 7–13 are “how to give the brain hands and a job”. Engineers who skip the foundations tend to over-trust agents.',
+            n: 'Explain that Modules 1–6 are “how the brain works” and Modules 7–13 are “how to give the brain hands and a job”. Module 14 is a Part 3 extra: the wider ecosystem of harnesses, orchestrators and AI gateways. Engineers who skip the foundations tend to over-trust agents.',
           },
           {
             t: 'Topics from the original deck',

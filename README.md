@@ -11,9 +11,10 @@ switches the whole course, including diagrams and exercises, and Persian is show
 right-to-left. Add `#fa` or `#en` to a link to open it in a given language.
 
 It expands the original deck in [`source/Ai_Agents.pptx`](source/Ai_Agents.pptx)
-(54 slides) into 14 modules, 81 lessons and 219 slides in two parts
-(Fundamentals, then Hands-on with agents), with diagrams, speaker notes on every
-slide, a synced speaker view, checkpoint quizzes and 20 in-browser exercises.
+(54 slides) into 15 modules, 89 lessons and 261 slides in three parts
+(Fundamentals, Hands-on with agents, then an optional Part 3 on the wider ecosystem),
+with diagrams, speaker notes on every slide, a synced speaker view, checkpoint
+quizzes and 25 in-browser exercises.
 
 ## Audience
 
@@ -40,6 +41,8 @@ helpdesk, datacenter or network maintenance. No machine-learning background is n
 | 11 | Security: prompt injection, defences, unlearning | 40 |
 | 12 | Role playbooks: guardrail policy as code + scenarios for network, helpdesk, datacenter, web/dev and security teams | 52, 53 |
 | 13 | Projects, capstone, roadmap, philosophy | 42, 52, 53 |
+| **Part 3** | **Going further (optional)** | |
+| 14 | The agent ecosystem: DeepSeek Harness, OpenCode, Multica, Orca, OpenRouter, OmniRoute and 9router, finding free models safely, connecting Claude Code / OpenCode / Codex / Hermes to a gateway | extension |
 
 The in-app **Deck-to-lesson map** page lists every original slide and where it is taught.
 
@@ -52,7 +55,9 @@ budget · prompting vs RAG vs fine-tuning chooser · autonomy levels · prompt-i
 spotting game · agent-loop simulator with human approval · MCP message walkthrough ·
 practice Hermes terminal · SKILL.md builder · Hermes config builder · multi-agent
 team designer · policy-tier game for each role (network, helpdesk, datacenter,
-web/dev, security) · Claude Code / Codex safety-mode chooser.
+web/dev, security) · Claude Code / Codex safety-mode chooser · ecosystem layer sorter ·
+parallel-agents cost model · provider-routing simulator · AI-gateway audit checklist ·
+free-tier data-risk checker.
 
 All of them run in the browser with no backend and no API keys.
 
@@ -111,6 +116,7 @@ assets/css/academy.css        design tokens (light/dark) and components
 assets/js/core.js             H.* HTML helpers and D.* SVG diagram generators
 assets/js/widgets.js          concept exercises
 assets/js/widgets-labs.js     agent and Hermes lab exercises
+assets/js/widgets-eco.js      ecosystem and gateway exercises (Module 14)
 assets/js/content/mNN-*.js    one file per module
 assets/js/notes.js            speaker notes (one place to edit what you say per slide)
 assets/js/pages.js            glossary, cheat sheets, instructor guide, deck map
@@ -144,7 +150,7 @@ Useful helpers: `H.lead`, `H.prose`, `H.list`, `H.steps`, `H.cards`, `H.table`,
 `D.flow`, `D.stack`, `D.nested`, `D.hub`, `D.cycle`, `D.columns`, `D.seq`, `D.quad`.
 Diagrams use theme tokens, so they work in light and dark mode.
 
-To add a module, create `assets/js/content/m14-*.js` and `assets/i18n/fa/m14.js`,
+To add a module, create `assets/js/content/m15-*.js` and `assets/i18n/fa/m15.js`,
 and add `<script>` tags for both in `index.html` between the `BUNDLE` markers.
 
 ### Both languages, always

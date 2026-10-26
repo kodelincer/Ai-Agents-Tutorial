@@ -6,6 +6,15 @@
     ['Agent', 'Software where an LLM decides which tools to call, in a loop, to reach a goal. LLM + tools + loop + memory + guardrails.'],
     ['Agentic RAG', 'RAG where the agent decides when and what to search, using a search tool, and can search again.'],
     ['AGENTS.md', 'Project instruction file read by many agents (Hermes, Codex, Copilot and others) at session start.'],
+    ['AI gateway / router', 'A service between harnesses and model providers: one endpoint and key, routing, fallback, budgets and logs. OpenRouter is hosted; OmniRoute and 9router run on your own machine.'],
+    ['Combo (gateway)', 'A named chain of models that a gateway tries in order or by a strategy, moving on when a quota runs out or a provider fails.'],
+    ['DeepSeek Harness (dsh)', 'DeepSeek\'s open-source, plugin-based agent runtime. In developer preview: use it only in disposable environments.'],
+    ['Fallback', 'Automatically using another provider or model when the first fails or is out of quota. Convenient, but it can silently change which model answers.'],
+    ['Free tier', 'Free model access with limits: a recurring quota, a one-time credit, shared rate limits or keyless access. Check what happens to prompts before using company data.'],
+    ['OpenAI-compatible API', 'An API that accepts the same requests as OpenAI\'s chat endpoints, so one client can talk to many providers and gateways by changing a base URL and key.'],
+    ['Orchestrator', 'Software that manages many agent runs as work: a board of issues (Multica), parallel worktrees (Orca) or a kanban board in the harness (Hermes).'],
+    ['Provider routing', 'Settings such as sort, only, ignore, order and data_collection that decide which provider serves a request on a router like OpenRouter.'],
+    ['Token saver', 'A gateway feature that compresses tool output or shortens replies to save tokens. It changes what the model sees, so test it on real work.'],
     ['Agent SDK (Claude)', 'Python and TypeScript library that gives your own programs the agent loop, tools, permissions and MCP support that power Claude Code.'],
     ['Approval policy (Codex)', 'When Codex asks you before acting: untrusted, on-request or never. Works together with the sandbox mode.'],
     ['CLAUDE.md', 'Project instruction file that Claude Code loads at session start: conventions, how to test, what never to touch.'],
@@ -104,11 +113,23 @@
     ),
   };
 
+  A.pages.ecosheet = {
+    title: 'Agent ecosystem and gateway cheat sheet', eyebrow: 'Reference', lead: 'Commands and settings from Module 14 on one page. Facts checked against the projects\' own repositories in October 2026; these projects change daily, so run <code>--help</code> and read the current README first.',
+    render: () => H.split(
+      H.code('# OpenCode\nbrew install opencode\nopencode                  # start in a git repo\n/connect  /models         # add a provider key, pick a model\nTab                       # switch build and plan agents\n@general  @explore        # invoke a subagent\n\n# ~/.config/opencode/opencode.json  (or ./opencode.json)\n"permission": { "*": "ask", "bash": { "terraform apply*": "deny" } }\n"provider": { "gw": { "npm": "@ai-sdk/openai-compatible",\n  "options": { "baseURL": "http://127.0.0.1:20128/v1" } } }\n.opencode/agents/<name>.md   # custom agents', 'bash', 'OpenCode') +
+      H.code('# DeepSeek Harness (developer preview: disposable VM only)\nnpx @deepseek-ai/dsh web                       # UI on 127.0.0.1:3080\nnpx @deepseek-ai/dsh web --no-open\nnpx @deepseek-ai/dsh --profile web --dump-config\ndsh plugin --profile <name> add <package>\n# profiles: web, headless, sdk, sdk-minimal, acp\n# sandbox: read-only | workspace-write | danger-full-access', 'bash', 'DeepSeek Harness') +
+      H.code('# git worktrees (what Orca automates)\ngit worktree add ../try-a -b try/agent-a\ngit worktree list\ngit worktree remove ../try-a\n\n# Multica: self-host\ncurl -fsSL https://raw.githubusercontent.com/multica-ai/multica/main/scripts/install.sh | bash -s -- --with-server\nmultica setup self-host', 'bash', 'Orca and Multica'),
+      H.code('# every tool needs a base URL and a key\nClaude Code : ANTHROPIC_BASE_URL=http://127.0.0.1:20128   (no /v1)\n              ANTHROPIC_AUTH_TOKEN=<gateway key>   /status to verify\nOpenCode    : provider.<id>.options.baseURL = .../v1   + /connect\nCodex       : [model_providers.<id>] base_url, env_key, wire_api\nHermes      : model: {provider: custom, base_url: .../v1, default: <model>}\nAny OpenAI  : OPENAI_BASE_URL / OPENAI_API_KEY', 'text', 'connect a tool to a gateway') +
+      H.code('# OmniRoute (port 20128)\nnpm install -g omniroute && omniroute\ndocker run -d -p 127.0.0.1:20128:20128 -v omniroute-data:/app/data diegosouzapw/omniroute:<pinned>\nomniroute run claude --model auto/coding\nomniroute configure opencode\n# model: auto | auto/coding | auto/cheap | auto/fast | auto/subscription\n\n# 9router (port 20128)\nnpm install -g 9router && 9router\n# set INITIAL_PASSWORD and JWT_SECRET before first start\n# header X-9Router-Token-Saver: off  bypasses token savers for one call', 'bash', 'OmniRoute and 9router') +
+      H.code('# OpenRouter provider preferences\nsort: price | throughput | latency      # turns load balancing off\nonly: [..]  ignore: [..]  order: [..]\nallow_fallbacks: true | false\nrequire_parameters: true\ndata_collection: deny\n# Hermes: provider_routing: in ~/.hermes/config.yaml', 'text', 'routing keys')
+    ),
+  };
+
   A.pages.instructor = {
     title: 'Instructor guide', eyebrow: 'For whoever runs the course',
     lead: 'How to run this course for the IT infrastructure team: schedule, lab setup, and how to update the content.',
     render: () =>
-      H.note('key', 'Teach it in two parts. <b>Part 1 · Fundamentals</b> (Modules 0–8) gives everyone the same mental model: what LLMs are, why they hallucinate, what an agent and a harness are. <b>Part 2 · Hands-on</b> (Modules 9–13) builds real agents for each team\'s daily work inside our guardrail policy. Do not skip Part 1: engineers who skip it over-trust agents.', 'Course design') +
+      H.note('key', 'Teach it in two parts, with an optional third. <b>Part 1 · Fundamentals</b> (Modules 0–8) gives everyone the same mental model: what LLMs are, why they hallucinate, what an agent and a harness are. <b>Part 2 · Hands-on</b> (Modules 9–13) builds real agents for each team\'s daily work inside our guardrail policy. Do not skip Part 1: engineers who skip it over-trust agents. <b>Part 3 · Going further</b> (Module 14) covers the wider ecosystem of harnesses, orchestrators and AI gateways, and is best taught after the labs, when people have real questions about cost, free models and other tools.', 'Course design') +
       H.table(['Session', 'Part', 'Modules', 'Format', 'Time'], [
         ['1', '1', '0 Welcome · 1 Foundations', 'Talk + discussion', '2 h'],
         ['2', '1', '2 How LLMs think · 3 Training', 'Talk + exercises', '2.5 h'],
@@ -120,6 +141,7 @@
         ['8', '2', '12 Role playbooks: guardrail policy + your team\'s scenarios', 'Hands-on by role group', '3 h'],
         ['9', '2', '12 Workshop + 13 Capstone build', 'Team project', '3 h'],
         ['10', '2', '13 Demos, roadmap, closing', 'Demos + discussion', '2 h'],
+        ['11', '3', '14 The agent ecosystem: harnesses, orchestrators, gateways, free models', 'Talk + gateway lab', '3 h'],
       ]) +
       H.split(
         H.prose('<h3>Before the course</h3>', H.list([

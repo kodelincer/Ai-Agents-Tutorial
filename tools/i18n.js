@@ -70,7 +70,7 @@ const nMissing = Object.values(missing).reduce((a, g) => a + Object.keys(g).leng
 
 // Inline rule: every L( call in UI/widget code must pass two string arguments.
 const inlineProblems = [];
-for (const f of ['assets/js/app.js', 'assets/js/widgets.js', 'assets/js/widgets-labs.js', 'assets/js/core.js', 'assets/js/pages.js']) {
+for (const f of ['assets/js/app.js', 'assets/js/widgets.js', 'assets/js/widgets-labs.js', 'assets/js/widgets-eco.js', 'assets/js/core.js', 'assets/js/pages.js']) {
   const src = fs.readFileSync(path.join(ROOT, f), 'utf8');
   for (const m of src.matchAll(/\bL\((['"`])((?:\\.|(?!\1).)*)\1\s*\)/g)) inlineProblems.push(`${f}: L(${m[1]}${m[2].slice(0, 50)}…) has no Persian`);
 }

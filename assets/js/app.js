@@ -26,7 +26,8 @@
   // The course is taught in two parts: fundamentals first, then hands-on agent work.
   const PARTS = [
     { key: 'fund', label: L('Part 1 · Fundamentals', 'بخش 1 · مبانی'), test: (m) => m.num <= 8, desc: L('How AI, LLMs and agents work: the knowledge every colleague needs before touching a real agent.', 'هوش مصنوعی، مدل‌های زبانی بزرگ و ایجنت‌ها چطور کار می‌کنند: دانشی که هر همکار پیش از کار با یک ایجنت واقعی لازم دارد.') },
-    { key: 'prac', label: L('Part 2 · Hands-on with agents', 'بخش 2 · کار عملی با ایجنت‌ها'), test: (m) => m.num >= 9, desc: L('Install Hermes Agent, build skills, teams and role playbooks for our daily work, inside our security guardrails.', 'نصب Hermes Agent و ساختن مهارت‌ها، تیم‌های ایجنت و دستورالعمل‌های نقش‌محور برای کارهای روزانه‌ی ما، در چارچوب سیاست‌های امنیتی سازمان.') },
+    { key: 'prac', label: L('Part 2 · Hands-on with agents', 'بخش 2 · کار عملی با ایجنت‌ها'), test: (m) => m.num >= 9 && m.num <= 13, desc: L('Install Hermes Agent, build skills, teams and role playbooks for our daily work, inside our security guardrails.', 'نصب Hermes Agent و ساختن مهارت‌ها، تیم‌های ایجنت و دستورالعمل‌های نقش‌محور برای کارهای روزانه‌ی ما، در چارچوب سیاست‌های امنیتی سازمان.') },
+    { key: 'ext', label: L('Part 3 · Going further', 'بخش 3 · گام‌های بعدی'), test: (m) => m.num >= 14, desc: L('The wider agent ecosystem: other harnesses, orchestrators, model providers and AI gateways, and how to use free models safely.', 'اکوسیستم گسترده‌ی ایجنت‌ها: هارنس‌های دیگر، هماهنگ‌کننده‌ها، ارائه‌دهندگان مدل و دروازه‌های هوش مصنوعی، و استفاده‌ی امن از مدل‌های رایگان.') },
   ];
   A.modules.forEach((m) => (m.part = PARTS.find((p) => p.test(m))));
 
@@ -124,6 +125,7 @@
     h += `</div><div class="nav-group"><span class="label">${L('Reference', 'مرجع')}</span>
       <a class="nav-link ${cur === 'cheatsheet' ? 'active' : ''}" href="#cheatsheet"><span class="num">··</span>${L('Hermes cheat sheet', 'خلاصه‌ی دستورات Hermes')}</a>
       <a class="nav-link ${cur === 'codingsheet' ? 'active' : ''}" href="#codingsheet"><span class="num">··</span>${L('Claude Code & Codex cheat sheet', 'خلاصه‌ی دستورات Claude Code و Codex')}</a>
+      <a class="nav-link ${cur === 'ecosheet' ? 'active' : ''}" href="#ecosheet"><span class="num">··</span>${L('Ecosystem & gateway cheat sheet', 'خلاصه‌ی اکوسیستم و دروازه‌ها')}</a>
       <a class="nav-link ${cur === 'glossary' ? 'active' : ''}" href="#glossary"><span class="num">··</span>${L('Glossary', 'واژه‌نامه')}</a>
       <a class="nav-link ${cur === 'deckmap' ? 'active' : ''}" href="#deckmap"><span class="num">··</span>${L('Deck-to-lesson map', 'نقشه‌ی اسلاید به درس')}</a></div>`;
     $('#sidebar').innerHTML = h;
@@ -165,6 +167,7 @@
           <div class="hero-actions">
             <a class="btn primary" href="#${first.id}">${started ? L('Continue: ', 'ادامه: ') + esc(first.title) : L('Start the course', 'شروع دوره')} ${A.rtl ? '←' : '→'}</a>
             <a class="btn" href="#m9">${L('Jump to Part 2: hands-on', 'رفتن به بخش 2: کار عملی')}</a>
+            <a class="btn" href="#m14">${L('Part 3: agent ecosystem', 'بخش 3: اکوسیستم ایجنت‌ها')}</a>
           </div>
         </div>
         <div class="hero-art">${heroArt()}</div>
