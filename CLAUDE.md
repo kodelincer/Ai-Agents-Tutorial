@@ -9,7 +9,7 @@ Whenever you add or change any visible text, add the Persian at the same time.
 
 - Lesson content, speaker notes, quizzes and reference pages: write English in
   `assets/js/content/*.js`, `notes.js` or `pages.js`, then add Persian to
-  `assets/i18n/fa/<group>.js` (groups: `m00`…`m13`, `pages`).
+  `assets/i18n/fa/<group>.js` (groups: `m00`…`m16`, `sessions`, `pages`).
   `node tools/i18n.js missing <group>` lists what is missing.
 - UI and widget strings (`app.js`, `core.js`, `widgets*.js`): write `L('English', 'فارسی')`
   inline; for data arrays use `[en, fa]` pairs read with `T()`.
@@ -29,6 +29,9 @@ python3 tools/build_single.py       # dist/ai-agents-academy.html (dist/ is giti
 
 ## Content conventions
 
+- The teaching order is `assets/js/sessions.js` (31 two-hour sessions). Lessons stay in their
+  modules and keep their routes; every lesson id must be in exactly one session
+  (`node tools/i18n.js check` enforces it). A new lesson needs a session.
 - The course covers Hermes Agent as the agent harness, and Claude Code and Codex as
   coding agents. Do not add OpenClaw.
 - Verify product facts (commands, flags, file paths) against official docs or source
@@ -36,3 +39,7 @@ python3 tools/build_single.py       # dist/ai-agents-academy.html (dist/ is giti
 - Diagrams use `D.*` generators and theme tokens so they work in light, dark and RTL.
 - Routes are bare hash tokens (`#m8-3`, `#glossary`, `#fa`), so the app also works
   inside the claude.ai artifact sandbox.
+- Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho and Multica are short introductions in
+  module 15 (no labs). The depth of the course is in coding agents (module 8) and Hermes (module 9).
+- Gateway details (OpenRouter and AvalAI base URLs, model names, prices, cache rules) change often.
+  Slides teach the pattern and tell the reader to confirm in the gateway's own documentation.

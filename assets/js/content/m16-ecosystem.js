@@ -1,7 +1,7 @@
 (function () {
   const { H, D } = window.ACADEMY;
   window.ACADEMY.module({
-    id: 'm14', num: 14, title: 'The agent ecosystem: harnesses, orchestrators and AI gateways',
+    id: 'm16', num: 16, title: 'The agent ecosystem: harnesses, orchestrators and AI gateways',
     summary: 'A map of the fast-moving agent world: DeepSeek Harness, OpenCode, Multica and Orca, model providers and OpenRouter, self-hosted gateways such as OmniRoute and 9router, how to find free models safely, and how to connect Claude Code, OpenCode and other harnesses to a router.',
     deck: [27, 44],
     outcomes: [
@@ -14,7 +14,7 @@
     ],
     lessons: [
       {
-        id: 'm14-1', title: 'A map of the agent ecosystem', mins: 20, deck: [27, 44],
+        id: 'm16-1', title: 'A map of the agent ecosystem', mins: 20, deck: [27, 44],
         slides: [
           {
             t: 'Every tool in this module lives in one of four layers',
@@ -75,7 +75,7 @@
         ],
       },
       {
-        id: 'm14-2', title: 'DeepSeek Harness: everything is a plugin', mins: 25, deck: [27, 44], lab: true,
+        id: 'm16-2', title: 'DeepSeek Harness: everything is a plugin', mins: 25, deck: [27, 44], lab: true,
         slides: [
           {
             t: 'What DeepSeek Harness is',
@@ -153,7 +153,7 @@
         ],
       },
       {
-        id: 'm14-3', title: 'OpenCode: an open-source coding agent for any model', mins: 25, deck: [26, 27], lab: true,
+        id: 'm16-3', title: 'OpenCode: an open-source coding agent for any model', mins: 25, deck: [26, 27], lab: true,
         slides: [
           {
             t: 'OpenCode in one page',
@@ -216,7 +216,7 @@
         ],
       },
       {
-        id: 'm14-4', title: 'Orchestrators: Multica and Orca', mins: 25, deck: [49, 50],
+        id: 'm16-4', title: 'Orchestrators: Multica and Orca', mins: 25, deck: [49, 50],
         slides: [
           {
             t: 'When agents multiply, you need to manage them',
@@ -276,7 +276,7 @@
         ],
       },
       {
-        id: 'm14-5', title: 'Model providers and OpenRouter', mins: 25, deck: [23, 24],
+        id: 'm16-5', title: 'Model providers and OpenRouter', mins: 25, deck: [23, 24],
         slides: [
           {
             t: 'Five ways to get a model',
@@ -339,7 +339,7 @@
         ],
       },
       {
-        id: 'm14-6', title: 'Self-hosted AI gateways: OmniRoute and 9router', mins: 30, deck: [23, 27], lab: true,
+        id: 'm16-6', title: 'Self-hosted AI gateways: OmniRoute and 9router', mins: 30, deck: [23, 27], lab: true,
         slides: [
           {
             t: 'A gateway on your own machine',
@@ -434,7 +434,7 @@
         ],
       },
       {
-        id: 'm14-7', title: 'Finding free models, and using them safely', mins: 25, deck: [23, 25],
+        id: 'm16-7', title: 'Finding free models, and using them safely', mins: 25, deck: [23, 25],
         slides: [
           {
             t: 'Why free exists, and what it usually costs you',
@@ -499,7 +499,7 @@
         ],
       },
       {
-        id: 'm14-8', title: 'Connect your tools to a router', mins: 30, deck: [26, 27], lab: true,
+        id: 'm16-8', title: 'Connect your tools to a router', mins: 30, deck: [26, 27], lab: true,
         slides: [
           {
             t: 'The two things every tool needs',

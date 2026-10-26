@@ -2,31 +2,50 @@
 
 A presentable, interactive web course that teaches IT infrastructure colleagues
 (helpdesk, datacenter and network teams) how large language models and AI agents
-work, how to use the coding agents Claude Code and Codex, and how to install,
-configure and safely delegate work to
-[Hermes Agent](https://github.com/NousResearch/hermes-agent).
+work, how to use and pay for models through gateways such as OpenRouter and AvalAI,
+how to use the coding agents Claude Code and Codex, and how to install, configure and
+safely delegate work to [Hermes Agent](https://github.com/NousResearch/hermes-agent).
+It closes with a short tour of Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho and Multica.
 
 **Bilingual: English and Persian (فارسی).** The language button in the top bar
 switches the whole course, including diagrams and exercises, and Persian is shown
 right-to-left. Add `#fa` or `#en` to a link to open it in a given language.
 
 It expands the original deck in [`source/Ai_Agents.pptx`](source/Ai_Agents.pptx)
-(54 slides) into 15 modules, 89 lessons and 261 slides in three parts
-(Fundamentals, Hands-on with agents, then an optional Part 3 on the wider ecosystem),
-with diagrams, speaker notes on every slide, a synced speaker view, checkpoint
-quizzes and 25 in-browser exercises.
+(54 slides) into **31 two-hour sessions** (29 core, plus an optional phase H) made of 17 modules, 109 lessons and 353 slides,
+with diagrams, speaker notes on every slide, a synced speaker view, checkpoint quizzes
+and 26 in-browser exercises.
 
 ## Audience
 
 Engineers who already know networking, security and basic programming and work
 helpdesk, datacenter or network maintenance. No machine-learning background is needed.
 
-## Course map
+## Session plan
+
+The teaching order lives in [`assets/js/sessions.js`](assets/js/sessions.js). Each session is two hours
+(about an hour and a half of lessons plus exercises, questions and a break). Sessions marked
+*optional* can be dropped when time is short, which leaves a core of 24 (the optional phase H adds two more).
+
+| Phase | Sessions | Content |
+|-------|----------|---------|
+| **A · Big picture and using LLMs** | 1–3 | 1 AI, ML, LLMs and agents in figures · 2 LLM vocabulary and controls · 3 Pricing, prompt caching and gateways (OpenRouter, AvalAI) |
+| **B · Understanding the machine** | 4–8 | 4 ML and neural networks *(optional)* · 5 Inside an LLM · 6 How LLMs are built *(optional)* · 7 Prompt and context engineering · 8 RAG and local models |
+| **C · AI agents** | 9–10 | 9 The loop, patterns, tools, MCP · 10 Harness, memory, platforms, governance |
+| **D · Coding agents** | 11–15 | 11 Claude Code first steps · 12 Safe daily workflow and task briefs · 13 Codex, Claude Desktop and computer use · 14 Extend and automate · 15 Project lab *(optional)* |
+| **E · Hermes Agent** | 16–21 | 16 Install and connect a model · 17 Conversations, tools, operation · 18 Skills, memory, persona · 19 MCP, cron, cost-aware automation · 20 Gateway and hardening · 21 Project lab |
+| **F · Beyond one agent** | 22–25 | 22 Tour: Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho, Multica · 23 Agent teams · 24 Security · 25 Guardrail policy and the network playbook |
+| **G · Playbooks, workshop, capstone** | 26–29 | 26 Role playbooks *(optional)* · 27 Workshop · 28 Capstone · 29 Roadmap and further learning *(optional)* |
+| **H · Going further (optional)** | 30–31 | 30 The agent ecosystem: DeepSeek Harness, OpenCode, Multica, Orca · 31 Providers, AI gateways (OpenRouter, OmniRoute, 9router), free models and connecting your tools |
+
+Every lesson stays in its module and keeps its route (for example `#m8-3`); sessions only decide the
+order. `node tools/i18n.js check` fails if a lesson is in no session or in two.
+
+## Modules
 
 | # | Module | Original deck slides |
 |---|--------|----------------------|
-| **Part 1** | **Fundamentals** | |
-| 0 | Welcome and course map | 1–3 |
+| 0 | Welcome, course map and the big picture | 1–3 |
 | 1 | AI foundations: ML, neural networks, pipelines, roles and Ops | 4–8, 29, 39 |
 | 2 | How LLMs think: tokens, embeddings, attention, probability, reasoning | 9–11, 13, 20, 24, 38 |
 | 3 | How LLMs are built: pre-training, SFT, RLHF, fine-tuning | 12, 14–17, 34, 54 |
@@ -34,17 +53,18 @@ helpdesk, datacenter or network maintenance. No machine-learning background is n
 | 5 | Models, hardware, quantization, local LLMs, multimodal, evals | 21–23, 25, 28, 32, 35, 36, 43 |
 | 6 | Prompt and context engineering | 30 |
 | 7 | AI agents: loop, tools, MCP, harness, frameworks, governance | 27, 37, 38, 44–47 |
-| 8 | Coding agents: Claude Code and Codex (desktop and CLI): install, permission modes and sandboxes, skills, MCP, subagents, Agent SDK, headless runs, hooks, CI, schedules, computer use | 26, 48, 51, 52 |
-| **Part 2** | **Hands-on with agents** | |
-| 9 | Hermes Agent labs 1–10: install → tools → skills → memory → MCP → cron → gateway → hardening | 27, 49, 50 |
+| 8 | Coding agents: Claude Code and Codex, a guided first session, daily workflow, task briefs, choosing agents, Claude Desktop (including a real MikroTik repair story), skills, MCP, subagents, Agent SDK, headless runs, hooks, CI, schedules, computer use, a project lab | 26, 48, 51, 52 |
+| 9 | Hermes Agent labs 1–14: install → model → sessions → tools → skills → memory → MCP → cron → gateway → hardening → operations → memory control → cost-aware automation → project | 27, 49, 50 |
 | 10 | Multi-agent teams: delegation, profiles, kanban, human-in-the-loop | 50, 53 |
 | 11 | Security: prompt injection, defences, unlearning | 40 |
-| 12 | Role playbooks: guardrail policy as code + scenarios for network, helpdesk, datacenter, web/dev and security teams | 52, 53 |
+| 12 | Role playbooks: guardrail policy as code + scenarios for network, helpdesk, datacenter, web/dev, security teams | 52, 53 |
 | 13 | Projects, capstone, roadmap, philosophy | 42, 52, 53 |
-| **Part 3** | **Going further (optional)** | |
-| 14 | The agent ecosystem: DeepSeek Harness, OpenCode, Multica, Orca, OpenRouter, OmniRoute and 9router, finding free models safely, connecting Claude Code / OpenCode / Codex / Hermes to a gateway | extension |
+| 14 | Working with LLMs: vocabulary, sampling controls, capabilities, pricing, prompt caching, OpenRouter and AvalAI, first API calls | new |
+| 15 | A tour of the wider toolbox: Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho, Multica (introductions, no labs) | new |
+| 16 | The agent ecosystem: four layers, DeepSeek Harness, OpenCode, Multica and Orca, OpenRouter provider routing, self-hosted gateways (OmniRoute, 9router), finding free models safely, connecting Claude Code / OpenCode / Codex / Hermes to a gateway | new |
 
 The in-app **Deck-to-lesson map** page lists every original slide and where it is taught.
+**Browse by module** shows the same lessons grouped by topic.
 
 ## Interactive exercises
 
@@ -53,7 +73,7 @@ map with semantic search · attention explorer · RAG pipeline step-through ·
 VRAM/hardware estimator · model-name decoder · prompt builder · context-window
 budget · prompting vs RAG vs fine-tuning chooser · autonomy levels · prompt-injection
 spotting game · agent-loop simulator with human approval · MCP message walkthrough ·
-practice Hermes terminal · SKILL.md builder · Hermes config builder · multi-agent
+prompt-cache cost calculator · practice Hermes terminal · SKILL.md builder · Hermes config builder · multi-agent
 team designer · policy-tier game for each role (network, helpdesk, datacenter,
 web/dev, security) · Claude Code / Codex safety-mode chooser · ecosystem layer sorter ·
 parallel-agents cost model · provider-routing simulator · AI-gateway audit checklist ·
@@ -116,8 +136,9 @@ assets/css/academy.css        design tokens (light/dark) and components
 assets/js/core.js             H.* HTML helpers and D.* SVG diagram generators
 assets/js/widgets.js          concept exercises
 assets/js/widgets-labs.js     agent and Hermes lab exercises
-assets/js/widgets-eco.js      ecosystem and gateway exercises (Module 14)
+assets/js/widgets-eco.js      ecosystem and gateway exercises (Module 16)
 assets/js/content/mNN-*.js    one file per module
+assets/js/sessions.js         the session plan: which lessons are taught in which session
 assets/js/notes.js            speaker notes (one place to edit what you say per slide)
 assets/js/pages.js            glossary, cheat sheets, instructor guide, deck map
 assets/js/app.js              routing, presenter mode, progress, quizzes, search
@@ -150,7 +171,7 @@ Useful helpers: `H.lead`, `H.prose`, `H.list`, `H.steps`, `H.cards`, `H.table`,
 `D.flow`, `D.stack`, `D.nested`, `D.hub`, `D.cycle`, `D.columns`, `D.seq`, `D.quad`.
 Diagrams use theme tokens, so they work in light and dark mode.
 
-To add a module, create `assets/js/content/m15-*.js` and `assets/i18n/fa/m15.js`,
+To add a module, create `assets/js/content/m17-*.js` and `assets/i18n/fa/m17.js`,
 and add `<script>` tags for both in `index.html` between the `BUNDLE` markers.
 
 ### Both languages, always

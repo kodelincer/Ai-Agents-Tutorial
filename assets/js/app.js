@@ -9,27 +9,45 @@
   const pad = (n) => String(n).padStart(2, '0');
 
   // ---------- index ----------
-  const lessons = [];
   A.modules.sort((a, b) => a.num - b.num);
+  const allLessons = [];
   A.modules.forEach((m) => {
-    m.lessons.forEach((l, i) => { l.module = m; l.index = i; lessons.push(l); });
+    m.lessons.forEach((l, i) => { l.module = m; l.index = i; allLessons.push(l); });
   });
-  lessons.forEach((l, i) => { l.prev = lessons[i - 1]; l.next = lessons[i + 1]; });
-  const byLesson = Object.fromEntries(lessons.map((l) => [l.id, l]));
+  const byLesson = Object.fromEntries(allLessons.map((l) => [l.id, l]));
   const byModule = Object.fromEntries(A.modules.map((m) => [m.id, m]));
-  // Persian: translate module, lesson, slide-title, note and quiz text (slide bodies were translated as they were built).
-  if (A.lang === 'fa') A.modules.forEach((m) => {
-    m.title = tr(m.title); m.summary = tr(m.summary); if (m.outcomes) m.outcomes = m.outcomes.map(tr);
-    m.lessons.forEach((l) => { l.title = tr(l.title); l.slides.forEach((s) => { s.t = tr(s.t); if (s.n) s.n = tr(s.n); }); });
-    if (m.quiz) m.quiz = m.quiz.map((q) => Object.assign({}, q, { q: tr(q.q), a: q.a.map(tr), why: tr(q.why) }));
+  // Teaching order: sessions list lesson ids, lessons keep their module and route (#m8-3).
+  const sessions = A.sessions || [];
+  const bySession = Object.fromEntries(sessions.map((s) => [`s${s.n}`, s]));
+  const lessons = [];
+  sessions.forEach((s) => {
+    s.id = `s${s.n}`;
+    s.phaseObj = A.phases.find((p) => p.key === s.phase);
+    s.list = s.lessons.map((id) => byLesson[id]).filter(Boolean);
+    s.list.forEach((l) => { l.session = s; lessons.push(l); });
   });
-  // The course is taught in two parts: fundamentals first, then hands-on agent work.
+  allLessons.forEach((l) => { if (!l.session) lessons.push(l); }); // never lose a lesson that no session lists
+  lessons.forEach((l, i) => { l.prev = lessons[i - 1]; l.next = lessons[i + 1]; });
+  // A module's checkpoint quiz is offered after its last lesson in teaching order.
+  A.modules.forEach((m) => { m.lastLesson = m.lessons.reduce((a, l) => (lessons.indexOf(l) > lessons.indexOf(a) ? l : a), m.lessons[0]); });
+  // Persian: translate module, lesson, slide-title, note and quiz text (slide bodies were translated as they were built).
+  if (A.lang === 'fa') {
+    A.modules.forEach((m) => {
+      m.title = tr(m.title); m.summary = tr(m.summary); if (m.outcomes) m.outcomes = m.outcomes.map(tr);
+      m.lessons.forEach((l) => { l.title = tr(l.title); l.slides.forEach((s) => { s.t = tr(s.t); if (s.n) s.n = tr(s.n); }); });
+      if (m.quiz) m.quiz = m.quiz.map((q) => Object.assign({}, q, { q: tr(q.q), a: q.a.map(tr), why: tr(q.why) }));
+    });
+    sessions.forEach((s) => { s.title = tr(s.title); s.summary = tr(s.summary); s.goals = s.goals.map(tr); });
+  }
+  // The modules page groups the content in two parts: fundamentals, then hands-on agent work.
   const PARTS = [
-    { key: 'fund', label: L('Part 1 · Fundamentals', 'بخش 1 · مبانی'), test: (m) => m.num <= 8, desc: L('How AI, LLMs and agents work: the knowledge every colleague needs before touching a real agent.', 'هوش مصنوعی، مدل‌های زبانی بزرگ و ایجنت‌ها چطور کار می‌کنند: دانشی که هر همکار پیش از کار با یک ایجنت واقعی لازم دارد.') },
-    { key: 'prac', label: L('Part 2 · Hands-on with agents', 'بخش 2 · کار عملی با ایجنت‌ها'), test: (m) => m.num >= 9 && m.num <= 13, desc: L('Install Hermes Agent, build skills, teams and role playbooks for our daily work, inside our security guardrails.', 'نصب Hermes Agent و ساختن مهارت‌ها، تیم‌های ایجنت و دستورالعمل‌های نقش‌محور برای کارهای روزانه‌ی ما، در چارچوب سیاست‌های امنیتی سازمان.') },
-    { key: 'ext', label: L('Part 3 · Going further', 'بخش 3 · گام‌های بعدی'), test: (m) => m.num >= 14, desc: L('The wider agent ecosystem: other harnesses, orchestrators, model providers and AI gateways, and how to use free models safely.', 'اکوسیستم گسترده‌ی ایجنت‌ها: هارنس‌های دیگر، هماهنگ‌کننده‌ها، ارائه‌دهندگان مدل و دروازه‌های هوش مصنوعی، و استفاده‌ی امن از مدل‌های رایگان.') },
+    { key: 'fund', label: L('Part 1 · Fundamentals', 'بخش 1 · مبانی'), test: (m) => m.num <= 8 || m.num === 14, desc: L('How AI, LLMs and agents work: the knowledge every colleague needs before touching a real agent.', 'هوش مصنوعی، مدل‌های زبانی بزرگ و ایجنت‌ها چطور کار می‌کنند: دانشی که هر همکار پیش از کار با یک ایجنت واقعی لازم دارد.') },
+    { key: 'prac', label: L('Part 2 · Hands-on with agents', 'بخش 2 · کار عملی با ایجنت‌ها'), test: (m) => m.num >= 9 && m.num <= 15 && m.num !== 14, desc: L('Install Hermes Agent, build skills, teams and role playbooks for our daily work, inside our security guardrails.', 'نصب Hermes Agent و ساختن مهارت‌ها، تیم‌های ایجنت و دستورالعمل‌های نقش‌محور برای کارهای روزانه‌ی ما، در چارچوب سیاست‌های امنیتی سازمان.') },
+    { key: 'ext', label: L('Part 3 · Going further', 'بخش 3 · گام‌های بعدی'), test: (m) => m.num >= 16, desc: L('The wider agent ecosystem: other harnesses, orchestrators, model providers and AI gateways, and how to use free models safely.', 'اکوسیستم گسترده‌ی ایجنت‌ها: هارنس‌های دیگر، هماهنگ‌کننده‌ها، ارائه‌دهندگان مدل و دروازه‌های هوش مصنوعی، و استفاده‌ی امن از مدل‌های رایگان.') },
   ];
   A.modules.forEach((m) => (m.part = PARTS.find((p) => p.test(m))));
+  const lessonMins = (l) => l.mins || 10;
+  const sessionMins = (s) => s.list.reduce((a, l) => a + lessonMins(l), 0);
 
   // ---------- progress ----------
   const seen = store.get('seen', {});
@@ -44,6 +62,12 @@
     const got = m.lessons.reduce((a, l) => a + Math.min((seen[l.id] || []).length, l.slides.length), 0);
     return { total, got, pct: total ? Math.round((100 * got) / total) : 0, quiz: quiz[m.id] };
   };
+  const sessStats = (s) => {
+    const total = s.list.reduce((a, l) => a + l.slides.length, 0);
+    const got = s.list.reduce((a, l) => a + Math.min((seen[l.id] || []).length, l.slides.length), 0);
+    return { total, got, pct: total ? Math.round((100 * got) / total) : 0 };
+  };
+  const quizzesIn = (s) => A.modules.filter((m) => m.quiz && m.lastLesson && m.lastLesson.session === s);
 
   // ---------- theme ----------
   const root = document.documentElement;
@@ -106,23 +130,26 @@
 
   // ---------- sidebar ----------
   function renderNav(cur) {
-    const curMod = cur && (cur.module || cur.mod);
+    const obj = cur && typeof cur === 'object';
+    const curSess = obj ? cur.sess || cur.session || (cur.quizOf && cur.quizOf.lastLesson && cur.quizOf.lastLesson.session) : null;
     let h = `<div class="nav-group"><span class="label">${L('Start here', 'شروع')}</span>
       <a class="nav-link ${cur === 'home' ? 'active' : ''}" href="#home"><span class="num">··</span>${L('Course home', 'صفحه‌ی اصلی دوره')}</a>
+      <a class="nav-link ${cur === 'sessions' ? 'active' : ''}" href="#sessions"><span class="num">··</span>${L('Session plan', 'برنامه‌ی جلسه‌ها')}</a>
       <a class="nav-link ${cur === 'instructor' ? 'active' : ''}" href="#instructor"><span class="num">··</span>${L('Instructor guide', 'راهنمای مدرس')}</a></div>
       <div class="nav-group">`;
-    A.modules.forEach((m, i) => {
-      const st = modStats(m);
-      if (i === 0 || A.modules[i - 1].part !== m.part) h += `${i ? '</div><div class="nav-group">' : ''}<span class="label">${esc(m.part.label)}</span>`;
-      const open = curMod === m;
-      h += `<a class="nav-link ${open ? 'active' : ''}" href="#${m.id}"><span class="num">M${pad(m.num)}</span><span>${esc(m.title)}</span><span class="meter ${st.pct === 100 ? 'done' : ''}">${st.pct}%</span></a>`;
+    sessions.forEach((s, i) => {
+      const st = sessStats(s);
+      if (i === 0 || sessions[i - 1].phase !== s.phase) h += `${i ? '</div><div class="nav-group">' : ''}<span class="label">${esc(s.phaseObj.label)}</span>`;
+      const open = curSess === s;
+      h += `<a class="nav-link ${open ? 'active' : ''}" href="#${s.id}"><span class="num">S${pad(s.n)}</span><span>${esc(s.title)}${s.optional ? ` <small class="muted">· ${L('optional', 'اختیاری')}</small>` : ''}</span><span class="meter ${st.pct === 100 ? 'done' : ''}">${st.pct}%</span></a>`;
       if (open) {
-        h += `<div class="nav-lessons">${m.lessons
+        h += `<div class="nav-lessons">${s.list
           .map((l) => `<a href="#${l.id}" class="${cur === l ? 'active' : ''} ${lessonDone(l) ? 'seen' : ''}"><span class="dot"></span>${esc(l.title)}</a>`)
-          .join('')}${m.quiz ? `<a href="#${m.id}-quiz" class="quizlink ${cur && cur.quizOf === m ? 'active' : ''} ${quiz[m.id] ? 'seen' : ''}"><span class="dot"></span>${L('Checkpoint quiz', 'آزمونک پایان ماژول')}</a>` : ''}</div>`;
+          .join('')}${quizzesIn(s).map((m) => `<a href="#${m.id}-quiz" class="quizlink ${obj && cur.quizOf === m ? 'active' : ''} ${quiz[m.id] ? 'seen' : ''}"><span class="dot"></span>${L('Quiz: ', 'آزمونک: ')}${esc(m.title)}</a>`).join('')}</div>`;
       }
     });
     h += `</div><div class="nav-group"><span class="label">${L('Reference', 'مرجع')}</span>
+      <a class="nav-link ${cur === 'modules' || (obj && cur.mod) ? 'active' : ''}" href="#modules"><span class="num">··</span>${L('Browse by module', 'مرور بر پایه‌ی ماژول')}</a>
       <a class="nav-link ${cur === 'cheatsheet' ? 'active' : ''}" href="#cheatsheet"><span class="num">··</span>${L('Hermes cheat sheet', 'خلاصه‌ی دستورات Hermes')}</a>
       <a class="nav-link ${cur === 'codingsheet' ? 'active' : ''}" href="#codingsheet"><span class="num">··</span>${L('Claude Code & Codex cheat sheet', 'خلاصه‌ی دستورات Claude Code و Codex')}</a>
       <a class="nav-link ${cur === 'ecosheet' ? 'active' : ''}" href="#ecosheet"><span class="num">··</span>${L('Ecosystem & gateway cheat sheet', 'خلاصه‌ی اکوسیستم و دروازه‌ها')}</a>
@@ -154,7 +181,7 @@
   // ---------- views ----------
   function viewHome() {
     const totalSlides = lessons.reduce((a, l) => a + l.slides.length, 0);
-    const totalMins = lessons.reduce((a, l) => a + (l.mins || 10), 0);
+    const totalMins = lessons.reduce((a, l) => a + lessonMins(l), 0);
     const first = lessons.find((l) => !lessonDone(l)) || lessons[0];
     const started = Object.keys(seen).length > 0;
     return `<div class="wrap">
@@ -162,19 +189,18 @@
         <div>
           <div class="eyebrow">${L('IT Infrastructure Academy · Course 01', 'آکادمی زیرساخت IT · دوره‌ی 01')}</div>
           <h1>${L('Put <em>AI agents</em> to work in IT operations', 'به‌کارگیری <em>ایجنت‌های هوش مصنوعی</em> در عملیات IT')}</h1>
-          <p class="lead">${L('An instructor-led course for network, helpdesk, datacenter, web and security engineers. Part 1 teaches how LLMs and agents work. Part 2 puts it into practice: install Hermes Agent, then build agents that take over daily tasks inside our security guardrails, with a human in the loop.', 'دوره‌ای با مدرس برای مهندسان شبکه، هلپ‌دسک، دیتاسنتر، وب و امنیت. بخش اول یاد می‌دهد مدل‌های زبانی بزرگ و ایجنت‌ها چطور کار می‌کنند. بخش دوم آن را عملی می‌کند: Hermes Agent را نصب می‌کنیم و ایجنت‌هایی می‌سازیم که کارهای روزانه را در چارچوب سیاست‌های امنیتی سازمان و با نظارت انسان انجام می‌دهند.')}</p>
+          <p class="lead">${L('An instructor-led course in {0} two-hour sessions. It starts with the big picture of AI, machine learning and LLMs, shows how to use models and pay for them, then spends most of its time on coding agents and Hermes Agent: install them, give them skills and memory, and delegate real tasks inside our security guardrails, with a human in the loop.', 'دوره‌ای با مدرس در {0} جلسه‌ی دوساعته. با تصویر کلی هوش مصنوعی، یادگیری ماشین و مدل‌های زبانی بزرگ شروع می‌شود، نشان می‌دهد چطور از مدل‌ها استفاده و هزینه‌ی آن‌ها را مدیریت کنیم، و بیشتر وقت خود را به ایجنت‌های کدنویسی و Hermes Agent اختصاص می‌دهد: نصب‌شان می‌کنیم، مهارت و حافظه به آن‌ها می‌دهیم و کارهای واقعی را در چارچوب سیاست‌های امنیتی سازمان و با نظارت انسان به آن‌ها می‌سپاریم.', sessions.length)}</p>
           <p class="fa">${L('خودکار سازی فرآیندها با ایجنت‌های هوش مصنوعی', 'AI agent process automation')}</p>
           <div class="hero-actions">
-            <a class="btn primary" href="#${first.id}">${started ? L('Continue: ', 'ادامه: ') + esc(first.title) : L('Start the course', 'شروع دوره')} ${A.rtl ? '←' : '→'}</a>
-            <a class="btn" href="#m9">${L('Jump to Part 2: hands-on', 'رفتن به بخش 2: کار عملی')}</a>
-            <a class="btn" href="#m14">${L('Part 3: agent ecosystem', 'بخش 3: اکوسیستم ایجنت‌ها')}</a>
+            <a class="btn primary" href="#${first.id}">${started ? L('Continue: ', 'ادامه: ') + esc(first.title) : L('Start with session 1', 'شروع با جلسه‌ی 1')} ${A.rtl ? '←' : '→'}</a>
+            <a class="btn" href="#sessions">${L('See the session plan', 'دیدن برنامه‌ی جلسه‌ها')}</a>
           </div>
         </div>
         <div class="hero-art">${heroArt()}</div>
       </section>
 
       <section class="stats" aria-label="${L('Course size', 'اندازه‌ی دوره')}">
-        <div class="stat"><b>${A.modules.length}</b><span>${L('modules', 'ماژول')}</span></div>
+        <div class="stat"><b>${sessions.length}</b><span>${L('sessions', 'جلسه')}</span></div>
         <div class="stat"><b>${lessons.length}</b><span>${L('lessons', 'درس')}</span></div>
         <div class="stat"><b>${totalSlides}</b><span>${L('slides', 'اسلاید')}</span></div>
         <div class="stat"><b>${Math.round(totalMins / 60)} ${L('h', 'ساعت')}</b><span>${L('guided time', 'زمان آموزش')}</span></div>
@@ -192,15 +218,9 @@
       </section>
 
       <section class="wrap" style="gap:var(--s-3)">
-        <div class="section-h"><h2>${L('Course map', 'نقشه‌ی دوره')}</h2><span class="label">${L('Lit ports = slides you have opened', 'پورت‌های روشن = اسلایدهایی که دیده‌اید')}</span></div>
-        ${PARTS.map((p) => { const ms = A.modules.filter((m) => m.part === p); const mins = ms.reduce((a, m) => a + m.lessons.reduce((b, l) => b + (l.mins || 10), 0), 0);
-          return `<div class="part-h"><h3>${esc(p.label)}</h3><span class="chip">${ms.length} ${L('modules', 'ماژول')} · ~${Math.round(mins / 60)} ${L('h', 'ساعت')}</span><p class="muted">${esc(p.desc)}</p></div><div class="modgrid">${ms
-          .map((m) => {
-            const st = modStats(m);
-            const ports = m.lessons.map((l) => `<i class="${lessonDone(l) ? 'ok' : (seen[l.id] || []).length ? 'on' : ''}"></i>`).join('');
-            return `<a class="modcard" href="#${m.id}"><span class="eyebrow"><span>${L('Module', 'ماژول')} ${pad(m.num)}</span><span>${st.quiz ? L('Quiz', 'آزمونک') + ' ' + st.quiz.score + '/' + st.quiz.total : m.lessons.length + ' ' + L('lessons', 'درس')}</span></span><h3>${esc(m.title)}</h3><p>${esc(m.summary)}</p><div class="ports" aria-label="${st.pct}%">${ports}</div></a>`;
-          })
-          .join('')}</div>`; }).join('')}
+        <div class="section-h"><h2>${L('Session plan', 'برنامه‌ی جلسه‌ها')}</h2><span class="label">${L('Lit ports = lessons you have opened', 'پورت‌های روشن = درس‌هایی که دیده‌اید')}</span></div>
+        ${sessionGrid()}
+        <p class="muted">${L('Sessions marked optional can be dropped when time is short. <a href="#modules">Browse by module</a> if you prefer the content grouped by topic.', 'جلسه‌های اختیاری را می‌توان در صورت کمبود وقت حذف کرد. اگر ترجیح می‌دهید محتوا بر پایه‌ی موضوع گروه‌بندی شود، <a href="#modules">مرور بر پایه‌ی ماژول</a> را ببینید.')}</p>
       </section>
 
       <section class="split">
@@ -210,6 +230,77 @@
         <div class="prose"><h3>${L('Where the content came from', 'منبع محتوا')}</h3>
           <p>${L('The course expands the original <i>AI Agent Automation</i> deck (54 slides). The <a href="#deckmap">deck-to-lesson map</a> shows where every original slide lives. Hermes Agent commands were checked against the official Nous Research docs in October 2026.', 'این دوره نسخه‌ی گسترش‌یافته‌ی ارائه‌ی اصلی <i>AI Agent Automation</i> (54 اسلاید) است. <a href="#deckmap">نقشه‌ی اسلاید به درس</a> نشان می‌دهد هر اسلاید اصلی کجا تدریس می‌شود. دستورات Hermes Agent در مهر 1405 (اکتبر 2026) با مستندات رسمی Nous Research بررسی شده‌اند.')}</p></div>
       </section>
+    </div>`;
+  }
+
+  function hours(mins) { return Math.round((mins / 60) * 10) / 10; }
+  function sessionGrid() {
+    return A.phases.map((p) => {
+      const ss = sessions.filter((s) => s.phase === p.key);
+      if (!ss.length) return '';
+      const mins = ss.reduce((a, s) => a + sessionMins(s), 0);
+      return `<div class="part-h"><h3>${esc(p.label)}</h3><span class="chip">${ss.length} ${L('sessions', 'جلسه')} · ~${hours(mins)} ${L('h of lessons', 'ساعت درس')}</span></div><div class="modgrid">${ss
+        .map((s) => {
+          const ports = s.list.map((l) => `<i class="${lessonDone(l) ? 'ok' : (seen[l.id] || []).length ? 'on' : ''}"></i>`).join('');
+          return `<a class="modcard" href="#${s.id}"><span class="eyebrow"><span>${L('Session', 'جلسه')} ${pad(s.n)}</span><span>${s.optional ? L('Optional', 'اختیاری') + ' · ' : ''}${s.list.length} ${L('lessons', 'درس')}</span></span><h3>${esc(s.title)}</h3><p>${esc(s.summary)}</p><div class="ports" aria-label="${sessStats(s).pct}%">${ports}</div></a>`;
+        })
+        .join('')}</div>`;
+    }).join('');
+  }
+
+  function viewSessions() {
+    const core = sessions.filter((s) => !s.optional), opt = sessions.filter((s) => s.optional);
+    const coreMins = core.reduce((a, s) => a + sessionMins(s), 0);
+    return `<div class="wrap">
+      <div class="lesson-head"><span class="eyebrow">${L('Teaching plan', 'برنامه‌ی تدریس')}</span><h1>${L('Session plan', 'برنامه‌ی جلسه‌ها')}</h1>
+      <p class="lead muted">${L('{0} two-hour sessions. Each lists its lessons in teaching order. The lesson times add up to roughly an hour and a half; the rest of each session is for exercises, questions and a break.', '{0} جلسه‌ی دوساعته. هر جلسه درس‌هایش را به ترتیب تدریس فهرست می‌کند. زمان درس‌ها روی هم حدود یک ساعت و نیم است؛ بقیه‌ی هر جلسه برای تمرین، پرسش و استراحت است.', sessions.length)}</p></div>
+      <div class="callout key"><span class="label">${L('Choosing how many sessions', 'انتخاب تعداد جلسه‌ها')}</span><div>${L('All {0} sessions are the full course. Dropping the {1} optional ones ({2}) leaves a core of {3} sessions. Decide with the class after session 3.', 'هر {0} جلسه، دوره‌ی کامل است. با حذف {1} جلسه‌ی اختیاری ({2}) یک هسته‌ی {3} جلسه‌ای می‌ماند. پس از جلسه‌ی 3 همراه با کلاس تصمیم بگیرید.', sessions.length, opt.length, opt.map((s) => pad(s.n)).join(', '), core.length)}</div></div>
+      ${A.phases.map((p) => {
+        const ss = sessions.filter((s) => s.phase === p.key);
+        return `<section class="wrap" style="gap:var(--s-2)"><div class="section-h"><h2>${esc(p.label)}</h2></div><div class="tbl-wrap"><table><thead><tr><th>#</th><th>${L('Session', 'جلسه')}</th><th>${L('Lessons', 'درس‌ها')}</th><th>${L('Lesson time', 'زمان درس‌ها')}</th><th>${L('Progress', 'پیشرفت')}</th></tr></thead><tbody>${ss
+          .map((s) => `<tr><td class="label">${pad(s.n)}</td><td><a href="#${s.id}">${esc(s.title)}</a>${s.optional ? ` <span class="chip">${L('Optional', 'اختیاری')}</span>` : ''}</td><td>${s.list.length}</td><td>${sessionMins(s)} ${L('min', 'دقیقه')}</td><td><div class="ports">${s.list.map((l) => `<i class="${lessonDone(l) ? 'ok' : (seen[l.id] || []).length ? 'on' : ''}"></i>`).join('')}</div></td></tr>`)
+          .join('')}</tbody></table></div></section>`;
+      }).join('')}
+      <p class="muted">${L('Core path lesson time: about {0} hours.', 'زمان درس‌های مسیر اصلی: حدود {0} ساعت.', hours(coreMins))}</p>
+    </div>`;
+  }
+
+  function viewSession(s) {
+    const st = sessStats(s);
+    const prev = sessions[s.n - 2], next = sessions[s.n];
+    const qs = quizzesIn(s);
+    const first = s.list.find((l) => !lessonDone(l)) || s.list[0];
+    const done = s.list.length && s.list.every(lessonDone);
+    return `<div class="wrap">
+      <div class="lesson-head"><span class="eyebrow">${esc(s.phaseObj.label)} — ${L('session {0} of {1}', 'جلسه‌ی {0} از {1}', s.n, sessions.length)}${s.optional ? ' · ' + L('optional', 'اختیاری') : ''}</span><h1>${esc(s.title)}</h1>
+      <p class="lead muted">${esc(s.summary)}</p>
+      <div class="meta"><span class="chip">~${sessionMins(s)} ${L('min of lessons', 'دقیقه درس')}</span><span class="chip">${s.list.length} ${L('lessons', 'درس')}</span><span class="chip">${st.pct}% ${L('opened', 'دیده‌شده')}</span></div></div>
+      <div class="callout key"><span class="label">${L('After this session you can', 'پس از این جلسه می‌توانید')}</span>${H_list(s.goals.map(esc))}</div>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>${L('Lesson', 'درس')}</th><th>${L('Module', 'ماژول')}</th><th>${L('Slides', 'اسلاید')}</th><th>${L('Time', 'زمان')}</th><th>${L('Progress', 'پیشرفت')}</th></tr></thead><tbody>
+      ${s.list.map((l, i) => `<tr><td class="label">${i + 1}</td><td><a href="#${l.id}">${esc(l.title)}</a>${l.lab ? ` <span class="chip amber">${L('Lab', 'آزمایشگاه')}</span>` : ''}</td><td><a href="#${l.module.id}">M${pad(l.module.num)}</a></td><td>${l.slides.length}</td><td>${lessonMins(l)} ${L('min', 'دقیقه')}</td><td><div class="ports">${l.slides.map((_, j) => `<i class="${(seen[l.id] || []).includes(j) ? 'on' : ''}"></i>`).join('')}</div></td></tr>`).join('')}
+      ${qs.map((m) => `<tr><td class="label">✓</td><td><a href="#${m.id}-quiz">${L('Checkpoint quiz', 'آزمونک پایان ماژول')}: ${esc(m.title)}</a></td><td><a href="#${m.id}">M${pad(m.num)}</a></td><td>${m.quiz.length} ${L('q', 'سؤال')}</td><td>10 ${L('min', 'دقیقه')}</td><td>${quiz[m.id] ? quiz[m.id].score + '/' + quiz[m.id].total : '—'}</td></tr>`).join('')}
+      </tbody></table></div>
+      ${done ? `<div class="callout tip"><span class="label">${L('Session complete', 'جلسه تمام شد')}</span><div>${next ? L('Every lesson in this session has been opened. Next up: {0}.', 'همه‌ی درس‌های این جلسه دیده شده‌اند. بعدی: {0}.', esc(next.title)) : L('You have reached the end of the course.', 'به پایان دوره رسیده‌اید.')}</div></div>` : ''}
+      <div class="lesson-foot">
+        ${prev ? `<a class="btn" href="#${prev.id}">${A.rtl ? '→' : '←'} ${L('Session {0}', 'جلسه‌ی {0}', prev.n)}: ${esc(prev.title)}</a>` : '<span></span>'}
+        <a class="btn primary" href="#${first.id}">${done ? L('Review the session', 'مرور جلسه') : L('Start session {0}', 'شروع جلسه‌ی {0}', s.n)} ${A.rtl ? '←' : '→'}</a>
+        ${next ? `<a class="btn" href="#${next.id}">${L('Session {0}', 'جلسه‌ی {0}', next.n)}: ${esc(next.title)} ${A.rtl ? '←' : '→'}</a>` : ''}
+      </div>
+    </div>`;
+  }
+
+  function viewModules() {
+    return `<div class="wrap">
+      <div class="lesson-head"><span class="eyebrow">${L('Reference', 'مرجع')}</span><h1>${L('Browse by module', 'مرور بر پایه‌ی ماژول')}</h1>
+      <p class="lead muted">${L('The same lessons grouped by topic. The <a href="#sessions">session plan</a> decides the order they are taught in.', 'همان درس‌ها بر پایه‌ی موضوع گروه‌بندی شده‌اند. ترتیب تدریس را <a href="#sessions">برنامه‌ی جلسه‌ها</a> تعیین می‌کند.')}</p></div>
+      ${PARTS.map((p) => { const ms = A.modules.filter((m) => m.part === p); const mins = ms.reduce((a, m) => a + m.lessons.reduce((b, l) => b + lessonMins(l), 0), 0);
+        return `<div class="part-h"><h3>${esc(p.label)}</h3><span class="chip">${ms.length} ${L('modules', 'ماژول')} · ~${Math.round(mins / 60)} ${L('h', 'ساعت')}</span><p class="muted">${esc(p.desc)}</p></div><div class="modgrid">${ms
+        .map((m) => {
+          const st = modStats(m);
+          const ports = m.lessons.map((l) => `<i class="${lessonDone(l) ? 'ok' : (seen[l.id] || []).length ? 'on' : ''}"></i>`).join('');
+          return `<a class="modcard" href="#${m.id}"><span class="eyebrow"><span>${L('Module', 'ماژول')} ${pad(m.num)}</span><span>${st.quiz ? L('Quiz', 'آزمونک') + ' ' + st.quiz.score + '/' + st.quiz.total : m.lessons.length + ' ' + L('lessons', 'درس')}</span></span><h3>${esc(m.title)}</h3><p>${esc(m.summary)}</p><div class="ports" aria-label="${st.pct}%">${ports}</div></a>`;
+        })
+        .join('')}</div>`; }).join('')}
     </div>`;
   }
 
@@ -231,9 +322,9 @@
       <p class="lead muted">${esc(m.summary)}</p>
       <div class="meta">${m.deck ? `<span class="chip amber">${L('Deck slides', 'اسلایدهای ارائه‌ی اصلی')} ${m.deck.join(', ')}</span>` : ''}${st.quiz ? `<span class="chip">${L('Best quiz score', 'بهترین نمره‌ی آزمونک')} ${st.quiz.score}/${st.quiz.total}</span>` : ''}</div></div>
       ${m.outcomes ? `<div class="callout key"><span class="label">${L('After this module you can', 'پس از این ماژول می‌توانید')}</span>${H_list(m.outcomes)}</div>` : ''}
-      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>${L('Lesson', 'درس')}</th><th>${L('Slides', 'اسلاید')}</th><th>${L('Time', 'زمان')}</th><th>${L('Progress', 'پیشرفت')}</th></tr></thead><tbody>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>${L('Lesson', 'درس')}</th><th>${L('Session', 'جلسه')}</th><th>${L('Slides', 'اسلاید')}</th><th>${L('Time', 'زمان')}</th><th>${L('Progress', 'پیشرفت')}</th></tr></thead><tbody>
       ${m.lessons
-        .map((l, i) => `<tr><td class="label">${pad(m.num)}.${i + 1}</td><td><a href="#${l.id}">${esc(l.title)}</a>${l.lab ? ` <span class="chip amber">${L('Lab', 'آزمایشگاه')}</span>` : ''}</td><td>${l.slides.length}</td><td>${l.mins || 10} ${L('min', 'دقیقه')}</td><td><div class="ports">${l.slides.map((_, j) => `<i class="${(seen[l.id] || []).includes(j) ? 'on' : ''}"></i>`).join('')}</div></td></tr>`)
+        .map((l, i) => `<tr><td class="label">${pad(m.num)}.${i + 1}</td><td><a href="#${l.id}">${esc(l.title)}</a>${l.lab ? ` <span class="chip amber">${L('Lab', 'آزمایشگاه')}</span>` : ''}</td><td>${l.session ? `<a href="#${l.session.id}">S${pad(l.session.n)}</a>` : '—'}</td><td>${l.slides.length}</td><td>${lessonMins(l)} ${L('min', 'دقیقه')}</td><td><div class="ports">${l.slides.map((_, j) => `<i class="${(seen[l.id] || []).includes(j) ? 'on' : ''}"></i>`).join('')}</div></td></tr>`)
         .join('')}
       ${m.quiz ? `<tr><td class="label">✓</td><td><a href="#${m.id}-quiz">${L('Checkpoint quiz', 'آزمونک پایان ماژول')}</a></td><td>${m.quiz.length} ${L('q', 'سؤال')}</td><td>10 ${L('min', 'دقیقه')}</td><td>${st.quiz ? st.quiz.score + '/' + st.quiz.total : '—'}</td></tr>` : ''}
       </tbody></table></div>
@@ -244,13 +335,28 @@
 
   // ---------- lesson ----------
   let cur = { lesson: null, i: 0, notes: store.get('notes', false), all: false };
-  function viewLesson(l) {
+  // Where to go when a lesson ends: the module quiz if this closes the module, the next lesson in the
+  // same session, or the session page (the natural place to stop and recap).
+  function afterLesson(l, presenting) {
     const m = l.module;
+    if (l === m.lastLesson && m.quiz && !presenting) return `${m.id}-quiz`;
+    if (l.next && l.next.session === l.session) return l.next.id;
+    return l.session ? l.session.id : l.next ? l.next.id : null;
+  }
+  function viewLesson(l) {
+    const m = l.module, s = l.session;
+    const dest = afterLesson(l, false);
+    const footNext = dest === `${m.id}-quiz`
+      ? `<a class="btn primary" href="#${dest}">${L('Module checkpoint quiz', 'آزمونک پایان ماژول')} ${A.rtl ? '←' : '→'}</a>`
+      : s && dest === s.id ? `<a class="btn primary" href="#${dest}">${L('Finish session {0}', 'پایان جلسه‌ی {0}', s.n)} ${A.rtl ? '←' : '→'}</a>`
+      : l.next ? `<a class="btn" href="#${l.next.id}">${esc(l.next.title)} ${A.rtl ? '←' : '→'}</a>` : '';
     return `<div class="wrap">
       <div class="lesson-head">
-        <span class="eyebrow"><a href="#${m.id}" style="color:inherit">${L('Module', 'ماژول')} ${pad(m.num)} · ${esc(m.title)}</a> — ${L('lesson {0} of {1}', 'درس {0} از {1}', l.index + 1, m.lessons.length)}</span>
+        <span class="eyebrow">${s
+          ? `<a href="#${s.id}" style="color:inherit">${L('Session', 'جلسه')} ${pad(s.n)} · ${esc(s.title)}</a> — ${L('lesson {0} of {1}', 'درس {0} از {1}', s.list.indexOf(l) + 1, s.list.length)}`
+          : `<a href="#${m.id}" style="color:inherit">${L('Module', 'ماژول')} ${pad(m.num)} · ${esc(m.title)}</a> — ${L('lesson {0} of {1}', 'درس {0} از {1}', l.index + 1, m.lessons.length)}`}</span>
         <h1>${esc(l.title)}</h1>
-        <div class="meta"><span class="chip">~${l.mins || 10} ${L('min', 'دقیقه')}</span>${l.deck && l.deck.length ? `<span class="chip amber">${L('Deck slides', 'اسلایدهای ارائه‌ی اصلی')} ${l.deck.join(', ')}</span>` : ''}${l.lab ? `<span class="chip amber">${L('Hands-on lab', 'آزمایشگاه عملی')}</span>` : ''}</div>
+        <div class="meta"><span class="chip">~${l.mins || 10} ${L('min', 'دقیقه')}</span><a class="chip" href="#${m.id}">${L('Module', 'ماژول')} ${pad(m.num)}</a>${l.deck && l.deck.length ? `<span class="chip amber">${L('Deck slides', 'اسلایدهای ارائه‌ی اصلی')} ${l.deck.join(', ')}</span>` : ''}${l.lab ? `<span class="chip amber">${L('Hands-on lab', 'آزمایشگاه عملی')}</span>` : ''}</div>
       </div>
       <div class="patch" id="patch"></div>
       <div class="stage">
@@ -269,7 +375,7 @@
       </div>
       <div class="lesson-foot">
         ${l.prev ? `<a class="btn" href="#${l.prev.id}">${A.rtl ? '→' : '←'} ${esc(l.prev.title)}</a>` : '<span></span>'}
-        ${l.index === m.lessons.length - 1 && m.quiz ? `<a class="btn primary" href="#${m.id}-quiz">${L('Module checkpoint quiz', 'آزمونک پایان ماژول')} ${A.rtl ? '←' : '→'}</a>` : l.next ? `<a class="btn" href="#${l.next.id}">${esc(l.next.title)} ${A.rtl ? '←' : '→'}</a>` : ''}
+        ${footNext}
       </div>
     </div>`;
   }
@@ -297,7 +403,8 @@
     $('#allBtn').textContent = cur.all ? L('One at a time', 'یکی‌یکی') : L('All slides', 'همه‌ی اسلایدها');
     $('#counter').textContent = cur.all ? `${l.slides.length} ${L('slides', 'اسلاید')}` : L('Slide {0} of {1}', 'اسلاید {0} از {1}', i + 1, l.slides.length);
     $('#prevBtn').disabled = !cur.all && i === 0 && !l.prev;
-    $('#nextBtn').textContent = !cur.all && i < l.slides.length - 1 ? NEXT : L('Next lesson →', 'درس بعدی ←');
+    const endDest = afterLesson(l, document.body.classList.contains('presenting'));
+    $('#nextBtn').textContent = !cur.all && i < l.slides.length - 1 ? NEXT : endDest === `${l.module.id}-quiz` ? L('Quiz →', 'آزمونک ←') : l.session && endDest === l.session.id ? L('Finish session →', 'پایان جلسه ←') : L('Next lesson →', 'درس بعدی ←');
     broadcast();
     $('#patch').innerHTML = `<span class="label">${L('Slides', 'اسلایدها')}</span>${l.slides
       .map((_, j) => `<button type="button" class="port ${(seen[l.id] || []).includes(j) ? 'seen' : ''} ${j === i && !cur.all ? 'current' : ''}" data-go="${j}" title="${esc(stripTags(l.slides[j].t))}" aria-label="${L('Go to slide', 'رفتن به اسلاید')} ${j + 1}">${j + 1}</button>`)
@@ -311,8 +418,8 @@
     const n = cur.i + delta;
     if (n >= 0 && n < l.slides.length) { cur.i = n; drawSlide(); scrollStage(); }
     else if (n >= l.slides.length) {
-      if (l.index === l.module.lessons.length - 1 && l.module.quiz && !document.body.classList.contains('presenting')) location.hash = l.module.id + '-quiz';
-      else if (l.next) { pendingSlide = 0; location.hash = l.next.id; }
+      const dest = afterLesson(l, document.body.classList.contains('presenting'));
+      if (dest) { pendingSlide = 0; location.hash = dest; }
     } else if (n < 0 && l.prev) { pendingSlide = l.prev.slides.length - 1; location.hash = l.prev.id; }
   }
   let pendingSlide = null;
@@ -349,7 +456,7 @@
       <p class="lead muted">${L('{0} questions. Pick an answer to see the explanation. Your best score is saved in this browser.', '{0} سؤال. یک گزینه را انتخاب کنید تا توضیح آن را ببینید. بهترین نمره‌ی شما در همین مرورگر ذخیره می‌شود.', m.quiz.length)}</p></div>
       <div id="quizHost" class="wrap" style="gap:var(--s-3)"></div>
       <div class="score" id="scoreBox"></div>
-      <div class="lesson-foot"><a class="btn" href="#${m.lessons[m.lessons.length - 1].id}">${L('← Back to the last lesson', '→ بازگشت به درس آخر')}</a>${(() => { const nm = A.modules[A.modules.indexOf(m) + 1]; return nm ? `<a class="btn primary" href="#${nm.id}">${L('Next: Module {0} →', 'بعدی: ماژول {0} ←', pad(nm.num))}</a>` : `<a class="btn primary" href="#home">${L('Back to course home', 'بازگشت به صفحه‌ی اصلی')}</a>`; })()}</div>
+      <div class="lesson-foot"><a class="btn" href="#${m.lastLesson.id}">${L('← Back to the last lesson', '→ بازگشت به درس آخر')}</a>${(() => { const ll = m.lastLesson, d = afterLesson(ll, true), s = ll.session; return d ? `<a class="btn primary" href="#${d}">${d === (s && s.id) ? L('Finish session {0} →', 'پایان جلسه‌ی {0} ←', s.n) : L('Next lesson →', 'درس بعدی ←')}</a>` : `<a class="btn primary" href="#home">${L('Back to course home', 'بازگشت به صفحه‌ی اصلی')}</a>`; })()}</div>
     </div>`;
   }
   function runQuiz(m) {
@@ -388,7 +495,7 @@
   function broadcast() {
     const l = cur.lesson; if (!chan || !l) return;
     const nxt = l.slides[cur.i + 1] ? stripTags(l.slides[cur.i + 1].t) : l.next ? L('Next lesson: ', 'درس بعدی: ') + l.next.title : L('End of course', 'پایان دوره');
-    chan.postMessage({ type: 'state', module: `${L('Module', 'ماژول')} ${pad(l.module.num)} · ${l.module.title}`, lesson: l.title, i: cur.i, n: l.slides.length, title: stripTags(l.slides[cur.i].t), notes: l.slides[cur.i].n || '', next: nxt, mins: l.mins || 10 });
+    chan.postMessage({ type: 'state', module: l.session ? `${L('Session', 'جلسه')} ${pad(l.session.n)} · ${l.session.title}` : `${L('Module', 'ماژول')} ${pad(l.module.num)} · ${l.module.title}`, lesson: l.title, i: cur.i, n: l.slides.length, title: stripTags(l.slides[cur.i].t), notes: l.slides[cur.i].n || '', next: nxt, mins: l.mins || 10 });
   }
   if (chan) chan.onmessage = (e) => {
     const d = e.data || {};
@@ -449,6 +556,12 @@
       if (h.endsWith('-quiz') && byModule[h.slice(0, -5)] && byModule[h.slice(0, -5)].quiz) {
         const m = byModule[h.slice(0, -5)];
         main.innerHTML = viewQuiz(m); runQuiz(m); renderNav({ quizOf: m, module: m }); title = L('Quiz', 'آزمونک') + ' · ' + m.title;
+      } else if (bySession[h]) {
+        main.innerHTML = viewSession(bySession[h]); renderNav({ sess: bySession[h] }); title = bySession[h].title + ' · ' + APP;
+      } else if (h === 'sessions') {
+        main.innerHTML = viewSessions(); renderNav('sessions'); title = L('Session plan', 'برنامه‌ی جلسه‌ها') + ' · ' + APP;
+      } else if (h === 'modules') {
+        main.innerHTML = viewModules(); renderNav('modules'); title = L('Browse by module', 'مرور بر پایه‌ی ماژول') + ' · ' + APP;
       } else if (byModule[h]) {
         main.innerHTML = viewModule(byModule[h]); renderNav({ mod: byModule[h] }); title = byModule[h].title + ' · ' + APP;
       } else if (h === 'speaker') {
@@ -467,7 +580,7 @@
   window.addEventListener('hashchange', route);
 
   // ---------- search ----------
-  const idx = lessons.map((l) => ({ l, text: (l.title + ' ' + l.module.title + ' ' + l.slides.map((s) => stripTags(s.t + ' ' + s.b)).join(' ')).toLowerCase() }));
+  const idx = lessons.map((l) => ({ l, text: (l.title + ' ' + l.module.title + ' ' + (l.session ? l.session.title + ' ' : '') + l.slides.map((s) => stripTags(s.t + ' ' + s.b)).join(' ')).toLowerCase() }));
   const dlg = $('#searchDlg'), sIn = $('#searchIn'), sRes = $('#searchRes');
   function openSearch() { if (!dlg.open) { try { dlg.showModal(); } catch (e) { dlg.setAttribute('open', ''); } } sIn.value = ''; doSearch(); sIn.focus(); }
   function doSearch() {
@@ -480,7 +593,7 @@
       .map((r, i) => {
         let snip = '';
         if (q) { const p = r.text.indexOf(terms[0]); snip = r.text.slice(Math.max(0, p - 50), p + 90); }
-        return `<a href="#${r.l.id}" class="${i === 0 ? 'sel' : ''}"><span><span class="label">M${pad(r.l.module.num)}</span> ${esc(r.l.title)}</span>${snip ? `<small>…${esc(snip)}…</small>` : `<small>${esc(r.l.module.title)}</small>`}</a>`;
+        return `<a href="#${r.l.id}" class="${i === 0 ? 'sel' : ''}"><span><span class="label">${r.l.session ? 'S' + pad(r.l.session.n) : 'M' + pad(r.l.module.num)}</span> ${esc(r.l.title)}</span>${snip ? `<small>…${esc(snip)}…</small>` : `<small>${esc(r.l.module.title)}</small>`}</a>`;
       })
       .join('') + gl.map((g) => `<a href="#glossary"><span><span class="label">${L('Glossary', 'واژه‌نامه')}</span> ${esc(g[0])}</span><small>${esc(stripTags(g[1]).slice(0, 120))}</small></a>`).join('') || `<p class="muted" style="padding:10px">${L('No lessons match. Try a shorter word.', 'درسی پیدا نشد. واژه‌ی کوتاه‌تری را امتحان کنید.')}</p>`;
   }
