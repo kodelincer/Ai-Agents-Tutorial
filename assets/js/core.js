@@ -81,6 +81,16 @@
         .join('')}</tbody></table></div>`),
     split: (l, r, cls) => out(`<div class="split ${cls || ''}"><div class="prose-col">${tr(l)}</div><div>${tr(r)}</div></div>`),
     fig: (svg, cap) => out(`<figure class="fig"><div class="fig-scroll">${svg}</div>${cap ? `<figcaption>${tr(cap)}</figcaption>` : ''}</figure>`),
+    // Interface screenshot from the registry in shots.js: framed, zoomable on click, with a credit line.
+    shot: (id, cap, o) => {
+      const r = A.shots && A.shots[id];
+      if (!r) return out('');
+      o = o || {};
+      const s = r.src, src = r.img;
+      const credit = `${L('Source: ', 'منبع: ')}<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a> · ${s.cap ? L('captured from version {0}', 'ثبت‌شده از نسخه‌ی {0}', s.cap) + ' · ' : ''}${esc(s.license)}`;
+      return out(`<figure class="shot${o.small ? ' small' : ''}"><button type="button" class="shot-img" data-zoom aria-label="${L('Enlarge picture', 'بزرگ‌نمایی تصویر')}"><img src="${src}" alt="${esc(tr(r.alt))}" width="${r.w}" decoding="async"</button><figcaption>${cap ? tr(cap) + '<br>' : ''}<span class="shot-credit">${credit}</span></figcaption></figure>`);
+    },
+    shots: (items) => out(`<div class="shot-grid">${items.map((i) => (Array.isArray(i) ? H.shot(i[0], i[1], i[2]) : H.shot(i))).join('')}</div>`),
     widget: (name, opts) => { if (opts && opts.title) tr(opts.title); return out(`<div class="widget" data-widget="${name}" data-opts="${esc(JSON.stringify(opts || {}))}"></div>`); },
     quote: (t, who) => out(`<div class="quote">${tr(t)}${who ? `<div class="label" style="margin-top:6px;font-style:normal">${tr(who)}</div>` : ''}</div>`),
     chips: (items) => out(`<div class="w-row">${items.map((i) => `<span class="chip">${tr(i)}</span>`).join('')}</div>`),

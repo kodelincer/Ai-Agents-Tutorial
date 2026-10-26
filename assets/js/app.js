@@ -128,6 +128,24 @@
     A.copy(code.textContent, code);
   });
 
+  // ---------- picture zoom (H.shot) ----------
+  let zoomDlg;
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-zoom]');
+    if (!b) return;
+    const fig = b.closest('figure');
+    if (!zoomDlg) {
+      zoomDlg = document.createElement('dialog');
+      zoomDlg.className = 'zoom';
+      zoomDlg.addEventListener('click', () => zoomDlg.close());
+      document.body.appendChild(zoomDlg);
+    }
+    const img = b.querySelector('img');
+    const cap = fig && fig.querySelector('figcaption');
+    zoomDlg.innerHTML = `<img src="${img.src}" alt="${esc(img.alt)}"><p>${cap ? cap.innerHTML : ''}</p>`;
+    if (zoomDlg.showModal) zoomDlg.showModal(); else zoomDlg.setAttribute('open', '');
+  });
+
   // ---------- sidebar ----------
   function renderNav(cur) {
     const obj = cur && typeof cur === 'object';
@@ -153,6 +171,7 @@
       <a class="nav-link ${cur === 'cheatsheet' ? 'active' : ''}" href="#cheatsheet"><span class="num">··</span>${L('Hermes cheat sheet', 'خلاصه‌ی دستورات Hermes')}</a>
       <a class="nav-link ${cur === 'codingsheet' ? 'active' : ''}" href="#codingsheet"><span class="num">··</span>${L('Claude Code & Codex cheat sheet', 'خلاصه‌ی دستورات Claude Code و Codex')}</a>
       <a class="nav-link ${cur === 'ecosheet' ? 'active' : ''}" href="#ecosheet"><span class="num">··</span>${L('Ecosystem & gateway cheat sheet', 'خلاصه‌ی اکوسیستم و دروازه‌ها')}</a>
+      <a class="nav-link ${cur === 'credits' ? 'active' : ''}" href="#credits"><span class="num">··</span>${L('Image credits', 'منابع تصاویر')}</a>
       <a class="nav-link ${cur === 'glossary' ? 'active' : ''}" href="#glossary"><span class="num">··</span>${L('Glossary', 'واژه‌نامه')}</a>
       <a class="nav-link ${cur === 'deckmap' ? 'active' : ''}" href="#deckmap"><span class="num">··</span>${L('Deck-to-lesson map', 'نقشه‌ی اسلاید به درس')}</a></div>`;
     $('#sidebar').innerHTML = h;

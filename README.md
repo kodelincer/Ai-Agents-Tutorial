@@ -12,7 +12,7 @@ switches the whole course, including diagrams and exercises, and Persian is show
 right-to-left. Add `#fa` or `#en` to a link to open it in a given language.
 
 It expands the original deck in [`source/Ai_Agents.pptx`](source/Ai_Agents.pptx)
-(54 slides) into **31 two-hour sessions** (29 core, plus an optional phase H) made of 17 modules, 109 lessons and 353 slides,
+(54 slides) into **31 two-hour sessions** (29 core, plus an optional phase H) made of 17 modules, 109 lessons and 364 slides,
 with diagrams, speaker notes on every slide, a synced speaker view, checkpoint quizzes
 and 26 in-browser exercises.
 
@@ -65,6 +65,15 @@ order. `node tools/i18n.js check` fails if a lesson is in no session or in two.
 
 The in-app **Deck-to-lesson map** page lists every original slide and where it is taught.
 **Browse by module** shows the same lessons grouped by topic.
+
+## Pictures
+
+Lessons show the real interfaces of the tools they teach (Claude Code, Codex, OpenCode, Hermes, Multica,
+Orca, 9router, OmniRoute and more) with `H.shot('<id>', 'caption')`. Pictures are registered in
+[`assets/js/shots.js`](assets/js/shots.js) with their source and licence, live in `assets/img/shots/`, open
+larger on click, and are listed on the in-app **Image credits** page. The single-file build inlines them.
+To add one, convert it to WebP (about 1100 px wide), add an entry to `shots.js` with where it came from,
+and write the caption in both languages like any other lesson text.
 
 ## Interactive exercises
 

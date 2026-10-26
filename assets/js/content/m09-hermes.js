@@ -54,6 +54,18 @@
                 ['Agent & subagent, multi-agent', '<code>delegate_task</code>, profiles, kanban', 'Module 10'],
               ]),
           },
+          {
+            t: 'Hermes in the terminal, and on the desktop',
+            b: H.split(
+              H.prose(
+                '<b>Terminal:</b> a full interface with multiline editing, slash-command autocomplete, conversation history, interrupt-and-redirect and streaming tool output.',
+                '<b>Desktop:</b> Hermes also has a desktop app, <b>Hermes Desktop</b>, linked from the Hermes site. For example, the subagent provider, model and limits are set under <b>Settings → Model → Subagents</b>, then <b>Apply</b>.',
+                'Both talk to the same agent. Learn the terminal first: every lab in this module uses it, and it is what runs on a server or a jump host.'
+              ),
+              H.shot('hermes-banner', 'The Hermes Agent banner you meet when it starts.', { small: true })
+            ),
+            n: 'Show the terminal interface live: type a long message with Shift+Enter, use slash-command autocomplete, then interrupt a running answer and redirect it. Mention that a desktop app exists and show it from the Hermes site if the projector allows. We do not have our own screenshots of Hermes Desktop yet.',
+          },
         ],
       },
       {

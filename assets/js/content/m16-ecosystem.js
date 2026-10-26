@@ -150,6 +150,11 @@
             ]) + H.note('it', 'Approval is <b>per provider</b>, not per tool. Before company data goes to any model provider, legal and security must know where it is hosted and what its terms say about prompts. A cheap, strong model is not a reason to skip that review.'),
             n: 'Be even-handed here: the models are interesting for cost and capability, and the policy question is the same as for any provider. Ask who in the organisation decides which providers are approved, and write the name down.',
           },
+          {
+            t: 'A look at a community DeepSeek terminal agent',
+            b: H.shot('codewhale-tui', 'Codewhale: a checklist, a result and the Full Access mode shown in the status line.'),
+            n: 'Zoom into the bottom line of the picture. The mode is always on screen: Full Access. Ask what the safe default should be on a lab VM and why we would never leave a full-access agent on a production host.',
+          },
         ],
       },
       {
@@ -213,6 +218,16 @@
             ),
             n: 'Same pattern as Claude Code subagents from Module 8 and Hermes profiles from Module 10. Let the network engineers write a net-review agent for their own change template as an exercise.',
           },
+          {
+            t: 'OpenCode in pictures',
+            b: H.shots([
+              ['opencode-home', 'The start screen. It tells you to run /connect to add a provider.'],
+              ['opencode-session', 'A session: search tools, the build agent and the running token cost.'],
+              ['opencode-vscode', 'Inside VS Code, next to the file being edited.'],
+              ['opencode-github', 'As a bot on a GitHub pull request.'],
+            ]),
+            n: 'Four faces of the same agent. Ask students to find the cost and the active agent on the session picture. OpenCode also has a desktop app in beta (downloads on opencode.ai/download); check the version you install.',
+          },
         ],
       },
       {
@@ -272,6 +287,16 @@
               ['What about cost and runaway loops?', 'Retries and timeouts, per-run cost', 'Spend limits at the gateway as well (lesson 6)'],
             ]) + H.note('key', 'An orchestrator <b>multiplies</b> whatever policy you have. With good guardrails you get ten careful teammates; without them you get ten fast ways to make the same mistake.'),
             n: 'Tie back to the T0 to T3 tiers in Module 12. Orchestrators do not change the tier of an action; they only make it easier to start many actions at once, so approvals and review gates matter more, not less.',
+          },
+          {
+            t: 'Orchestrators in pictures',
+            b: H.shots([
+              ['multica-board', 'Multica: a board where issues are assigned to agents.'],
+              ['orca-hero', 'Orca: Claude Code and Codex in separate worktrees, with its phone app.'],
+              ['orca-split', 'Orca: an editor and a browser side by side in one workspace.'],
+              ['orca-mobile', 'Orca\'s companion app on a phone.'],
+            ]),
+            n: 'Multica is a board for a team; Orca is a window for one engineer. In the Orca picture the left list is workspaces, one per worktree, and each terminal runs a different agent. Ask what the phone app means for our policy: an agent you can steer from a phone is an agent that can be steered from a lost phone.',
           },
         ],
       },
@@ -431,6 +456,14 @@
             ) + H.note('tip', 'For 9router the same lab uses <code>npm install -g 9router</code> inside the VM, or Docker, and <code>INITIAL_PASSWORD</code> and <code>JWT_SECRET</code> set in the environment before the first start.'),
             n: 'Keep this to one provider. The goal is the shape of a gateway deployment and the habits (loopback, pin, password, limit, delete), not collecting as many providers as possible.',
           },
+          {
+            t: 'The two dashboards',
+            b: H.shots([
+              ['9router-providers', '9router: providers grouped as OAuth (accounts), free and API-key. Look at the first group.'],
+              ['omniroute-providers', 'OmniRoute: filters, a free-tier group and API-key providers.'],
+            ]),
+            n: 'The first group in the 9router picture is OAuth providers: those are consumer subscriptions such as coding-assistant plans. Pooling them behind one gateway usually breaks their terms and puts one person\'s account behind a shared service. Ask the class which groups our policy allows. In OmniRoute point at the counters in the filter bar: they show how many providers are configured out of how many exist.',
+          },
         ],
       },
       {
@@ -495,6 +528,11 @@
               ])
             ) + H.note('it', 'Outbound traffic from a gateway should leave through <b>the company\'s approved egress path</b> (the normal proxy and firewall rules), allowed only to approved provider domains. That is egress control, not a way around policy.'),
             n: 'Be matter-of-fact. This is a course inside a company, so the policy answer is compliance plus real alternatives. Local models are the strongest alternative, and Module 5 already showed how to run them.',
+          },
+          {
+            t: 'Where free providers show up in a router',
+            b: H.shot('omniroute-providers', 'The Free Tier Providers group in OmniRoute. Some need only an account, others no credentials at all. That is exactly why you read their terms first.'),
+            n: 'Show that a router makes free tiers easy to switch on, which is the danger as much as the benefit. Pick one provider in the picture and run the five steps from the earlier slide on it in two minutes: terms, limits, data handling, availability for our region, and who owns it in the provider register.',
           },
         ],
       },

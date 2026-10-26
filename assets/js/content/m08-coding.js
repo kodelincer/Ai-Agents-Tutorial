@@ -103,6 +103,18 @@
             ),
             n: 'Demo live: run /init, ask it to explain the repo, then make one small change with a test. Keep it under 10 minutes. Show Esc to stop and Shift+Tab to change modes.',
           },
+          {
+            t: 'What you will see the first time',
+            b: H.split(
+              H.prose(
+                'The first run asks you to <b>choose a text style</b> for your terminal. You can change it later with <code>/theme</code>.',
+                'Next it asks <b>how you want to sign in</b>: with a Claude subscription or with an Anthropic Console API key.',
+                'The picture is the real screen of the version noted under it. Your version may look a little different, so read the screen rather than copying our clicks.'
+              ) + H.note('tip', 'Prefer a window to a terminal? The desktop app shows the same engine with diffs, a mode selector and parallel sessions. Its own screenshots are in the official guide: <a href="https://code.claude.com/docs/en/desktop-quickstart" target="_blank" rel="noopener">code.claude.com/docs/en/desktop-quickstart</a>.'),
+              H.shot('claude-first-run', 'The first screen of the Claude Code CLI.')
+            ),
+            n: 'Run claude in a clean folder on the projector and walk through the first screen with the class. Then open the desktop app side by side and show that the Code tab is the same agent in a window. Our own screenshots of the desktop app are not in this course yet, so show it live or use the link on the slide.',
+          },
         ],
       },
       {
@@ -204,6 +216,14 @@
               H.code('# AGENTS.md\n## Repo: infra-scripts\n- Tests: `Invoke-Pester ./tests`, `ansible-lint ansible/`\n- Every script supports -WhatIf and logs to C:\\Logs\\scripts\n- NEVER run terraform apply or ansible-playbook\n- Use *.lab.acme.local in examples, never production names\n- Done means: tests pass, lint clean, diff explained', 'markdown', 'AGENTS.md')
             ) + H.note('tip', 'Codex reads <code>AGENTS.md</code> from <code>~/.codex/</code>, the repo root and the folders down to where it works; closer files win. Keep <code>CLAUDE.md</code> and <code>AGENTS.md</code> in sync, or make one import the other, so every agent gets the same rules.'),
             n: 'Model names change often, so the model line is left as a comment; choose it with /model. The important lines are sandbox_mode and approval_policy: these are your defaults for every session.',
+          },
+          {
+            t: 'What you will see: Codex first run and a session',
+            b: H.shots([
+              ['codex-first-run', 'First run: choose how to sign in (ChatGPT, device code, an API key or Amazon Bedrock).'],
+              ['codex-session', 'A session: Codex writes a plan, then explores the repository with read-only commands.'],
+            ]),
+            n: 'Point at the four sign-in choices and ask which one our organisation should use, and why a personal ChatGPT login is not it. Then point at the plan checklist in the second picture: the agent shows its plan before it acts, which is the habit we want to teach.',
           },
         ],
       },
@@ -649,6 +669,28 @@
               ['Watch the usage', 'Look at the usage or cost display the tool offers, and set a budget before unattended runs.', 'visibility'],
             ], 2),
             n: 'This pulls session 3 into the coding context. A coding agent is an agent loop: the cost rules are the same. Ask how someone would find out what a long refactor cost them.',
+          },
+          {
+            t: 'Desktop apps side by side',
+            b: H.stack(
+              H.table(['Agent', 'Desktop app', 'Platforms', 'What the window adds'], [
+                ['Claude Code', 'Claude desktop app, <b>Code</b> tab', 'macOS, Windows; Linux beta (Ubuntu, Debian)', 'Parallel sessions with Git isolation, side-by-side panes, built-in terminal and editor, visual diff review, app preview, PR monitoring, scheduled tasks'],
+                ['Codex', 'Codex app (<code>codex app</code>)', 'macOS, Windows', 'Several agent threads in one place; each runs Local, in a Worktree or in the Cloud'],
+                ['OpenCode', 'OpenCode Desktop (beta)', 'macOS, Windows, Linux (<code>.deb</code>, <code>.rpm</code>, <code>.AppImage</code>)', 'The same agent in a window; <code>brew install --cask opencode-desktop</code> on macOS'],
+                ['Hermes Agent', 'Hermes Desktop', 'See the download page on the Hermes site', 'The same agent with a graphical settings screen; subagent model and limits are under Settings → Model → Subagents'],
+                ['Orca', 'Desktop app (it is the product)', 'macOS, Windows, Linux', 'Many agents, one window, one git worktree each'],
+              ]),
+              H.note('key', '<b>Same engine, different window.</b> Settings, memory files, skills and MCP servers are shared between the terminal and the desktop app of the same tool. Use the window for reviewing diffs and running several sessions; use the terminal for SSH sessions, scripts and CI. Our guardrail policy and permission modes are the same in both.')
+            ),
+            n: 'Ask who already uses a desktop app and who lives in the terminal. The point is that this is a choice of comfort, not capability, and the safety rules do not change with the window. The Hermes Desktop row is deliberately short: check its download page for platforms and show it live, because that app changes quickly.',
+          },
+          {
+            t: 'The same agent inside your editor',
+            b: H.shots([
+              ['opencode-vscode', 'OpenCode in a terminal pane next to the file it is editing in VS Code. Claude Code and Codex also have editor extensions.'],
+              ['opencode-github', 'An agent can also work inside GitHub: here the OpenCode bot explains a pull request.'],
+            ]),
+            n: 'Three places the same agent can live: terminal, desktop or editor, and as a bot inside GitHub or Slack. Ask which of the three our team would trust with which kind of task, and connect the answer to the policy tiers.',
           },
         ],
       },

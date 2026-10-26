@@ -43,3 +43,7 @@ python3 tools/build_single.py       # dist/ai-agents-academy.html (dist/ is giti
   module 15 (no labs). The depth of the course is in coding agents (module 8) and Hermes (module 9).
 - Gateway details (OpenRouter and AvalAI base URLs, model names, prices, cache rules) change often.
   Slides teach the pattern and tell the reader to confirm in the gateway's own documentation.
+- Interface pictures: register each in `assets/js/shots.js` (source URL, licence or captured version),
+  store it as WebP in `assets/img/shots/`, and draw it with `H.shot(id, caption)`. Use only pictures from a
+  project's own repository (check its licence) or captures of the real tool; never mock up an interface.
+  Reference images by literal `assets/img/shots/<name>.webp` paths so the single-file build can inline them.

@@ -34,6 +34,13 @@ def main() -> None:
     )
     html = html[:a] + f"<script>\n{js}\n</script>" + html[b:]
 
+    # Inline lesson screenshots (assets/img/shots/*) as data: URIs. Pages serves them as files instead.
+    mime = {"webp": "image/webp", "png": "image/png", "jpg": "image/jpeg", "svg": "image/svg+xml"}
+    def inline_shot(m):
+        f = ROOT / m.group(0)
+        return f"data:{mime[f.suffix[1:]]};base64," + base64.b64encode(f.read_bytes()).decode()
+    html = re.sub(r"assets/img/shots/[A-Za-z0-9_.-]+\.(?:webp|png|jpg|svg)", inline_shot, html)
+
     DIST.mkdir(exist_ok=True)
     out = DIST / "ai-agents-academy.html"
     out.write_text(html, encoding="utf-8")

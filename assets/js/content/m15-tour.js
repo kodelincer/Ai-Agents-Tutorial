@@ -156,6 +156,11 @@
             ]) + H.note('key', 'Multica is a coordination tool. The safety still comes from your guardrail policy and from who is allowed to assign work to which agent.'),
             n: 'This is the same adoption checklist we use for any agent tool. Close the tour by asking each person to name one of the six tools in this module they would try first, and why.',
           },
+          {
+            t: 'The board, as it looks',
+            b: H.shot('multica-board', 'A Multica board: issues in columns, each assigned to an agent, with the agents that are working shown at the top.'),
+            n: 'Walk the columns left to right and ask where the human must step in. In Multica an issue assigned to an agent starts a run on a runtime: the board is a control panel, so the access that runtime has matters more than how nice the board looks.',
+          },
         ],
       },
     ],
