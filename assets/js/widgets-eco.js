@@ -201,4 +201,139 @@
     b.addEventListener('change', run);
     run();
   };
+
+  /* ---------------- OpenCode permission rule tester ---------------- */
+  // Rules are written one per line as: effect action resource   (last matching rule wins; no match = ask)
+  const globRe = (g) => new RegExp('^' + g.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\?/g, '.') + '$', 'i');
+  const matchPat = (pat, val) => globRe(pat).test(val) || (pat.endsWith(' *') && globRe(pat.slice(0, -2)).test(val));
+  const parseRules = (t) => t.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#')).map((l) => {
+    const m = l.match(/^(allow|ask|deny)\s+(\S+)\s*(.*)$/i);
+    return m ? { effect: m[1].toLowerCase(), action: m[2], resource: m[3] || '*', raw: l } : { bad: l };
+  });
+  W.ocRules = function (el) {
+    const b = A.frame(el, L('OpenCode permission tester: which rule decides?', 'آزمونگر مجوزهای OpenCode: کدام قاعده تصمیم می‌گیرد؟'), L('Simulation', 'شبیه‌سازی'));
+    const id = uid('oc');
+    const PRE = {
+      defaults: ['allow * *', 'ask read *.env', 'ask read *.env.*', 'allow read *.env.example'],
+      team: ['allow * *', 'ask read *.env', 'ask read *.env.*', 'allow read *.env.example', '# our team baseline, added after the defaults', 'ask shell *', 'allow shell git status *', 'allow shell git diff *', 'allow shell git log *', 'deny shell git push *', 'deny shell terraform apply *', 'deny read *.env', 'deny edit *.env', 'ask external_directory *', 'ask webfetch *', 'ask websearch *'],
+      reviewer: ['deny * *', 'allow read *', 'allow glob *', 'allow grep *', 'deny read *.env', 'deny read *.env.*'],
+    };
+    const NAMES = { defaults: L('V2 defaults', 'پیش‌فرض‌های V2'), team: L('Team baseline', 'پایه‌ی تیمی'), reviewer: L('Read-only reviewer agent', 'ایجنت بازبین فقط‌خواندنی') };
+    const TESTS = [
+      ['shell', 'git status --short'], ['shell', 'git push origin main'], ['shell', 'terraform apply -auto-approve'], ['shell', 'rm -rf build'],
+      ['read', 'src/app.ts'], ['read', '.env'], ['read', '.env.example'], ['edit', 'config/.env'], ['edit', 'src/app.ts'],
+      ['read', '~/.ssh/id_rsa'], ['external_directory', '/etc/*'], ['webfetch', 'https://example.com/docs'], ['subagent', 'general'],
+    ];
+    b.innerHTML = `<div class="w-row"><span class="label">${L('Start from', 'شروع از')}</span>${Object.keys(PRE).map((k) => `<button type="button" class="cmdchip" data-pre="${k}">${NAMES[k]}</button>`).join('')}</div>
+      <div class="w-grid2">
+        <label style="display:grid;gap:3px;font-size:.85rem"><span class="label">${L('Rules (effect action resource, one per line, last match wins)', 'قواعد (اثر، عمل، منبع؛ هر خط یکی؛ آخرین انطباق برنده است)')}</span><textarea id="${id}-r" rows="9" class="bidi" dir="ltr" style="font-family:var(--f-mono);font-size:.82rem"></textarea></label>
+        <label style="display:grid;gap:3px;font-size:.85rem"><span class="label">${L('Organization policy (deny statements only tighten)', 'سیاست سازمان (عبارت‌های deny فقط سخت‌تر می‌کنند)')}</span><textarea id="${id}-p" rows="4" class="bidi" dir="ltr" style="font-family:var(--f-mono);font-size:.82rem">deny shell:sudo *\ndeny read:*/.ssh/*</textarea>
+        <span class="label" style="margin-top:6px">${L('Try an action', 'یک عمل را امتحان کنید')}</span><div class="w-row"><select id="${id}-a">${['shell', 'read', 'edit', 'external_directory', 'webfetch', 'websearch', 'subagent', 'skill'].map((x) => `<option>${x}</option>`).join('')}</select><input type="text" id="${id}-v" dir="ltr" style="flex:1;min-width:10em"></div></label>
+      </div>
+      <div class="w-row">${TESTS.map((t, i) => `<button type="button" class="cmdchip" data-t="${i}">${t[0]}: ${esc(t[1])}</button>`).join('')}</div>
+      <div id="${id}-o"></div>`;
+    const ta = $('#' + id + '-r', b), pol = $('#' + id + '-p', b), act = $('#' + id + '-a', b), val = $('#' + id + '-v', b);
+    const run = () => {
+      const rules = parseRules(ta.value), action = act.value, res = val.value.trim();
+      let hit = -1;
+      const rows = rules.map((r, i) => {
+        if (r.bad) return `<tr><td>${i + 1}</td><td colspan="2"><span class="pill crit">${L('not a rule', 'قاعده نیست')}</span> <code>${esc(r.bad)}</code></td><td></td></tr>`;
+        const m = matchPat(r.action, action) && matchPat(r.resource, res);
+        if (m) hit = i;
+        return `<tr data-i="${i}" ${m ? '' : 'style="opacity:.55"'}><td>${i + 1}</td><td><code>${esc(r.raw)}</code></td><td>${m ? `<span class="pill ${r.effect === 'allow' ? 'ok' : r.effect === 'deny' ? 'crit' : 'warn'}">${r.effect}</span>` : '–'}</td><td></td></tr>`;
+      });
+      let eff = hit < 0 ? 'ask' : rules[hit].effect;
+      const stm = pol.value.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => l.match(/^(allow|deny)\s+(.+)$/i)).filter(Boolean).map((m) => ({ e: m[1].toLowerCase(), r: m[2] }));
+      let pdeny = null;
+      stm.forEach((s2) => { if (matchPat(s2.r, action + ':' + res)) pdeny = s2; });
+      const blocked = pdeny && pdeny.e === 'deny';
+      const final = blocked ? 'deny' : eff;
+      const cls = final === 'allow' ? 'ok' : final === 'deny' ? 'crit' : 'warn';
+      const why = blocked ? L('Blocked by organization policy: <code>{0}</code>. A policy can only tighten; no repository rule can lift it.', 'مسدود شده با سیاست سازمان: <code>{0}</code>. سیاست فقط سخت‌تر می‌کند؛ هیچ قاعده‌ی مخزن نمی‌تواند آن را بردارد.', esc(pdeny.r))
+        : hit < 0 ? L('No rule matched, so OpenCode asks.', 'هیچ قاعده‌ای منطبق نشد، پس OpenCode می‌پرسد.')
+          : L('Decided by rule {0}: <code>{1}</code> (the last match).', 'قاعده‌ی {0} تصمیم گرفت: <code>{1}</code> (آخرین انطباق).', hit + 1, esc(rules[hit].raw));
+      $('#' + id + '-o', b).innerHTML = `<div class="callout ${final === 'allow' ? 'tip' : final === 'deny' ? 'warn' : 'key'}"><span class="label">${action}: ${esc(res || '*')}</span><b><span class="pill ${cls}">${final === 'allow' ? L('Allowed without asking', 'بدون پرسیدن مجاز') : final === 'deny' ? L('Denied', 'ممنوع') : L('Asks you first', 'ابتدا از شما می‌پرسد')}</span></b> ${why}</div>
+        <div class="tbl-wrap"><table><thead><tr><th>#</th><th>${L('Rule', 'قاعده')}</th><th>${L('Matches', 'منطبق')}</th><th></th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+      const hr = hit >= 0 ? $(`tr[data-i="${hit}"]`, b) : null;
+      if (hr) hr.style.background = 'var(--panel-2)';
+    };
+    const setPre = (k) => { ta.value = PRE[k].join('\n'); run(); };
+    b.addEventListener('click', (e) => {
+      const p = e.target.closest('[data-pre]'); if (p) setPre(p.dataset.pre);
+      const t = e.target.closest('[data-t]'); if (t) { const x = TESTS[+t.dataset.t]; act.value = x[0]; val.value = x[1]; run(); }
+    });
+    b.addEventListener('input', run);
+    val.value = 'git push origin main';
+    act.value = 'shell';
+    setPre('team');
+  };
+
+  /* ---------------- OpenCode file builder: command, agent or skill ---------------- */
+  W.ocBuilder = function (el) {
+    const b = A.frame(el, L('OpenCode file builder: command, agent or skill', 'سازنده‌ی فایل OpenCode: فرمان، ایجنت یا مهارت'), L('Exercise', 'تمرین'));
+    const id = uid('ob');
+    const KIND = { command: L('Command', 'فرمان'), agent: L('Agent', 'ایجنت'), skill: L('Skill', 'مهارت') };
+    const PR = {
+      command: { name: 'review-change', desc: 'Review a change request against our checklist', body: 'Review $ARGUMENTS against our change checklist: scope, rollback plan, test evidence, approver. List gaps first.', arg: 'CHG-1042' },
+      agent: { name: 'net-review', desc: 'Reviews network config diffs without changing anything', body: 'You review network configuration changes. Check VLANs, ACLs, routing and rollback. Report findings by severity with file and line. Never edit files.', arg: '' },
+      skill: { name: 'change-window-check', desc: 'Use when someone asks if a change fits the maintenance window', body: '1. Read references/windows.md.\n2. Compare the requested time with the window and freeze list.\n3. Answer yes or no, and name the rule.', arg: '' },
+    };
+    let kind = 'command';
+    const sel = (k, l, opts) => `<label style="display:grid;gap:3px;font-size:.85rem"><span class="label">${l}</span><select data-k="${k}">${opts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></label>`;
+    const inp = (k, l, v, ta2) => `<label style="display:grid;gap:3px;font-size:.85rem"><span class="label">${l}</span>${ta2 ? `<textarea data-k="${k}" rows="4" class="bidi" dir="auto">${esc(v)}</textarea>` : `<input type="text" data-k="${k}" dir="auto" value="${esc(v)}">`}</label>`;
+    const chk = (k, t, on) => `<label style="display:flex;gap:6px;font-size:.88rem"><input type="checkbox" data-k="${k}" ${on ? 'checked' : ''}> ${t}</label>`;
+    const form = () => {
+      const P = PR[kind];
+      let h = inp('name', L('Name (lower-case, dashes)', 'نام (حروف کوچک، با خط تیره)'), P.name) + inp('desc', L('Description', 'توضیح'), P.desc);
+      if (kind === 'command') h += sel('agent', L('Agent to run it', 'ایجنت اجراکننده'), [['', L('(current agent)', '(ایجنت فعلی)')], ['plan', 'plan'], ['build', 'build'], ['general', 'general'], ['explore', 'explore']]) + chk('sub', L('Run in a background child session (subagent)', 'اجرا در نشست فرزند پس‌زمینه (subagent)'), false) + inp('args', L('Try it: arguments after the command', 'امتحان: آرگومان‌های بعد از فرمان'), P.arg);
+      if (kind === 'agent') h += sel('mode', L('Mode', 'حالت'), [['subagent', 'subagent'], ['primary', 'primary'], ['all', 'all']]) + chk('noedit', L('Deny edits', 'ممنوع‌کردن ویرایش'), true) + chk('noshell', L('Deny shell', 'ممنوع‌کردن shell'), true) + chk('nonet', L('Deny web fetch and search', 'ممنوع‌کردن دریافت و جستجوی وب'), false) + inp('steps', L('Max steps (optional)', 'حداکثر گام (اختیاری)'), '8');
+      h += inp('body', kind === 'command' ? L('Prompt template (use $ARGUMENTS, $1, $2)', 'قالب پرامپت ($ARGUMENTS، $1، $2)') : kind === 'agent' ? L('System prompt', 'پرامپت سیستم') : L('Skill instructions', 'دستورالعمل مهارت'), P.body, true);
+      $('#' + id + '-f', b).innerHTML = h;
+      run();
+    };
+    b.innerHTML = `<div class="w-row"><span class="label">${L('Build a', 'ساخت')}</span>${Object.keys(KIND).map((k) => `<button type="button" class="cmdchip" data-kind="${k}">${KIND[k]}</button>`).join('')}</div>
+      <div class="w-grid2"><div id="${id}-f" style="display:grid;grid-template-columns:minmax(0,1fr);gap:8px"></div><div style="display:grid;grid-template-columns:minmax(0,1fr);gap:8px;align-content:start"><div id="${id}-o"></div><div id="${id}-x"></div><div id="${id}-w"></div></div></div>`;
+    const expand = (tpl, args) => {
+      const parts = (args.match(/"[^"]*"|'[^']*'|\S+/g) || []).map((t) => t.replace(/^["']|["']$/g, ''));
+      const nums = [...new Set([...tpl.matchAll(/\$(\d+)/g)].map((m) => +m[1]))].sort((x, y) => y - x);
+      const max = nums.length ? nums[0] : 0;
+      let o = tpl.split('$ARGUMENTS').join(args);
+      nums.forEach((n) => { o = o.split('$' + n).join(n === max ? parts.slice(n - 1).join(' ') : parts[n - 1] || ''); });
+      if (!/\$ARGUMENTS|\$\d/.test(tpl) && args) o = tpl + '\n\n' + args;
+      return o;
+    };
+    function run() {
+      const v = Object.fromEntries($$('[data-k]', b).map((x) => [x.dataset.k, x.type === 'checkbox' ? x.checked : x.value.trim()]));
+      const name = (v.name || 'my-' + kind).toLowerCase().replace(/[^a-z0-9-]+/g, '-');
+      const warn = [];
+      let path, md;
+      if (kind === 'command') {
+        path = `.opencode/commands/${name}.md`;
+        const fm = [v.desc ? `description: ${v.desc}` : '', v.agent ? `agent: ${v.agent}` : '', v.sub ? 'subagent: true' : ''].filter(Boolean);
+        md = (fm.length ? `---\n${fm.join('\n')}\n---\n\n` : '') + v.body;
+        if (/!`/.test(v.body)) warn.push(L('A <code>!`command`</code> block runs when the command is expanded, <b>outside the agent\'s permission flow</b>. Only use trusted commands in it, and never put user arguments inside.', 'یک بلوک <code>!`command`</code> هنگام گسترش فرمان اجرا می‌شود، <b>بیرون از جریان مجوز ایجنت</b>. فقط فرمان‌های مورد اعتماد در آن بگذارید و هرگز آرگومان کاربر را داخلش نگذارید.'));
+        $('#' + id + '-x', b).innerHTML = `<div class="callout key"><span class="label" dir="ltr" style="display:block;text-align:start">/${name} ${esc(v.args || '')}</span><pre dir="ltr" style="white-space:pre-wrap;margin:6px 0 0;text-align:left">${esc(expand(v.body, v.args || ''))}</pre></div>`;
+      } else if (kind === 'agent') {
+        path = `.opencode/agents/${name}.md`;
+        const pm = [v.noedit ? '  - action: edit\n    resource: "*"\n    effect: deny' : '', v.noshell ? '  - action: shell\n    resource: "*"\n    effect: deny' : '', v.nonet ? '  - action: webfetch\n    resource: "*"\n    effect: deny\n  - action: websearch\n    resource: "*"\n    effect: deny' : ''].filter(Boolean);
+        const steps = +v.steps > 0 ? `steps: ${+v.steps}\n` : '';
+        md = `---\ndescription: ${v.desc}\nmode: ${v.mode}\n${steps}${pm.length ? 'permissions:\n' + pm.join('\n') + '\n' : ''}---\n\n${v.body}`;
+        if (v.mode === 'subagent' && !v.desc) warn.push(L('A subagent needs a <b>description</b>: it is what the main agent reads when choosing whom to call.', 'یک subagent به <b>توضیح</b> نیاز دارد: ایجنت اصلی هنگام انتخاب کسی که صدا بزند همین را می‌خواند.'));
+        if (!v.noedit && !v.noshell) warn.push(L('This agent can edit files and run shell commands: keep it for a lab or add permission rules.', 'این ایجنت می‌تواند فایل ویرایش و shell اجرا کند: آن را برای آزمایشگاه نگه دارید یا قاعده‌ی مجوز اضافه کنید.'));
+        $('#' + id + '-x', b).innerHTML = A.H.code(`# in the TUI\n/agents                 # pick it, or:\nUse the ${name} subagent to review my current changes.`, 'text', L('Use it', 'استفاده'));
+      } else {
+        path = `.opencode/skills/${name}/SKILL.md`;
+        md = `---\nname: ${v.name || name}\ndescription: ${v.desc}\n---\n\n${v.body}`;
+        if (!v.desc) warn.push(L('A skill without a <b>description</b> is never advertised to the model.', 'مهارتی که <b>توضیح</b> ندارد هرگز به مدل معرفی نمی‌شود.'));
+        warn.push(L('The skill ID comes from the folder name (<code>{0}</code>), not from <code>name</code>. Put scripts and references beside <code>SKILL.md</code>.', 'شناسه‌ی مهارت از نام پوشه (<code>{0}</code>) می‌آید نه از <code>name</code>. اسکریپت‌ها و مراجع را کنار <code>SKILL.md</code> بگذارید.', name));
+        $('#' + id + '-x', b).innerHTML = A.H.code(`# in the TUI, mention it by ID\nCheck this change with @${name}`, 'text', L('Use it', 'استفاده'));
+      }
+      $('#' + id + '-o', b).innerHTML = A.H.code(md, 'markdown', path);
+      $('#' + id + '-w', b).innerHTML = warn.map((w) => `<div class="callout warn"><span class="label">${L('Check', 'بررسی')}</span><div>${w}</div></div>`).join('');
+    }
+    b.addEventListener('input', run);
+    b.addEventListener('click', (e) => { const k = e.target.closest('[data-kind]'); if (k) { kind = k.dataset.kind; form(); } });
+    form();
+  };
+
 })();

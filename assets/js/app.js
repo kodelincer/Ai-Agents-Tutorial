@@ -43,8 +43,8 @@
   const PARTS = [
     { key: 'fund', label: L('Part 1 · Fundamentals', 'بخش 1 · مبانی'), test: (m) => m.num <= 8 || m.num === 14, desc: L('How AI, LLMs and agents work: the knowledge every colleague needs before touching a real agent.', 'هوش مصنوعی، مدل‌های زبانی بزرگ و ایجنت‌ها چطور کار می‌کنند: دانشی که هر همکار پیش از کار با یک ایجنت واقعی لازم دارد.') },
     { key: 'prac', label: L('Part 2 · Hands-on with agents', 'بخش 2 · کار عملی با ایجنت‌ها'), test: (m) => m.num >= 9 && m.num <= 15 && m.num !== 14, desc: L('Install Hermes Agent, build skills, teams and role playbooks for our daily work, inside our security guardrails.', 'نصب Hermes Agent و ساختن مهارت‌ها، تیم‌های ایجنت و دستورالعمل‌های نقش‌محور برای کارهای روزانه‌ی ما، در چارچوب سیاست‌های امنیتی سازمان.') },
-    { key: 'ext', label: L('Part 3 · Going further', 'بخش 3 · گام‌های بعدی'), test: (m) => m.num === 16, desc: L('The wider agent ecosystem: other harnesses, orchestrators, model providers and AI gateways, and how to use free models safely.', 'اکوسیستم گسترده‌ی ایجنت‌ها: هارنس‌های دیگر، هماهنگ‌کننده‌ها، ارائه‌دهندگان مدل و دروازه‌های هوش مصنوعی، و استفاده‌ی امن از مدل‌های رایگان.') },
-    { key: 'biz', label: L('Part 4 · Agents for every department', 'بخش 4 · ایجنت‌ها برای همه‌ی بخش‌های سازمان'), test: (m) => m.num >= 17, desc: L('Practical, safe uses of agents for managers, communications, finance and other departments, with labs on sample data and a pilot plan.', 'کاربردهای عملی و ایمن ایجنت‌ها برای مدیران، ارتباطات، مالی و بخش‌های دیگر، با آزمایشگاه روی داده‌ی نمونه و یک برنامه‌ی پایلوت.') },
+    { key: 'ext', label: L('Part 3 · Going further', 'بخش 3 · گام‌های بعدی'), test: (m) => m.num === 16 || m.num === 17, desc: L('The wider agent ecosystem: other harnesses, orchestrators, model providers and AI gateways, and how to use free models safely.', 'اکوسیستم گسترده‌ی ایجنت‌ها: هارنس‌های دیگر، هماهنگ‌کننده‌ها، ارائه‌دهندگان مدل و دروازه‌های هوش مصنوعی، و استفاده‌ی امن از مدل‌های رایگان.') },
+    { key: 'biz', label: L('Part 4 · Agents for every department', 'بخش 4 · ایجنت‌ها برای همه‌ی بخش‌های سازمان'), test: (m) => m.num >= 18, desc: L('Practical, safe uses of agents for managers, communications, finance and other departments, with labs on sample data and a pilot plan.', 'کاربردهای عملی و ایمن ایجنت‌ها برای مدیران، ارتباطات، مالی و بخش‌های دیگر، با آزمایشگاه روی داده‌ی نمونه و یک برنامه‌ی پایلوت.') },
   ];
   A.modules.forEach((m) => (m.part = PARTS.find((p) => p.test(m))));
   const lessonMins = (l) => l.mins || 10;
@@ -173,6 +173,7 @@
       <a class="nav-link ${cur === 'codingsheet' ? 'active' : ''}" href="#codingsheet"><span class="num">··</span>${L('Claude Code & Codex cheat sheet', 'خلاصه‌ی دستورات Claude Code و Codex')}</a>
       <a class="nav-link ${cur === 'ecosheet' ? 'active' : ''}" href="#ecosheet"><span class="num">··</span>${L('Ecosystem & gateway cheat sheet', 'خلاصه‌ی اکوسیستم و دروازه‌ها')}</a>
       <a class="nav-link ${cur === 'credits' ? 'active' : ''}" href="#credits"><span class="num">··</span>${L('Image credits', 'منابع تصاویر')}</a>
+      <a class="nav-link ${cur === 'opencodesheet' ? 'active' : ''}" href="#opencodesheet"><span class="num">··</span>${L('OpenCode cheat sheet', 'خلاصه‌ی دستورات OpenCode')}</a>
       <a class="nav-link ${cur === 'glossary' ? 'active' : ''}" href="#glossary"><span class="num">··</span>${L('Glossary', 'واژه‌نامه')}</a>
       <a class="nav-link ${cur === 'deckmap' ? 'active' : ''}" href="#deckmap"><span class="num">··</span>${L('Deck-to-lesson map', 'نقشه‌ی اسلاید به درس')}</a></div>`;
     $('#sidebar').innerHTML = h;
