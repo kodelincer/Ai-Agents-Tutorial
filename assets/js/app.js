@@ -172,6 +172,7 @@
       <a class="nav-link ${cur === 'codingsheet' ? 'active' : ''}" href="#codingsheet"><span class="num">··</span>${L('Claude Code & Codex cheat sheet', 'خلاصه‌ی دستورات Claude Code و Codex')}</a>
       <a class="nav-link ${cur === 'ecosheet' ? 'active' : ''}" href="#ecosheet"><span class="num">··</span>${L('Ecosystem & gateway cheat sheet', 'خلاصه‌ی اکوسیستم و دروازه‌ها')}</a>
       <a class="nav-link ${cur === 'credits' ? 'active' : ''}" href="#credits"><span class="num">··</span>${L('Image credits', 'منابع تصاویر')}</a>
+      <a class="nav-link ${cur === 'opencodesheet' ? 'active' : ''}" href="#opencodesheet"><span class="num">··</span>${L('OpenCode cheat sheet', 'خلاصه‌ی دستورات OpenCode')}</a>
       <a class="nav-link ${cur === 'glossary' ? 'active' : ''}" href="#glossary"><span class="num">··</span>${L('Glossary', 'واژه‌نامه')}</a>
       <a class="nav-link ${cur === 'deckmap' ? 'active' : ''}" href="#deckmap"><span class="num">··</span>${L('Deck-to-lesson map', 'نقشه‌ی اسلاید به درس')}</a></div>`;
     $('#sidebar').innerHTML = h;

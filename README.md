@@ -12,9 +12,9 @@ switches the whole course, including diagrams and exercises, and Persian is show
 right-to-left. Add `#fa` or `#en` to a link to open it in a given language.
 
 It expands the original deck in [`source/Ai_Agents.pptx`](source/Ai_Agents.pptx)
-(54 slides) into **31 two-hour sessions** (29 core, plus an optional phase H) made of 17 modules, 109 lessons and 364 slides,
+(54 slides) into **34 two-hour sessions** (29 core, plus an optional phase H) made of 18 modules, 122 lessons and 457 slides,
 with diagrams, speaker notes on every slide, a synced speaker view, checkpoint quizzes
-and 26 in-browser exercises.
+and 28 in-browser exercises.
 
 ## Audience
 
@@ -36,7 +36,7 @@ The teaching order lives in [`assets/js/sessions.js`](assets/js/sessions.js). Ea
 | **E · Hermes Agent** | 16–21 | 16 Install and connect a model · 17 Conversations, tools, operation · 18 Skills, memory, persona · 19 MCP, cron, cost-aware automation · 20 Gateway and hardening · 21 Project lab |
 | **F · Beyond one agent** | 22–25 | 22 Tour: Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho, Multica · 23 Agent teams · 24 Security · 25 Guardrail policy and the network playbook |
 | **G · Playbooks, workshop, capstone** | 26–29 | 26 Role playbooks *(optional)* · 27 Workshop · 28 Capstone · 29 Roadmap and further learning *(optional)* |
-| **H · Going further (optional)** | 30–31 | 30 The agent ecosystem: DeepSeek Harness, OpenCode, Multica, Orca · 31 Providers, AI gateways (OpenRouter, OmniRoute, 9router), free models and connecting your tools |
+| **H · Going further (optional)** | 30–34 | 30 The agent ecosystem: DeepSeek Harness, OpenCode, Multica, Orca · 31 Providers, AI gateways (OpenRouter, OmniRoute, 9router), free models and connecting your tools · 32–34 OpenCode tutorial (Module 17): install and first session, agents, permissions and policies · memory, commands, skills, MCP, models and cost · automation, clients, migration and a governed team kit |
 
 Every lesson stays in its module and keeps its route (for example `#m8-3`); sessions only decide the
 order. `node tools/i18n.js check` fails if a lesson is in no session or in two.
@@ -62,6 +62,7 @@ order. `node tools/i18n.js check` fails if a lesson is in no session or in two.
 | 14 | Working with LLMs: vocabulary, sampling controls, capabilities, pricing, prompt caching, OpenRouter and AvalAI, first API calls | new |
 | 15 | A tour of the wider toolbox: Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho, Multica (introductions, no labs) | new |
 | 16 | The agent ecosystem: four layers, DeepSeek Harness, OpenCode, Multica and Orca, OpenRouter provider routing, self-hosted gateways (OmniRoute, 9router), finding free models safely, connecting Claude Code / OpenCode / Codex / Hermes to a gateway | new |
+| 17 | OpenCode tutorial (OpenCode 2, with V1 differences): install, first session, agents, permission rules and policies, project memory, commands, skills, MCP, models and cost, CI and clients, migration, a governed team kit; plus the OpenCode cheat sheet | new |
 
 The in-app **Deck-to-lesson map** page lists every original slide and where it is taught.
 **Browse by module** shows the same lessons grouped by topic.
@@ -145,7 +146,7 @@ assets/css/academy.css        design tokens (light/dark) and components
 assets/js/core.js             H.* HTML helpers and D.* SVG diagram generators
 assets/js/widgets.js          concept exercises
 assets/js/widgets-labs.js     agent and Hermes lab exercises
-assets/js/widgets-eco.js      ecosystem and gateway exercises (Module 16)
+assets/js/widgets-eco.js      ecosystem, gateway and OpenCode exercises (Modules 16 and 17)
 assets/js/content/mNN-*.js    one file per module
 assets/js/sessions.js         the session plan: which lessons are taught in which session
 assets/js/notes.js            speaker notes (one place to edit what you say per slide)

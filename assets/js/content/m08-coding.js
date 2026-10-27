@@ -825,6 +825,170 @@
           },
         ],
       },
+      {
+        id: 'm8-16', title: 'Field notes: patterns from a long Claude course, checked against the docs', mins: 35,
+        slides: [
+          {
+            t: 'What this lesson is, and how to read it',
+            b: H.split(
+              H.prose(
+                'A popular four-hour YouTube course teaches Claude in ten levels, from the chat window to a team of agents. We took the <b>patterns</b> that matter for infrastructure teams and <b>checked every product fact</b> against the official Claude Code documentation.',
+                'Where the video and the docs agree, the slide says so. Where the video does something we would not allow at work, a later slide says <b>what to do instead</b>.',
+                'Treat the video as a practitioner\'s story, not as documentation: products change monthly and the author also sells a community.'
+              ),
+              H.note('tip', 'Source: <a href="https://www.youtube.com/watch?v=KTEe5705RHw" target="_blank" rel="noopener">the course on YouTube</a>. Product facts come from <a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener">code.claude.com/docs</a>. Check the docs for the version you run.')
+            ),
+            n: 'Say up front that you are teaching patterns, not endorsing every habit in the video. Ask who has watched long tutorials like this, and what they copied without checking. The skill we want is: take the idea, verify the facts, apply our guardrails.',
+          },
+          {
+            t: 'Chat, Cowork or Code: which one for which job',
+            b: H.stack(
+              H.table(['Surface', 'The video\'s analogy', 'Use it for'], [
+                ['Chat (claude.ai)', 'Texting a smart friend', 'Quick answers, brainstorming, one-off charts and documents'],
+                ['Cowork', 'A contractor with their own office', 'Professional deliverables: reports, research, decks. The video describes it as running in a sandboxed workspace of its own'],
+                ['Claude Code', 'Someone at your desk with your files open', 'Code, scripts and assets that must live on your machine, large existing projects, anything that should persist'],
+              ]),
+              H.note('key', 'Claude Code works on <b>your real files and tools</b>, with the permissions you grant. That is its power and its risk, and it is why the permission modes of lesson 3 matter more here than in a chat window.')
+            ),
+            n: 'The analogy is the useful part. Ask students where a ticket-summary job belongs (chat or Cowork), and where a Terraform change belongs (Claude Code, in a repo, with review). Cowork is a separate Anthropic product; we mention it only to place Claude Code on the map.',
+          },
+          {
+            t: 'Many doors, one project',
+            b: H.stack(
+              H.table(['Door', 'How', 'Good to know'], [
+                ['Terminal', '<code>claude</code> in the project folder', 'Works over SSH and on jump hosts; the base for scripts and CI'],
+                ['Desktop app', 'The <b>Code</b> tab', 'Parallel sessions with Git isolation, side-by-side panes, built-in terminal and editor, visual diffs'],
+                ['VS Code or JetBrains', 'The extension', 'Inline diffs next to the file you are editing'],
+                ['Web and phone', 'claude.ai/code, the Claude app', 'Cloud sessions run in a container; <b>Remote Control</b> steers a session on your own machine'],
+              ]),
+              H.code('# Steer a session that runs on YOUR machine from your phone or browser\nclaude remote-control            # server mode, in the project folder\n/remote-control                  # from inside the desktop app or the VS Code extension\n\n# Parallel sessions on your machine, one screen (research preview)\nclaude agents', 'bash', 'Reach and manage sessions'),
+              H.note('warn', '<b>Remote Control needs a claude.ai login</b> (Pro, Max, Team or Enterprise; Team and Enterprise owners must switch it on). It is <b>not available</b> with an API key, with Amazon Bedrock, Google Vertex or Microsoft Foundry, or when <code>ANTHROPIC_BASE_URL</code> points at a gateway such as the ones in Module 16.')
+            ),
+            n: 'The video\'s house analogy: all the doors lead to the same house, so the same CLAUDE.md, skills and connectors work everywhere. Make the second point on the warning: a gateway or a cloud-provider login removes Remote Control, so decide early which path your team uses. The research-preview labels are from the docs: say that agent view may change.',
+          },
+          {
+            t: 'Spend thinking where it matters: model and effort',
+            b: H.split(
+              H.prose(
+                'The video\'s rule of thumb: use the <b>middle model</b> for daily work, move up to the strongest model when answers feel shallow, and use the smallest, cheapest one for bulk jobs.',
+                'In Claude Code you also choose an <b>effort level</b>: <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code> or <code>max</code> (which levels exist depends on the model). Lower is faster and cheaper; higher thinks harder.',
+                'A good habit from the video: let the <b>stronger model write a skill once</b>, then run that skill with a cheaper one every day.'
+              ),
+              H.code('/effort                 # pick a level in the session\n/effort status          # which level is in effect\nclaude --effort high    # start a session at a level\n/model                  # pick the model', 'bash', 'Model and effort'),
+              'ratio'
+            ) + H.note('tip', 'Admins can cap effort per role and per model. <code>max</code> applies to the current session only unless you set it through an environment variable. Details: <a href="https://code.claude.com/docs/en/model-config.md" target="_blank" rel="noopener">model configuration</a>.'),
+            n: 'Cost lives here. Ask: which of our jobs deserve max effort, and which should run on low? Tie it to the cost slides in session 3. The video also recommends a voice-dictation app for long prompts; it is faster, but audio goes to a third-party service, so only use one your security team approved.',
+          },
+          {
+            t: 'From a good first session to a weekly job: GCPS',
+            b: H.stack(
+              H.fig(D.flow([
+                { t: 'Gather', s: 'connectors and MCP pull the data', c: 'tl' },
+                { t: 'Contextualize', s: 'project instructions and memory' },
+                { t: 'Process', s: 'the agent does the work', c: 'acc' },
+                { t: 'Standardize', s: 'a skill, then a schedule', c: 'ok' },
+              ], { h: 100 }), 'The video calls this the GCPS framework. It is the agent loop from Module 7, plus the step most people skip: packaging.'),
+              H.steps([
+                ['Do it once by hand with the agent', 'Expect the first output to be imperfect; fix it by talking to the agent until the result is what you want.'],
+                ['Ask the agent to turn that session into a skill', 'Name the inputs, the steps, the exact output format and the systems it may read.'],
+                ['Run the skill by name', 'The same command now produces the same report.'],
+                ['Put it on a schedule', 'Cloud scheduled tasks run without your laptop; desktop ones need the app open (lesson 7).']
+              ])
+            ),
+            n: 'Walk the example in an IT setting: a weekly vulnerability or patch report. Gather from the scanner API and the CMDB through read-only connectors; contextualize with the format and severity rules in CLAUDE.md; process; standardize as a skill; schedule for Monday 07:00. Ask what the human reviews before the report goes out.',
+          },
+          {
+            t: 'Plan first, then let agents build: the PRD loop',
+            b: H.stack(
+              H.fig(D.flow([
+                { t: 'PRD', s: 'what, why, for whom' },
+                { t: 'Tasks', s: 'small, scoped tickets' , c: 'tl' },
+                { t: 'Agents', s: 'one agent per ticket', c: 'acc' },
+                { t: 'Review', s: 'another agent or you' },
+                { t: 'Test and merge', s: 'then the next ticket', c: 'ok' },
+              ], { h: 100 }), 'The loop real software teams use, with agents in the ticket roles. A board makes it visible: backlog, in progress, review, done.'),
+              H.list([
+                '<b>Do not start with “build me this app”.</b> The video\'s warning is right: a vague one-shot gives a shaky base, and then you loop on “fix it, no not that”.',
+                'Spend your time on the <b>plan</b>: a PRD or app spec, then tasks small enough for one context window.',
+                'Long overnight runs burn many tokens. Prototype small first, and only then hand the plan to a long-running setup.',
+                'Orchestrators named in the video (AutoForge, GSD, Superpowers and others) are <b>community projects we have not audited</b>. Read the code, pin a version and run them in a sandbox VM, as in Module 16.',
+                'Claude Code has its own tools for this: subagents, git worktrees and <code>claude agents</code>.'
+              ])
+            ),
+            n: 'This is the same lesson as the task brief in lesson 12, scaled up. Ask what the equivalent of a PRD is for a firewall-rule change (the change request) and what the review step is (a second engineer plus a diff). Point at the warning on community orchestrators: they run code with your permissions.',
+          },
+          {
+            t: 'If it has a number, an agent can improve it',
+            b: H.split(
+              H.prose(
+                'The video describes an <b>experiment loop</b>: give the agent one measurable goal, let it try changes, keep what improves the number and <b>revert what does not</b>. It showed it on a website\'s load speed.',
+                'The pattern needs three things: a <b>metric</b> you trust, a <b>safe place to experiment</b> (a branch or worktree, never production) and a <b>human who reviews</b> before anything merges.',
+                'Infrastructure examples: backup job duration, build time, alert noise per week, first-response time on tickets, pages that fail a lint rule.'
+              ),
+              H.note('warn', 'A number can be gamed. An agent told to cut alert volume can do it by muting alerts. Pair every metric with a <b>guard</b> (tests, a second metric) and review the diff, not the graph.')
+            ),
+            n: 'Ask for one metric from your own work and one way an over-eager agent could cheat it. The loop is only as safe as the guard you attach. The tool used in the video is a community project; the idea needs no special tool, only a branch, a metric and a revert rule.',
+          },
+          {
+            t: 'Reach your session from a chat app: channels',
+            b: H.stack(
+              H.prose(
+                '<b>Channels</b> (a research preview) push messages from <b>Telegram, Discord or iMessage</b> into a Claude Code session you left running, and Claude can answer back. Each one is a plugin that needs <a href="https://bun.sh" target="_blank" rel="noopener">Bun</a>.',
+                'The docs add steps the video skipped: <b>pair your account</b>, then <b>lock access to an allowlist</b> so only your own ID can send messages.'
+              ),
+              H.code('/plugin install telegram@claude-plugins-official\n/telegram:configure <token>          # token from BotFather; stored in ~/.claude/channels/telegram/.env\nclaude --channels plugin:telegram@claude-plugins-official\n/telegram:access pair <code>         # the bot sends you the code\n/telegram:access policy allowlist    # only paired senders get through', 'bash', 'Telegram channel (from the docs)'),
+              H.note('warn', 'The session must stay open, and channels are not available on Bedrock, Vertex or Foundry. On Team and Enterprise plans an owner must enable them (<code>channelsEnabled</code>). If a channel can relay permission prompts, <b>anyone who can reply through it can approve tool use</b>, so allowlist only people you trust.')
+            ),
+            n: 'This is the always-on assistant everyone wants and the biggest new attack surface. Ask: what happens if the bot token leaks, and what happens if the allowlist is open? Our rule: lab and personal test accounts only until the security team has reviewed channels, with the allowlist on and permission relay off.',
+          },
+          {
+            t: 'Never depend on one provider',
+            b: H.split(
+              H.prose(
+                'During the recording the author\'s Claude was <b>down</b>, so the whole course had to switch to another agent. The lesson: keep your work in <b>files and repositories</b>, not in one vendor\'s chat history.',
+                'Write project rules in a file both tools read. Claude Code reads <code>CLAUDE.md</code> and can also use a repository\'s <code>AGENTS.md</code>; Codex and OpenCode read <code>AGENTS.md</code>.',
+                'Keep a second coding agent installed and tested, and, for models, a gateway or a local fallback (Modules 5 and 16).'
+              ),
+              H.note('key', 'Redundancy is a policy, not an emergency improvisation. Decide the fallback <b>before</b> the outage: which agent, which models, and which data it may see.')
+            ),
+            n: 'Ask what happens to our helpdesk automation if the provider is unavailable for a day. A fallback that was never tested does not count. Remind them that a second provider is a second set of terms and a second data path, so it also needs approval.',
+          },
+          {
+            t: 'What to automate first: the SHIPS matrix',
+            b: H.stack(
+              H.steps([
+                ['Scan', 'Log where your week goes for a few days, with a tool your security team approved. Screen recorders see everything on your screen.'],
+                ['Hook up', 'Connect only the systems you need, read-only first.'],
+                ['Identify', 'Score each task, then pick the top three and ignore the rest.'],
+                ['Package', 'Turn each into a skill and put it on a schedule.'],
+                ['Scale', 'Schedule a weekly “what should I automate next?” report from the agent itself.']
+              ]),
+              H.table(['Task (example)', 'Hours a week', 'Impact (1 to 5)', 'Feasibility (1 to 5)', 'Score'], [
+                ['Triage new tickets', '5', '4', '4', '13'],
+                ['Weekly patch report', '3', '3', '5', '11'],
+                ['Password-reset follow-ups', '4', '2', '5', '11'],
+                ['Change-request summaries', '2', '3', '4', '9'],
+              ]),
+              H.note('tip', 'The video\'s score is simply hours plus impact plus feasibility. Invented numbers here, for practice: use your own, and start with the three highest.')
+            ),
+            n: 'Have students fill the table for their own team in five minutes and read out their top three. The video also warns against “shiny-object syndrome”: sharpening the axe forever. Ship one automation this month before you evaluate the next tool.',
+          },
+          {
+            t: 'Habits in the video we would not copy at work',
+            b: H.table(['In the video', 'Why it is risky', 'Our rule'], [
+              ['Turn on bypass permissions to avoid prompts', 'The docs allow it for <b>isolated containers and VMs only</b>; deny rules still apply, and admins can disable the mode', 'Use plan or accept-edits modes; bypass only in a disposable VM'],
+              ['Ask the agent to save API keys in a file in the project', 'Keys end up in the repo, in logs and in later prompts', 'Use a secret manager or environment variables; deny reads of <code>.env</code>'],
+              ['Paste keys and tokens into the chat', 'Prompts are logged and may be retained', 'Reference a secret by name; rotate anything that was pasted'],
+              ['Let a browser extension act without asking, in your daily browser', 'It can reach every logged-in session', 'A separate browser profile or a sandbox VM; see the computer-use lesson'],
+              ['Connect a chat bot without an allowlist', 'Anyone who finds the bot can talk to your machine', 'Pair, then allowlist; lab accounts only'],
+              ['Tell the agent “install this skill or repo for me”', 'Third-party code runs with your permissions', 'Read the SKILL.md and scripts, pin a version, run in a sandbox'],
+              ['“Always allow” on every connector', 'One compromised prompt can use every connector', 'Read-only first; allow per tool; review the log'],
+              ['Post, email or trade on a schedule with no review', 'A wrong action goes out at machine speed', 'Draft first, human approves (T2 and T3 in Module 12); the video itself shows a hold-for-review option'],
+            ]),
+            n: 'This is the slide to spend time on. Take one row at a time and ask the class for the control, before you reveal ours. The video is honest that it is a fast-moving, experimental setup; our job is to keep the speed and add the guardrails. Link each row to the policy tiers in Module 12.',
+          },
+        ],
+      },
     ],
     quiz: [
       { q: 'What is the main way a coding agent “observes” whether its change worked?', a: ['It asks the user every time', 'It runs tests, linters and the code itself', 'It trusts its first answer', 'It reads the model card'], c: 1, why: 'Tests and tools give real feedback in the loop. That is why TDD works so well with agents.' },
@@ -838,6 +1002,8 @@
       { q: 'Which part of a task brief gives a coding agent a way to know it is done?', a: ['The goal sentence', 'Checks: commands that must pass', 'The out-of-scope list', 'The context'], c: 1, why: 'Without a named check the agent cannot tell success from a plausible-looking change. Name the command that must pass.' },
       { q: 'An agent reports "all tests pass, nothing else changed". What do you do?', a: ['Merge it', 'Run the tests yourself and check git status and the diff', 'Ask it to say it again', 'Switch to a bigger model'], c: 1, why: 'Trust evidence you can check, not the summary: run the checks, read the diff and look for files outside the scope.' },
       { q: 'An agent repaired your own home router end to end. Which of these matters most when you do the same at work?', a: ['The router brand', 'Policy tiers, approvals, a backup and a way back in, because users depend on the device', 'The speed of the repair', 'The colour of the app'], c: 1, why: 'The agent can do the repair; the safety comes from least privilege, approval, a backup taken first and an out-of-band way back in.' },
+      { q: 'Your team routes Claude Code through an LLM gateway by setting ANTHROPIC_BASE_URL. What happens to Remote Control?', a: ['It works the same', 'It is unavailable: it needs a direct claude.ai login', 'It works but only on Windows', 'It becomes faster'], c: 1, why: 'The docs list a custom ANTHROPIC_BASE_URL, API keys and the cloud-provider logins as configurations where Remote Control is not available.' },
+      { q: 'You connect a chat-app channel to a Claude Code session. Which step keeps strangers out?', a: ['Using a long bot name', 'Pairing your account and setting the access policy to an allowlist', 'Turning on bypass permissions', 'Nothing is needed'], c: 1, why: 'Only senders on the allowlist can push messages, and if permission relay is on, they can approve tool use too.' },
     ],
   });
 })();
