@@ -1,7 +1,8 @@
-/* The teaching plan: 29 two-hour sessions. Each session lists lesson ids in teaching order.
+/* The teaching plan: 35 two-hour sessions. Each session lists lesson ids in teaching order.
    Lessons stay in their modules (routes such as #m8-3 never change); sessions only decide the order
    and the grouping. Every lesson must appear in exactly one session (node tools/i18n.js check enforces it).
-   Optional sessions can be dropped when time is short. */
+   Optional sessions can be dropped when time is short. `biz: true` marks the sessions of the business track,
+   for managers, communications, finance and other non-technical learners (sessions 32 to 35 are written for them). */
 (function () {
   const A = window.ACADEMY;
   const L = A.L;
@@ -15,19 +16,20 @@
     { key: 'F', label: L('F · Beyond one agent', 'و · فراتر از یک ایجنت') },
     { key: 'G', label: L('G · Playbooks, workshop and capstone', 'ز · دستورالعمل‌ها، کارگاه و پروژه‌ی پایانی') },
     { key: 'H', label: L('H · Going further (optional)', 'ح · گام‌های بعدی (اختیاری)') },
+    { key: 'I', label: L('I · Agents for every department', 'ط · ایجنت‌ها برای همه‌ی بخش‌های سازمان') },
   ];
 
   A.sessions = [
     // ---------- A · Big picture and using LLMs ----------
-    { n: 1, phase: 'A', title: 'AI, ML, LLMs and agents: the big picture',
+    { n: 1, biz: true, phase: 'A', title: 'AI, ML, LLMs and agents: the big picture',
       summary: 'One picture of how AI, machine learning, LLMs and agents fit together, mostly in figures, with no maths.',
       goals: ['Place AI, ML, deep learning, LLMs and agents on one map', 'Explain in one minute what an AI agent is and why it matters'],
       lessons: ['m0-1', 'm0-4', 'm0-2', 'm1-1', 'm1-2', 'm7-1'] },
-    { n: 2, phase: 'A', title: 'LLM vocabulary and controls',
+    { n: 2, biz: true, phase: 'A', title: 'LLM vocabulary and controls',
       summary: 'The words every user of a language model meets: tokens, context window, temperature, capabilities, model names.',
       goals: ['Read a model card and a model name without guessing', 'Choose sensible values for temperature, top-p and max tokens'],
       lessons: ['m14-1', 'm14-2', 'm14-3', 'm2-1', 'm5-2'] },
-    { n: 3, phase: 'A', title: 'Pricing, caching and gateways: OpenRouter and AvalAI',
+    { n: 3, biz: true, phase: 'A', title: 'Pricing, caching and gateways: OpenRouter and AvalAI',
       summary: 'What an API call costs, what cache reads and writes do, and how gateways such as OpenRouter and AvalAI give one key for many models.',
       goals: ['Estimate the cost of a task from token counts and a price list', 'Make your first API calls through a gateway and read the usage block'],
       lessons: ['m14-4', 'm14-5', 'm14-6', 'm5-1'] },
@@ -37,7 +39,7 @@
       summary: 'The ML ideas behind LLMs: learning types, neural network families, frameworks and the pipeline. A deeper dive for the curious.',
       goals: ['Tell supervised, unsupervised and reinforcement learning apart', 'Describe the ML pipeline and the roles around it'],
       lessons: ['m1-3', 'm1-4', 'm1-5', 'm1-6', 'm2-2'] },
-    { n: 5, phase: 'B', title: 'Inside an LLM',
+    { n: 5, biz: true, phase: 'B', title: 'Inside an LLM',
       summary: 'Attention, probability, context and reasoning: why models are powerful and why they hallucinate.',
       goals: ['Explain next-token prediction and why answers vary', 'Know when a reasoning model is worth its cost'],
       lessons: ['m2-3', 'm2-4', 'm2-5', 'm2-6', 'm5-6'] },
@@ -45,7 +47,7 @@
       summary: 'Pre-training, instruction tuning, preference tuning, fine-tuning and quantization. A deeper dive for the curious.',
       goals: ['Describe the stages from raw text to a helpful assistant', 'Choose between prompting, RAG and fine-tuning'],
       lessons: ['m3-1', 'm3-2', 'm3-3', 'm3-4', 'm3-5', 'm5-3'] },
-    { n: 7, phase: 'B', title: 'Prompt and context engineering',
+    { n: 7, biz: true, phase: 'B', title: 'Prompt and context engineering',
       summary: 'Writing instructions models follow, managing the context window, and measuring whether a change helped.',
       goals: ['Write a structured prompt and a reusable prompt pattern', 'Build a small eval so improvements are measured, not felt'],
       lessons: ['m6-1', 'm6-2', 'm6-3', 'm5-7'] },
@@ -59,7 +61,7 @@
       summary: 'The think, act, observe loop, workflow patterns, and how function calling and MCP connect a model to the world.',
       goals: ['Trace one agent run step by step', 'Explain function calling and what MCP standardises'],
       lessons: ['m7-2', 'm7-3', 'm7-4'] },
-    { n: 10, phase: 'C', title: 'Agents II: the harness, memory and governance',
+    { n: 10, biz: true, phase: 'C', title: 'Agents II: the harness, memory and governance',
       summary: 'Everything around the model that makes it an agent, how agents remember, the platforms on offer, and how to govern them.',
       goals: ['List the parts of a harness and what each one protects', 'Compare agent platforms and decide what needs governance'],
       lessons: ['m7-5', 'm4-5', 'm7-6', 'm7-7'] },
@@ -121,7 +123,7 @@
       summary: 'Why agents work in teams, delegating with subagents, a persistent team with profiles and a kanban board, and keeping humans in the loop.',
       goals: ['Design a small agent team with clear roles', 'Decide where a human must approve'],
       lessons: ['m10-1', 'm10-2', 'm10-3', 'm10-4'] },
-    { n: 24, phase: 'F', title: 'Security: with great power comes great responsibility',
+    { n: 24, biz: true, phase: 'F', title: 'Security: with great power comes great responsibility',
       summary: 'The agent threat model, prompt injection, defences that work, and making a model forget.',
       goals: ['Spot a prompt-injection path in an agent design', 'Apply layered defences instead of one clever prompt'],
       lessons: ['m11-1', 'm11-2', 'm11-3', 'm11-4'] },
@@ -157,5 +159,23 @@
       summary: 'OpenRouter and provider routing, self-hosted gateways (OmniRoute, 9router), finding free models and using them safely, and connecting Claude Code, OpenCode, Codex and Hermes to a router.',
       goals: ['Control cost and where prompts go with provider routing', 'Audit a gateway before anyone depends on it, and connect three tools to it'],
       lessons: ['m16-5', 'm16-6', 'm16-7', 'm16-8'] },
+
+    // ---------- I · Agents for every department ----------
+    { n: 32, biz: true, phase: 'I', title: 'Agents for everyone, and for managers',
+      summary: 'How people outside IT work with agents, the safety rules, how to write a brief, and a manager\'s weekly briefing, meetings and decisions, with a lab on sample reports.',
+      goals: ['Choose a good first task and apply the safety rules', 'Write a brief and review the result, then run a weekly briefing with a human approving'],
+      lessons: ['m17-1', 'm17-2', 'm17-3', 'm17-4'] },
+    { n: 33, biz: true, phase: 'I', title: 'Communications and public relations',
+      summary: 'Coverage digests, first drafts, one message for every channel, spokesperson and crisis preparation, and a lab that turns a fact sheet into a message set with a hard fact check.',
+      goals: ['Draft a message set from a fact sheet and check every claim', 'Set an approval chain so nothing goes public unreviewed'],
+      lessons: ['m17-5', 'm17-6'] },
+    { n: 34, biz: true, phase: 'I', title: 'Accounting and finance',
+      summary: 'Invoice checks, reconciliation, variance explanations and policy checks, with the controls that keep an agent a preparer, and a lab with a verified answer key.',
+      goals: ['Produce an exceptions list and verify its totals yourself', 'Write the control statement an auditor would accept'],
+      lessons: ['m17-7', 'm17-8'] },
+    { n: 35, biz: true, phase: 'I', title: 'More departments, and your own pilot',
+      summary: 'Five patterns that repeat across HR, sales, service, legal and admin, the extra care needed with people and the law, and a workshop that plans a real two-week pilot.',
+      goals: ['Place any task on one of five patterns and see what a person must still decide', 'Leave with a one-page pilot plan for your own department'],
+      lessons: ['m17-9', 'm17-10'] },
   ];
 })();

@@ -9,7 +9,7 @@ Whenever you add or change any visible text, add the Persian at the same time.
 
 - Lesson content, speaker notes, quizzes and reference pages: write English in
   `assets/js/content/*.js`, `notes.js` or `pages.js`, then add Persian to
-  `assets/i18n/fa/<group>.js` (groups: `m00`…`m16`, `sessions`, `pages`).
+  `assets/i18n/fa/<group>.js` (groups: `m00`…`m17`, `sessions`, `pages`).
   `node tools/i18n.js missing <group>` lists what is missing.
 - UI and widget strings (`app.js`, `core.js`, `widgets*.js`): write `L('English', 'فارسی')`
   inline; for data arrays use `[en, fa]` pairs read with `T()`.
@@ -29,7 +29,7 @@ python3 tools/build_single.py       # dist/ai-agents-academy.html (dist/ is giti
 
 ## Content conventions
 
-- The teaching order is `assets/js/sessions.js` (31 two-hour sessions). Lessons stay in their
+- The teaching order is `assets/js/sessions.js` (35 two-hour sessions). Lessons stay in their
   modules and keep their routes; every lesson id must be in exactly one session
   (`node tools/i18n.js check` enforces it). A new lesson needs a session.
 - The course covers Hermes Agent as the agent harness, and Claude Code and Codex as
@@ -47,3 +47,8 @@ python3 tools/build_single.py       # dist/ai-agents-academy.html (dist/ is giti
   store it as WebP in `assets/img/shots/`, and draw it with `H.shot(id, caption)`. Use only pictures from a
   project's own repository (check its licence) or captures of the real tool; never mock up an interface.
   Reference images by literal `assets/img/shots/<name>.webp` paths so the single-file build can inline them.
+- The course serves every department, not only IT. Sessions with `biz: true` form the business track
+  (sessions 32 to 35 are written for non-technical learners). In module 17, prompts and sample material that
+  learners paste into their own assistant use `H.prompt` (translated, so Persian readers get Persian prompts);
+  commands, code and data files use `H.code` (not translated). Sample data is fictional, and any figure in an
+  answer key must be computed and checked, not estimated.
