@@ -1,8 +1,8 @@
-/* The teaching plan: 35 two-hour sessions. Each session lists lesson ids in teaching order.
+/* The teaching plan: 38 two-hour sessions. Each session lists lesson ids in teaching order.
    Lessons stay in their modules (routes such as #m8-3 never change); sessions only decide the order
    and the grouping. Every lesson must appear in exactly one session (node tools/i18n.js check enforces it).
    Optional sessions can be dropped when time is short. `biz: true` marks the sessions of the business track,
-   for managers, communications, finance and other non-technical learners (sessions 32 to 35 are written for them). */
+   for managers, communications, finance and other non-technical learners (sessions 35 to 38 are written for them). */
 (function () {
   const A = window.ACADEMY;
   const L = A.L;
@@ -161,21 +161,21 @@
       lessons: ['m16-5', 'm16-6', 'm16-7', 'm16-8'] },
 
     // ---------- I · Agents for every department ----------
-    { n: 32, biz: true, phase: 'I', title: 'Agents for everyone, and for managers',
+    { n: 35, biz: true, phase: 'I', title: 'Agents for everyone, and for managers',
       summary: 'How people outside IT work with agents, the safety rules, how to write a brief, and a manager\'s weekly briefing, meetings and decisions, with a lab on sample reports.',
       goals: ['Choose a good first task and apply the safety rules', 'Write a brief and review the result, then run a weekly briefing with a human approving'],
-      lessons: ['m17-1', 'm17-2', 'm17-3', 'm17-4'] },
-    { n: 33, biz: true, phase: 'I', title: 'Communications and public relations',
+      lessons: ['m18-1', 'm18-2', 'm18-3', 'm18-4'] },
+    { n: 36, biz: true, phase: 'I', title: 'Communications and public relations',
       summary: 'Coverage digests, first drafts, one message for every channel, spokesperson and crisis preparation, and a lab that turns a fact sheet into a message set with a hard fact check.',
       goals: ['Draft a message set from a fact sheet and check every claim', 'Set an approval chain so nothing goes public unreviewed'],
-      lessons: ['m17-5', 'm17-6'] },
-    { n: 34, biz: true, phase: 'I', title: 'Accounting and finance',
+      lessons: ['m18-5', 'm18-6'] },
+    { n: 37, biz: true, phase: 'I', title: 'Accounting and finance',
       summary: 'Invoice checks, reconciliation, variance explanations and policy checks, with the controls that keep an agent a preparer, and a lab with a verified answer key.',
       goals: ['Produce an exceptions list and verify its totals yourself', 'Write the control statement an auditor would accept'],
-      lessons: ['m17-7', 'm17-8'] },
-    { n: 35, biz: true, phase: 'I', title: 'More departments, and your own pilot',
+      lessons: ['m18-7', 'm18-8'] },
+    { n: 38, biz: true, phase: 'I', title: 'More departments, and your own pilot',
       summary: 'Five patterns that repeat across HR, sales, service, legal and admin, the extra care needed with people and the law, and a workshop that plans a real two-week pilot.',
       goals: ['Place any task on one of five patterns and see what a person must still decide', 'Leave with a one-page pilot plan for your own department'],
-      lessons: ['m17-9', 'm17-10'] },
+      lessons: ['m18-9', 'm18-10'] },
   ];
 })();

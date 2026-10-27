@@ -68,7 +68,7 @@
             t: 'The learning path',
             b: H.stack(
               H.fig(D.stack([
-                { t: 'I · Agents for every department', s: 'sessions 32–35: managers, communications, finance, HR and more; a pilot plan', c: 'acc' },
+                { t: 'I · Agents for every department', s: 'sessions 35–38: managers, communications, finance, HR and more; a pilot plan', c: 'acc' },
                 { t: 'H · Going further (optional)', s: 'sessions 30–31: the agent ecosystem, gateways and free models' },
                 { t: 'G · Playbooks, workshop, capstone', s: 'sessions 26–29: your team\'s playbook and a helpdesk agent', c: 'acc' },
                 { t: 'F · Beyond one agent', s: 'sessions 22–25: frameworks, Honcho, Multica, teams, security, guardrails' },
@@ -180,7 +180,7 @@
               ['Accounting and finance', 'Invoice checks; reconciliation; variance explanations.', 'checking'],
               ['HR, sales, service, admin', 'Policy answers; reply drafts; schedules and status reports.', 'and more'],
               ['IT', 'Tickets, monitoring, changes and coding, the rest of this course.', 'operations'],
-            ], 3) + H.note('key', 'Everywhere the pattern is the same: the agent prepares, a person approves. Sessions 32 to 35 are written for people outside IT.'),
+            ], 3) + H.note('key', 'Everywhere the pattern is the same: the agent prepares, a person approves. Sessions 35 to 38 are written for people outside IT.'),
             n: 'Say this early, so people from every department know the course is for them. Ask each person to name the department they work in. IT colleagues will go deep on coding agents and Hermes; everyone else has a track of sessions with the same ideas applied to briefings, messages, invoices and policies.',
           },
           {
@@ -192,7 +192,7 @@
               ['Know the wider toolbox', 'Recognise Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho and Multica.', 'session 22'],
               ['Keep it safe', 'Apply guardrails, approvals and defences against prompt injection.', 'sessions 24–25'],
               ['Put it to work', 'Write your team\'s playbook and demo a helpdesk agent.', 'sessions 26–29'],
-              ['Use it in your department', 'Briefings, drafts and checks with a person approving, and a pilot plan.', 'sessions 32–35'],
+              ['Use it in your department', 'Briefings, drafts and checks with a person approving, and a pilot plan.', 'sessions 35–38'],
             ], 3),
             n: 'Read the six cards and ask each person which one they care about most. Use the answers to decide with the class which optional sessions to keep. The session plan page shows all of them.',
           },

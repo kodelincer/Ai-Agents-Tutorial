@@ -166,7 +166,7 @@
     title: 'Instructor guide', eyebrow: 'For whoever runs the course',
     lead: 'How to run this course for IT teams and for managers, communications, finance and other departments: schedule, tracks, lab setup, and how to update the content.',
     render: () =>
-      H.note('key', 'The course is 35 two-hour sessions in nine phases, with two tracks: an IT track (sessions 1 to 31) and a business track (sessions 1, 2, 3, 5, 7, 10, 24 and 32 to 35, written for people with no technical background). Phase A gives everyone the same vocabulary and shows how to use and pay for models. Phase B explains how the machine works; its deeper sessions are optional. Phases D and E, coding agents and Hermes Agent, get most of the time. Phases F and G cover teams, security and your own playbooks. Do not skip session 24 on security. An optional phase H (sessions 30–31) covers the wider ecosystem of harnesses, orchestrators and AI gateways, and is best taught after the labs, when people have real questions about cost, free models and other tools. The <a href="#sessions">session plan</a> lists every lesson, and you can drop the optional sessions when time is short.', 'Course design') +
+      H.note('key', 'The course is 38 two-hour sessions in nine phases, with two tracks: an IT track (sessions 1 to 34) and a business track (sessions 1, 2, 3, 5, 7, 10, 24 and 35 to 38, written for people with no technical background). Phase A gives everyone the same vocabulary and shows how to use and pay for models. Phase B explains how the machine works; its deeper sessions are optional. Phases D and E, coding agents and Hermes Agent, get most of the time. Phases F and G cover teams, security and your own playbooks. Do not skip session 24 on security. An optional phase H (sessions 30–31) covers the wider ecosystem of harnesses, orchestrators and AI gateways, and is best taught after the labs, when people have real questions about cost, free models and other tools. The <a href="#sessions">session plan</a> lists every lesson, and you can drop the optional sessions when time is short.', 'Course design') +
       H.table(['Phase', 'Sessions', 'Format', 'What to prepare'], [
         ['A · Big picture and using LLMs', '1–3', 'Talk, figures, a short lab', 'A gateway account (OpenRouter or AvalAI) with a small spending limit; one key per pair'],
         ['B · Understanding the machine', '4–8', 'Talk + exercises (4 and 6 optional)', 'An Ollama host for the local-models lab'],
@@ -176,7 +176,7 @@
         ['F · Beyond one agent', '22–25', 'Talk + exercises + red team', 'Session 22 is a talk only; the guardrail policy agreed with your security team'],
         ['G · Playbooks, workshop, capstone', '26–29', 'Team project', 'Anonymised tickets and one runbook from each team'],
         ['H · Going further (optional)', '30–31', 'Talk + gateway lab', 'A disposable VM with Docker or Node; no company keys or data'],
-        ['I · Agents for every department', '32–35', 'Talk + three labs on sample data + a pilot workshop', 'An approved assistant account for each learner, and the data-protection officer\'s rules on what may be pasted; ask each learner to bring one real weekly task'],
+        ['I · Agents for every department', '35–38', 'Talk + three labs on sample data + a pilot workshop', 'An approved assistant account for each learner, and the data-protection officer\'s rules on what may be pasted; ask each learner to bring one real weekly task'],
       ]) +
       H.split(
         H.prose('<h3>Before the course</h3>', H.list([

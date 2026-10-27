@@ -1,12 +1,12 @@
 (function () {
   const { H, D } = window.ACADEMY;
   window.ACADEMY.module({
-    id: 'm17', num: 17, title: 'Agents for every department: managers, communications, finance and more',
+    id: 'm18', num: 18, title: 'Agents for every department: managers, communications, finance and more',
     summary: 'Practical, safe uses of AI agents outside IT: weekly briefings and decisions for managers, coverage and messages for communications and PR, invoice and reconciliation checks for accounting, plus HR, sales, service and admin. Three labs use sample data, and a workshop plans a real two-week pilot.',
     outcomes: ['Choose a good first task for an agent and say what makes it safe', 'Write a brief any assistant can follow, and review the result the same way every time', 'Run a manager\'s weekly briefing, a communications message set and an invoice check with human approval', 'Plan and measure a two-week pilot in your own department'],
     lessons: [
       {
-        id: 'm17-1', title: 'Agents beyond IT: four ways to work, and the safe rules', mins: 25,
+        id: 'm18-1', title: 'Agents beyond IT: four ways to work, and the safe rules', mins: 25,
         slides: [
           {
             t: 'The same agent loop, in every department',
@@ -68,7 +68,7 @@
         ],
       },
       {
-        id: 'm17-2', title: 'Turn a task into a brief', mins: 15,
+        id: 'm18-2', title: 'Turn a task into a brief', mins: 15,
         slides: [
           {
             t: 'The brief: seven lines for any task',
@@ -111,7 +111,7 @@
         ],
       },
       {
-        id: 'm17-3', title: 'Managers and leaders: briefings, meetings and decisions', mins: 25,
+        id: 'm18-3', title: 'Managers and leaders: briefings, meetings and decisions', mins: 25,
         slides: [
           {
             t: 'Five jobs an agent does well for a manager',
@@ -176,7 +176,7 @@
         ],
       },
       {
-        id: 'm17-4', title: 'Lab: a manager\'s weekly briefing', mins: 30, lab: true,
+        id: 'm18-4', title: 'Lab: a manager\'s weekly briefing', mins: 30, lab: true,
         slides: [
           {
             t: 'The material: five weekly reports',
@@ -229,7 +229,7 @@
         ],
       },
       {
-        id: 'm17-5', title: 'Communications and public relations', mins: 30,
+        id: 'm18-5', title: 'Communications and public relations', mins: 30,
         slides: [
           {
             t: 'Six jobs for a communications team',
@@ -287,7 +287,7 @@
         ],
       },
       {
-        id: 'm17-6', title: 'Lab: from fact sheet to message set, with a hard fact check', mins: 30, lab: true,
+        id: 'm18-6', title: 'Lab: from fact sheet to message set, with a hard fact check', mins: 30, lab: true,
         slides: [
           {
             t: 'The fact sheet',
@@ -340,7 +340,7 @@
         ],
       },
       {
-        id: 'm17-7', title: 'Accounting and finance', mins: 30,
+        id: 'm18-7', title: 'Accounting and finance', mins: 30,
         slides: [
           {
             t: 'Six jobs for finance and accounting',
@@ -416,7 +416,7 @@
         ],
       },
       {
-        id: 'm17-8', title: 'Lab: invoice exceptions with a verified total', mins: 30, lab: true,
+        id: 'm18-8', title: 'Lab: invoice exceptions with a verified total', mins: 30, lab: true,
         slides: [
           {
             t: 'The data',
@@ -464,7 +464,7 @@
         ],
       },
       {
-        id: 'm17-9', title: 'More departments, and five patterns that repeat', mins: 25,
+        id: 'm18-9', title: 'More departments, and five patterns that repeat', mins: 25,
         slides: [
           {
             t: 'Five patterns that repeat in every department',
@@ -513,7 +513,7 @@
         ],
       },
       {
-        id: 'm17-10', title: 'Workshop: pick your use case and plan a two-week pilot', mins: 45, lab: true,
+        id: 'm18-10', title: 'Workshop: pick your use case and plan a two-week pilot', mins: 45, lab: true,
         slides: [
           {
             t: 'Pick the task: score it',
