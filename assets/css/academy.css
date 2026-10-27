@@ -473,6 +473,8 @@ body.speaker .shell { display: block; }
 svg { direction: ltr; }
 code, kbd { unicode-bidi: isolate; direction: ltr; }
 .code, .code pre, .term, .out, .tok-ids, .term-in input, .widget textarea, .cmdchip { direction: ltr; text-align: left; }
+.code.prompt, .code.prompt pre { direction: inherit; text-align: start; }
+.code.prompt pre { white-space: pre-wrap; overflow-wrap: anywhere; unicode-bidi: plaintext; font-family: var(--f-body); font-size: .9rem; line-height: 1.6; }
 .fa-only { display: none; }
 :root[lang="fa"] .fa-only { display: revert; }
 :root[lang="fa"] .en-only { display: none; }
@@ -520,3 +522,4 @@ dialog.zoom p { margin: 8px 0 0; font-size: .85rem; color: var(--muted); text-al
 .credit-row { display: grid; grid-template-columns: 160px 1fr; gap: 14px; align-items: start; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
 .credit-row img { width: 100%; height: auto; border-radius: 6px; border: 1px solid var(--line); background: #0d1117; }
 @media (max-width: 560px) { .credit-row { grid-template-columns: 1fr; } }
+.nw { white-space: nowrap; }

@@ -78,6 +78,10 @@
     },
     code: (text, lang, title) =>
       out(`<div class="code" data-lang="${lang || 'bash'}"><div class="code-h"><span class="t">${esc(title ? tr(title) : lang || 'bash')}</span><button type="button" class="copy">${L('Copy', 'کپی')}</button></div><pre><code>${esc(text.replace(/^\n/, '').replace(/\s+$/, ''))}</code></pre></div>`),
+    // A prompt or sample text that learners paste into their own assistant. Unlike H.code, the text is
+    // translated, so Persian readers get Persian prompts. Rendered as wrapping prose in a copyable box.
+    prompt: (text, title) =>
+      out(`<div class="code prompt" data-lang="prompt"><div class="code-h"><span class="t">${esc(title ? tr(title) : L('prompt', 'پرامپت'))}</span><button type="button" class="copy">${L('Copy', 'کپی')}</button></div><pre><code>${esc(tr(text).replace(/^\n/, '').replace(/\s+$/, ''))}</code></pre></div>`),
     table: (head, rows) =>
       out(`<div class="tbl-wrap"><table><thead><tr>${head.map((h) => `<th>${tr(h)}</th>`).join('')}</tr></thead><tbody>${rows
         .map((r) => `<tr>${r.map((c) => `<td>${tr(c)}</td>`).join('')}</tr>`)
