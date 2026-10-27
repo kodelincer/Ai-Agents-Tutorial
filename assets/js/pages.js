@@ -149,10 +149,10 @@
   A.pages.credits = {
     title: 'Image credits', eyebrow: 'Reference', lead: 'Every interface picture in the lessons, where it comes from and under what terms. Click a picture to enlarge it.',
     render: () =>
-      H.note('key', 'Product names, logos and interfaces belong to their owners and are shown here to teach how the tools work. Pictures taken from a project\'s repository carry the licence of that repository. The other pictures were captured from the real tools while preparing this course. Interfaces change often, so what you see after installing may differ.', 'About these pictures') +
+      H.note('key', 'Product names, logos and interfaces belong to their owners and are shown here to teach how the tools work. Pictures taken from a project\'s repository carry the licence of that repository. The other pictures were captured from the real tools, or from their public websites on the date shown, while preparing this course. Interfaces change often, so what you see after installing may differ.', 'About these pictures') +
       `<div class="credit-list">${Object.keys(A.shots).map((id) => {
         const r = A.shots[id], sr = r.src;
-        return `<div class="credit-row"><img src="${r.img}" alt="${A.esc(A.tr(r.alt))}"><div><b>${A.tr(r.alt)}</b><br><span class="muted">${L('Source: ', 'منبع: ')}<a href="${A.esc(sr.url)}" target="_blank" rel="noopener">${A.esc(sr.name)}</a> · ${sr.cap ? L('captured from version {0}', 'ثبت‌شده از نسخه‌ی {0}', sr.cap) + ' · ' : ''}${A.esc(sr.license)}${r.edit ? '<br>' + A.tr(r.edit) : ''}</span></div></div>`;
+        return `<div class="credit-row"><img src="${r.img}" alt="${A.esc(A.tr(r.alt))}"><div><b>${A.tr(r.alt)}</b><br><span class="muted">${L('Source: ', 'منبع: ')}<a href="${A.esc(sr.url)}" target="_blank" rel="noopener">${A.esc(sr.name)}</a> · ${A.shotNote(sr)}${r.edit ? '<br>' + A.tr(r.edit) : ''}</span></div></div>`;
       }).join('')}</div>`,
   };
 

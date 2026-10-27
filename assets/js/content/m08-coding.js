@@ -115,6 +115,15 @@
             ),
             n: 'Run claude in a clean folder on the projector and walk through the first screen with the class. Then open the desktop app side by side and show that the Code tab is the same agent in a window. Our own screenshots of the desktop app are not in this course yet, so show it live or use the link on the slide.',
           },
+          {
+            t: 'Where to get it: the websites',
+            b: H.shots([
+              ['site-claude-code', 'The Claude Code page: the desktop app in the picture, and the other ways to use it (terminal, web, IDE, Slack).'],
+              ['site-claude-download', 'The download page for the Claude desktop app.'],
+              ['site-claude-docs', 'The documentation: always check it for the current install steps.'],
+            ]),
+            n: 'Open claude.com/product/claude-code on the projector. The picture in its first screen is the desktop app with the Code tab: that is the window version of the same agent. Point at the row of other surfaces under it. Then open the docs and show where the install steps live, and say that this page is the source of truth, not our slides.',
+          },
         ],
       },
       {

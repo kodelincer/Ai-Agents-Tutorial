@@ -59,6 +59,9 @@
   A.out = out;
 
   // ---------- HTML helpers ----------
+  // "captured from version 1.2" / "website captured 2026-10-27" plus the licence, for the credit line.
+  A.shotNote = (s) => (s.cap ? L('captured from version {0}', 'ثبت‌شده از نسخه‌ی {0}', s.cap) + ' · ' : s.date ? L('website captured {0}', 'وب‌سایت در {0} ثبت شده', '<bdi>' + s.date + '</bdi>') + ' · ' : '') + esc(s.license);
+
   const H = (A.H = {
     lead: (t) => out(`<p class="lead">${tr(t)}</p>`),
     p: (t) => out(`<p>${tr(t)}</p>`),
@@ -87,7 +90,7 @@
       if (!r) return out('');
       o = o || {};
       const s = r.src, src = r.img;
-      const credit = `${L('Source: ', 'منبع: ')}<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a> · ${s.cap ? L('captured from version {0}', 'ثبت‌شده از نسخه‌ی {0}', s.cap) + ' · ' : ''}${esc(s.license)}`;
+      const credit = `${L('Source: ', 'منبع: ')}<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a> · ${A.shotNote(s)}`;
       return out(`<figure class="shot${o.small ? ' small' : ''}"><button type="button" class="shot-img" data-zoom aria-label="${L('Enlarge picture', 'بزرگ‌نمایی تصویر')}"><img src="${src}" alt="${esc(tr(r.alt))}" width="${r.w}" decoding="async"</button><figcaption>${cap ? tr(cap) + '<br>' : ''}<span class="shot-credit">${credit}</span></figcaption></figure>`);
     },
     shots: (items) => out(`<div class="shot-grid">${items.map((i) => (Array.isArray(i) ? H.shot(i[0], i[1], i[2]) : H.shot(i))).join('')}</div>`),

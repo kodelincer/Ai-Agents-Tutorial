@@ -51,6 +51,11 @@
             ]) + H.note('warn', 'These projects change quickly and their APIs move between versions. Read the current documentation before you build anything, and pin the versions you use.'),
             n: 'Invite one real use case from the room and place it on the table. Most will land on Hermes, the coding agents or Open WebUI. That is a good outcome.',
           },
+          {
+            t: 'Open WebUI: the documentation',
+            b: H.shot('site-openwebui-docs', 'The Open WebUI documentation: a self-hosted AI platform that works with local and cloud models.'),
+            n: 'Open WebUI is the quickest way to give a team a chat page over local models. Show the quick-start block on the page, and ask who would own the server, the users and the data.',
+          },
         ],
       },
       {

@@ -228,6 +228,14 @@
             ]),
             n: 'Four faces of the same agent. Ask students to find the cost and the active agent on the session picture. OpenCode also has a desktop app in beta (downloads on opencode.ai/download); check the version you install.',
           },
+          {
+            t: 'OpenCode: the website and the desktop download',
+            b: H.shots([
+              ['site-opencode', 'The OpenCode home page: free models included, or connect any model from any provider.'],
+              ['site-opencode-download', 'The download page: the terminal install, and OpenCode Desktop for macOS, Windows and Linux.'],
+            ]),
+            n: 'This is the page students will use to install it. Read the terminal install line aloud and ask why we do not paste curl-to-bash lines into a production host. The second picture shows the desktop app builds; the course treats the desktop app as a convenience, not a different tool.',
+          },
         ],
       },
       {
@@ -360,6 +368,14 @@
               ])
             ),
             n: 'Close the lesson with the data question. A router does not make data safe; it makes it easy to choose where data goes. That choice belongs to policy, not to whoever configured the tool.',
+          },
+          {
+            t: 'OpenRouter in pictures',
+            b: H.shots([
+              ['site-openrouter', 'The OpenRouter home page: one API for many models and providers.'],
+              ['site-openrouter-docs', 'The quickstart in the documentation.'],
+            ]),
+            n: 'Show the home page numbers critically: providers and models counts change weekly. Open the quickstart and find the base URL and the model name format together. This is the page we tell students to check, since we do not print prices in the slides.',
           },
         ],
       },
@@ -533,6 +549,11 @@
             t: 'Where free providers show up in a router',
             b: H.shot('omniroute-providers', 'The Free Tier Providers group in OmniRoute. Some need only an account, others no credentials at all. That is exactly why you read their terms first.'),
             n: 'Show that a router makes free tiers easy to switch on, which is the danger as much as the benefit. Pick one provider in the picture and run the five steps from the earlier slide on it in two minutes: terms, limits, data handling, availability for our region, and who owns it in the provider register.',
+          },
+          {
+            t: 'Finding free models: the model list',
+            b: H.shot('site-openrouter-models', 'The OpenRouter model list. Free models carry a (free) label and $0 prices. Look at the dates and the notes on each model before you use one.'),
+            n: 'Open the list live and sort by newest. Ask students to find three free models, then read the description of one: some are limited, some log prompts, and some are going away soon. Free models come and go, so the habit to teach is to check the list and the provider page on the day you use it.',
           },
         ],
       },

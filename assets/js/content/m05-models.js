@@ -154,6 +154,16 @@
               H.code('# LM Studio\n# 1. Discover tab → download e.g. Qwen3 32B (Q4_K_M)\n# 2. Developer tab → Load model, set Context Length = 65536\n# 3. Start Server → http://localhost:1234/v1\n# 4. Hermes:  hermes model  → "LM Studio"', 'text', 'LM Studio')
             ),
           },
+          {
+            t: 'The local-model tools, as they look',
+            b: H.shots([
+              ['site-ollama', 'Ollama: run open models locally or in the cloud.'],
+              ['site-ollama-library', 'The Ollama library: pick a model and its size tag.'],
+              ['site-lmstudio', 'LM Studio: a desktop app for running local models.'],
+              ['site-huggingface-models', 'Hugging Face: where most open models are published.'],
+            ]),
+            n: 'Walk the four pictures as a map: Hugging Face is where models live, Ollama and LM Studio are two ways to run them, and the library page shows the size tags. Ask how a 7B and a 70B tag differ in memory, tying back to the VRAM lesson.',
+          },
         ],
       },
       {

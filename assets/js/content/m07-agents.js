@@ -153,6 +153,11 @@
               H.note('key', 'From the deck: <i>“This is the main IT team job: make tools and apps accessible to agents.”</i> Models are commodity. Well-built, secure tools on top of our systems are our advantage.', 'Our role')
             ),
           },
+          {
+            t: 'MCP: the project website',
+            b: H.shot('site-mcp', 'The Model Context Protocol website: what MCP is, with a diagram of hosts, clients and servers.'),
+            n: 'Show the diagram on the page and map it to a tool our students know. Point out the Registry and Inspector items in the navigation; we will use servers from a trusted source only.',
+          },
         ],
       },
       {
