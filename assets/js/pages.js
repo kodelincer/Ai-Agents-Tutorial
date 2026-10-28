@@ -16,6 +16,7 @@
     ['Provider routing', 'Settings such as sort, only, ignore, order and data_collection that decide which provider serves a request on a router like OpenRouter.'],
     ['Token saver', 'A gateway feature that compresses tool output or shortens replies to save tokens. It changes what the model sees, so test it on real work.'],
     ['Agent SDK (Claude)', 'Python and TypeScript library that gives your own programs the agent loop, tools, permissions and MCP support that power Claude Code.'],
+    ['Always-on agent', 'An agent with a persistent identity that runs on a cloud computer, keeps working when you are away and comes back with a brief or an approval request. Examples launched in 2026: Grok Bot, OpenAI dots, Meta Muse and Claude Duet.'],
     ['Remote Control (Claude Code)', 'Lets the Claude app or claude.ai/code steer a Claude Code session that keeps running on your own machine. Needs a claude.ai login; not available with API keys, cloud-provider logins or an LLM gateway.'],
     ['Channel (Claude Code)', 'An MCP-server plugin, in research preview, that pushes Telegram, Discord or iMessage messages into a running session. Pair it and lock it to an allowlist.'],
     ['Effort level', 'How hard a model thinks on each step: low, medium, high, xhigh or max, depending on the model. Higher is slower and costs more.'],

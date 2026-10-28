@@ -639,6 +639,98 @@
           },
         ],
       },
+      {
+        id: 'm16-9', title: 'Always-on personal agents: Grok Bot, Claude Duet, Meta Muse and OpenAI dots', mins: 25, deck: [27, 44],
+        slides: [
+          {
+            t: 'A new kind of agent: it keeps working while you are away',
+            b: H.fig(D.flow([
+              { t: 'You', s: 'give a goal, in chat', c: 'acc' },
+              { t: 'Its own cloud computer', s: 'browser, files, your connected apps', c: 'tl' },
+              { t: 'Works on its own', s: 'also when you close the laptop' },
+              { t: 'Comes back to you', s: 'a brief, or a request to approve', c: 'ok' },
+            ], { h: 96 }), 'The common shape of the four products in this lesson. The computer belongs to the vendor, not to you.') +
+              H.prose(
+                'Between September and October 2026 four companies launched the same idea within weeks of each other: <b>Grok Bot</b> (xAI, beta from 11 August), <b>OpenAI dots</b> (29 September), <b>Meta Muse</b> (announced 8 September) and <b>Claude Duet</b> (Anthropic, research preview from 21 October).',
+                'Each is an agent that has a <b>persistent identity and its own cloud computer</b>, keeps working after you stop typing, and asks you before it does something sensitive.'
+              ) +
+              H.note('warn', 'All four are <b>new</b>: betas, research previews or first releases. Plans, countries, models and limits change quickly, and the numbers here are the vendors\' launch statements. Always confirm on the vendor\'s own page before you rely on a detail.'),
+            n: 'Start by asking who has already heard of one of them: colleagues will ask about these within weeks. Say clearly that this is a snapshot of the launches, not a buying guide. We could not open the vendors\' pages from the course build environment, so the facts come from the vendors\' own announcement text as returned by search; ask students to read the vendor pages before a class.',
+          },
+          {
+            t: 'The four, side by side (launch facts)',
+            b: H.table(['Product', 'From', 'What the vendor says it is', 'Model and access at launch'], [
+              ['Grok Bot', 'xAI · beta, 11 Aug 2026', 'Always-on AI agents (“Bots”) that each get their own cloud computer and work across apps and websites. Bots can message each other and share context in threads. Routines: a Bot repeats a job after watching you do it once. A separate Team Bots beta exists for Teams and Enterprise plans.', 'Offered through SuperGrok, SuperGrok Plus and Heavy, and Cursor subscriptions on desktop and iOS; later included with more plans. Bots run on their own usage pool.'],
+              ['OpenAI dots', 'OpenAI · 29 Sep 2026', 'Always-on agents inside ChatGPT. Each dot has its own cloud computer and browser, learns from feedback and works towards your goals around the clock. You message or call it in ChatGPT (desktop, web, mobile), or in Slack and Teams.', 'Runs on GPT-6 Astra. Rolling out to Pro and Business Premium in eligible markets, the first dot at no extra cost; excludes the EEA, Switzerland and the UK at launch; Enterprise is an admin-enabled beta.'],
+              ['Meta Muse', 'Meta · announced 8 Sep 2026', 'A personal agent that takes a goal, builds a plan and advances it on its own: sending email, booking travel and similar errands. It runs on a dedicated, isolated cloud VM that holds the agent and your data.', 'Built on Meta\'s Muse models. Rolled out in the US and Canada first, with Singapore added in October; check Meta\'s page for plans and prices.'],
+              ['Claude Duet', 'Anthropic · research preview, 21 Oct 2026', 'A new app where Claude works as a proactive agent: it handles inbox, calendar and follow-ups on its own cloud computer, and messages you when something needs you.', 'Runs on Claude Opus 5.5. Waitlist for US Pro and Max users, on claude.ai and iOS and Android apps; not on Team or Enterprise plans yet; included in the plan at no extra cost during the preview.'],
+            ]) + H.note('tip', 'Read the “From” column as the date of the announcement, not of general availability. Three of the four were still betas or previews when this page was written.'),
+            n: 'Do not read the table. Ask students to pick the row with the most restrictive access and the one with the broadest. Point out the one thing all four share: an agent with its own computer, run and paid for by the vendor. Prices are deliberately left out because they changed between early reports and the vendors\' pages.',
+          },
+          {
+            t: 'What is different about each one',
+            b: H.cards([
+              ['Grok Bot', 'The “team of bots” product. Bots talk to each other, work in shared threads and learn routines by watching you. Team Bots add shared teammates for a company workspace.', 'xAI'],
+              ['OpenAI dots', 'The “always on, in ChatGPT” product. You reach a dot where you already chat, or in Slack and Teams, and you can set rules that allow, require approval for, or block specific actions.', 'OpenAI'],
+              ['Meta Muse', 'The “consumer and small business” product, built around a dedicated VM and a separate guard agent called Sentinel that must approve outbound traffic.', 'Meta'],
+              ['Claude Duet', 'The “proactive” product: it brings you what needs your attention instead of waiting to be asked, and a classifier checks messages it drafts before they go out. You cannot watch or take over its browser.', 'Anthropic'],
+            ], 2),
+            n: 'Each card is one sentence of positioning, taken from the vendor\'s own description of the launch. Ask: which of these would our helpdesk try first, and what data would they feed it? That question leads straight into the governance slides.',
+          },
+          {
+            t: 'Why they are in this course',
+            b: H.steps([
+              ['People will bring them to you', 'Colleagues already use a chat assistant. These are the next thing they will connect to their mailbox and calendar.'],
+              ['They are the four layers, bundled', 'One vendor supplies the model, the gateway, the harness and the scheduler as a hosted product (the map in lesson 1). You cannot swap a layer.'],
+              ['Our governance questions apply unchanged', 'Where does it run, whose credentials does it hold, who approves, what is logged. Modules 10, 12 and 16 give you the questions to ask.'],
+              ['They show where agents are going', 'Persistent, proactive and approval-gated is also the direction for the tools you run yourself: Hermes (cron and the chat gateway) and Claude Code (Remote Control and Channels).'],
+            ]),
+            n: 'The second point is the most useful for IT staff: when someone asks “is Duet better than Hermes?”, the answer is that they are different bundles of the same layers. The fourth point links back to the Claude Code field-notes lesson (Remote Control and Channels).',
+          },
+          {
+            t: 'How they differ from the agents in this course',
+            b: H.table(['', 'Hermes Agent', 'Claude Code · Codex · OpenCode', 'Grok Bot · dots · Muse · Duet'], [
+              ['Where it runs', 'Your server or VM', 'Mostly your machine (cloud sessions are optional)', 'The vendor\'s cloud computer, one per user or bot'],
+              ['Who chooses the model', 'You (any provider or local)', 'You, within the tool (OpenCode: any provider)', 'The vendor; one model family'],
+              ['Who holds the credentials', 'You, on your host', 'You, on your machine', 'You connect your accounts into the vendor\'s cloud'],
+              ['Who starts the work', 'You, a schedule or a chat message', 'You, in a session', 'You, and the agent itself when something needs attention'],
+              ['Main job', 'Operations and helpdesk automation on your systems', 'Reading and changing a code repository', 'Personal and team work in mail, calendar, documents and the web'],
+              ['Your control', 'Config, sandbox, tool allowlists, logs on your side', 'Permission rules, hooks, sandbox, managed settings', 'The vendor\'s approval prompts, rules and audit trail'],
+              ['Source', 'Open source', 'Claude Code is commercial; the Codex CLI and OpenCode are open source', 'Closed hosted products'],
+            ]) + H.note('key', 'The difference is not intelligence. It is <b>who owns the computer and the credentials</b>. With Hermes or a coding agent you own both; with these four the vendor owns the computer and holds a connection to your accounts.'),
+            n: 'This is the table to leave on the board. Walk the rows “Who holds the credentials” and “Your control”: for IT security these two decide everything. Be fair: the vendors describe real protections (see next slide); the point is that you rely on their design instead of your own configuration.',
+          },
+          {
+            t: 'What the vendors say protects you, and what is still your job',
+            b: H.split(
+              H.prose(
+                '<b>Isolation:</b> each agent has its own computer (Muse also separates a guard agent, Sentinel, from the agent itself).',
+                '<b>Approval:</b> asking you before sensitive actions: Duet before it sends, pays, signs or deletes; dots for actions such as changing a password; Muse before sending email or a purchase. dots also let you set allow, approve or block rules.',
+                '<b>Credentials:</b> Duet and Muse say the agent cannot see your passwords or payment methods.',
+                '<b>Visibility:</b> Muse shows an audit trail of its activity. Duet says you cannot watch or take over its browser.'
+              ),
+              H.table(['Our question', 'Why it matters'], [
+                ['Which accounts did we connect?', 'The agent can read and act in all of them. Mail and calendar hold customer and credential data.'],
+                ['Is this approved for company data?', 'The data goes to the vendor. Plans, terms and regions differ: check before any company data touches it.'],
+                ['Who sees the approvals?', 'An approval prompt on a phone is a control only if the person reads it. Phishing text can be inside the mail the agent reads.'],
+                ['Can we log and revoke?', 'Prefer products with an audit trail and an admin switch. Several are still off for company plans.'],
+              ])
+            ) + H.note('crit', 'A mailbox is an <b>untrusted input</b>: anyone can email your agent a prompt injection (Module 7). Approval-before-acting reduces the damage, but it does not remove the risk, so keep real systems out of reach.'),
+            n: 'Be careful to attribute the protections to the vendors: they are launch claims, not something we tested. The closing note ties back to prompt injection. Ask what an attacker would put in an email that the agent reads at 3 a.m.',
+          },
+          {
+            t: 'Which tool for which job, and our rule',
+            b: H.table(['Job', 'Right tool', 'Why'], [
+              ['Check and fix a router config in the lab', 'Hermes or a coding agent in a lab VM', 'You own the machine, the model and the logs'],
+              ['Change code in the infrastructure repository', 'Claude Code, Codex or OpenCode with permission rules', 'Built for repositories; diff and review are the control'],
+              ['Triage your own inbox and calendar, personal errands', 'A personal always-on agent, on your own account', 'This is the job they were built for'],
+              ['A company ticket queue, an alert channel, customer data', 'Hermes behind our gateway, with our approvals', 'We control the credentials and the audit trail'],
+              ['Unattended work on production systems', 'None of these', 'Use the T2 and T3 rules of Module 12'],
+            ]) + H.note('it', '<b>Our rule for now:</b> use these four with personal or public data on accounts you own, until security and legal have reviewed the plan. Do not connect the shared helpdesk mailbox, customer data or admin credentials. Add each product you actually use to the provider inventory with an owner and a review date.'),
+            n: 'Make the decision concrete: ask each student to name one job from their week and place it in this table. The rule is the course\'s rule, not the vendors\'. When the company has approved a business plan (for example an Enterprise beta that the admin enabled), revisit the rule with the security team.',
+          },
+        ],
+      },
     ],
     quiz: [
       { q: 'OpenRouter, OmniRoute and 9router all sit in which layer?', a: ['Harness', 'Gateway / router', 'Orchestrator', 'Model'], c: 1, why: 'They sit between a harness and the providers: one endpoint, routing, fallback, keys and logs.' },
@@ -651,6 +743,8 @@
       { q: 'You point Claude Code at a local gateway. How do you set the base URL?', a: ['http://127.0.0.1:20128/v1 in ANTHROPIC_BASE_URL', 'http://127.0.0.1:20128 in ANTHROPIC_BASE_URL (Claude Code adds /v1/messages)', 'In the committed .claude/settings.json with the key', 'You cannot use a gateway'], c: 1, why: 'Claude Code appends /v1/messages itself, and the credential belongs in your shell or user settings, never in a committed project file.' },
       { q: 'Which is the biggest problem with running a shared gateway that pools personal subscriptions and free tiers for company work?', a: ['It is too fast', 'Provider terms usually forbid it, data may be logged or trained on, and every key sits in one unreviewed service', 'It uses too little memory', 'It needs a GPU'], c: 1, why: 'Terms, data handling and key concentration are policy and security problems that a convenient endpoint does not remove.' },
       { q: 'A provider does not serve your country. What should the course policy be?', a: ['Route around it with any proxy that works', 'Use local models, providers that serve your region, or an approved cloud platform, and ask legal', 'Borrow someone else\'s account', 'Ignore the terms'], c: 1, why: 'Region limits are the provider\'s access control, often legal. Legitimate alternatives exist and keep company data on reviewed paths.' },
+      { q: 'What mainly separates Claude Duet, OpenAI dots, Meta Muse and Grok Bot from Claude Code or Hermes?', a: ['They are smarter models', 'The vendor runs a persistent agent on its own cloud computer, connected to your accounts, and it also acts proactively', 'They only work offline', 'They are open source'], c: 1, why: 'The difference is who owns the computer and the credentials, and that the agent keeps working and comes to you; it is not about model quality.' },
+      { q: 'A colleague wants to connect the shared helpdesk mailbox to a personal always-on agent. What is our rule for now?', a: ['Go ahead, it asks before acting', 'Do not connect shared or customer data until security and legal have reviewed the plan; use personal or public data on your own account', 'Connect it but give it admin credentials', 'Use a free account to avoid logging'], c: 1, why: 'Approval prompts help, but the data goes to the vendor and a mailbox is untrusted input that can carry a prompt injection.' },
     ],
   });
 })();

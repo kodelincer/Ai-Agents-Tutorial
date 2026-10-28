@@ -150,9 +150,9 @@
 
     // ---------- H · Going further (optional) ----------
     { n: 30, phase: 'H', optional: true, title: 'The agent ecosystem: harnesses and orchestrators',
-      summary: 'A map of the four layers (models, gateways, harnesses, orchestrators), then DeepSeek Harness, OpenCode, Multica and Orca, and what running agents in parallel really costs.',
-      goals: ['Place any new agent tool in the right layer', 'Explain what Multica and Orca add and what parallel agents cost'],
-      lessons: ['m16-1', 'm16-2', 'm16-3', 'm16-4'] },
+      summary: 'A map of the four layers (models, gateways, harnesses, orchestrators), then DeepSeek Harness, OpenCode, Multica and Orca, what running agents in parallel really costs, and the new always-on personal agents (Grok Bot, Claude Duet, Meta Muse, OpenAI dots).',
+      goals: ['Place any new agent tool in the right layer', 'Explain what Multica and Orca add and what parallel agents cost', 'Say how an always-on vendor-hosted agent differs from the agents we run ourselves'],
+      lessons: ['m16-1', 'm16-2', 'm16-3', 'm16-4', 'm16-9'] },
     { n: 31, phase: 'H', optional: true, title: 'Providers, AI gateways and free models',
       summary: 'OpenRouter and provider routing, self-hosted gateways (OmniRoute, 9router), finding free models and using them safely, and connecting Claude Code, OpenCode, Codex and Hermes to a router.',
       goals: ['Control cost and where prompts go with provider routing', 'Audit a gateway before anyone depends on it, and connect three tools to it'],

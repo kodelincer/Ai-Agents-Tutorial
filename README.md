@@ -12,7 +12,7 @@ switches the whole course, including diagrams and exercises, and Persian is show
 right-to-left. Add `#fa` or `#en` to a link to open it in a given language.
 
 It expands the original deck in [`source/Ai_Agents.pptx`](source/Ai_Agents.pptx)
-(54 slides) into **34 two-hour sessions** (29 core, plus an optional phase H) made of 18 modules, 122 lessons and 457 slides,
+(54 slides) into **34 two-hour sessions** (29 core, plus an optional phase H) made of 18 modules, 123 lessons and 464 slides,
 with diagrams, speaker notes on every slide, a synced speaker view, checkpoint quizzes
 and 28 in-browser exercises.
 
@@ -61,7 +61,7 @@ order. `node tools/i18n.js check` fails if a lesson is in no session or in two.
 | 13 | Projects, capstone, roadmap, philosophy | 42, 52, 53 |
 | 14 | Working with LLMs: vocabulary, sampling controls, capabilities, pricing, prompt caching, OpenRouter and AvalAI, first API calls | new |
 | 15 | A tour of the wider toolbox: Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho, Multica (introductions, no labs) | new |
-| 16 | The agent ecosystem: four layers, DeepSeek Harness, OpenCode, Multica and Orca, OpenRouter provider routing, self-hosted gateways (OmniRoute, 9router), finding free models safely, connecting Claude Code / OpenCode / Codex / Hermes to a gateway | new |
+| 16 | The agent ecosystem: four layers, DeepSeek Harness, OpenCode, Multica and Orca, OpenRouter provider routing, self-hosted gateways (OmniRoute, 9router), finding free models safely, connecting Claude Code / OpenCode / Codex / Hermes to a gateway, and the always-on personal agents (Grok Bot, Claude Duet, Meta Muse, OpenAI dots) | new |
 | 17 | OpenCode tutorial (OpenCode 2, with V1 differences): install, first session, agents, permission rules and policies, project memory, commands, skills, MCP, models and cost, CI and clients, migration, a governed team kit; plus the OpenCode cheat sheet | new |
 
 The in-app **Deck-to-lesson map** page lists every original slide and where it is taught.
