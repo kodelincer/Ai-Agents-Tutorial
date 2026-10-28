@@ -43,7 +43,8 @@
   const PARTS = [
     { key: 'fund', label: L('Part 1 · Fundamentals', 'بخش 1 · مبانی'), test: (m) => m.num <= 8 || m.num === 14, desc: L('How AI, LLMs and agents work: the knowledge every colleague needs before touching a real agent.', 'هوش مصنوعی، مدل‌های زبانی بزرگ و ایجنت‌ها چطور کار می‌کنند: دانشی که هر همکار پیش از کار با یک ایجنت واقعی لازم دارد.') },
     { key: 'prac', label: L('Part 2 · Hands-on with agents', 'بخش 2 · کار عملی با ایجنت‌ها'), test: (m) => m.num >= 9 && m.num <= 15 && m.num !== 14, desc: L('Install Hermes Agent, build skills, teams and role playbooks for our daily work, inside our security guardrails.', 'نصب Hermes Agent و ساختن مهارت‌ها، تیم‌های ایجنت و دستورالعمل‌های نقش‌محور برای کارهای روزانه‌ی ما، در چارچوب سیاست‌های امنیتی سازمان.') },
-    { key: 'ext', label: L('Part 3 · Going further', 'بخش 3 · گام‌های بعدی'), test: (m) => m.num >= 16, desc: L('The wider agent ecosystem: other harnesses, orchestrators, model providers and AI gateways, and how to use free models safely.', 'اکوسیستم گسترده‌ی ایجنت‌ها: هارنس‌های دیگر، هماهنگ‌کننده‌ها، ارائه‌دهندگان مدل و دروازه‌های هوش مصنوعی، و استفاده‌ی امن از مدل‌های رایگان.') },
+    { key: 'ext', label: L('Part 3 · Going further', 'بخش 3 · گام‌های بعدی'), test: (m) => m.num === 16 || m.num === 17, desc: L('The wider agent ecosystem: other harnesses, orchestrators, model providers and AI gateways, and how to use free models safely.', 'اکوسیستم گسترده‌ی ایجنت‌ها: هارنس‌های دیگر، هماهنگ‌کننده‌ها، ارائه‌دهندگان مدل و دروازه‌های هوش مصنوعی، و استفاده‌ی امن از مدل‌های رایگان.') },
+    { key: 'biz', label: L('Part 4 · Agents for every department', 'بخش 4 · ایجنت‌ها برای همه‌ی بخش‌های سازمان'), test: (m) => m.num >= 18, desc: L('Practical, safe uses of agents for managers, communications, finance and other departments, with labs on sample data and a pilot plan.', 'کاربردهای عملی و ایمن ایجنت‌ها برای مدیران، ارتباطات، مالی و بخش‌های دیگر، با آزمایشگاه روی داده‌ی نمونه و یک برنامه‌ی پایلوت.') },
   ];
   A.modules.forEach((m) => (m.part = PARTS.find((p) => p.test(m))));
   const lessonMins = (l) => l.mins || 10;
@@ -207,9 +208,9 @@
     return `<div class="wrap">
       <section class="hero">
         <div>
-          <div class="eyebrow">${L('IT Infrastructure Academy · Course 01', 'آکادمی زیرساخت IT · دوره‌ی 01')}</div>
-          <h1>${L('Put <em>AI agents</em> to work in IT operations', 'به‌کارگیری <em>ایجنت‌های هوش مصنوعی</em> در عملیات IT')}</h1>
-          <p class="lead">${L('An instructor-led course in {0} two-hour sessions. It starts with the big picture of AI, machine learning and LLMs, shows how to use models and pay for them, then spends most of its time on coding agents and Hermes Agent: install them, give them skills and memory, and delegate real tasks inside our security guardrails, with a human in the loop.', 'دوره‌ای با مدرس در {0} جلسه‌ی دوساعته. با تصویر کلی هوش مصنوعی، یادگیری ماشین و مدل‌های زبانی بزرگ شروع می‌شود، نشان می‌دهد چطور از مدل‌ها استفاده و هزینه‌ی آن‌ها را مدیریت کنیم، و بیشتر وقت خود را به ایجنت‌های کدنویسی و Hermes Agent اختصاص می‌دهد: نصب‌شان می‌کنیم، مهارت و حافظه به آن‌ها می‌دهیم و کارهای واقعی را در چارچوب سیاست‌های امنیتی سازمان و با نظارت انسان به آن‌ها می‌سپاریم.', sessions.length)}</p>
+          <div class="eyebrow">${L('AI Agents Academy · Course 01', 'آکادمی ایجنت‌های هوش مصنوعی · دوره‌ی 01')}</div>
+          <h1>${L('Put <em>AI agents</em> to work in your organisation', 'به‌کارگیری <em>ایجنت‌های هوش مصنوعی</em> در سازمان شما')}</h1>
+          <p class="lead">${L('An instructor-led course in {0} two-hour sessions, for every part of an organisation. Everyone starts with the big picture of AI, language models and agents, and how to use models and pay for them. The IT track then goes deep on coding agents and Hermes Agent. The business track covers managers, communications, finance and other departments with practical, safe use cases. On both tracks, an agent prepares and a person approves.', 'دوره‌ای با مدرس در {0} جلسه‌ی دوساعته، برای همه‌ی بخش‌های یک سازمان. همه با تصویر کلی هوش مصنوعی، مدل‌های زبانی و ایجنت‌ها و با نحوه‌ی استفاده از مدل‌ها و مدیریت هزینه‌شان شروع می‌کنند. مسیر IT سپس عمیقاً به ایجنت‌های کدنویسی و Hermes Agent می‌پردازد. مسیر کسب‌وکار، مدیران، ارتباطات، مالی و بخش‌های دیگر را با کاربردهای عملی و ایمن پوشش می‌دهد. در هر دو مسیر، ایجنت آماده می‌کند و یک انسان تأیید می‌کند.', sessions.length)}</p>
           <p class="fa">${L('خودکار سازی فرآیندها با ایجنت‌های هوش مصنوعی', 'AI agent process automation')}</p>
           <div class="hero-actions">
             <a class="btn primary" href="#${first.id}">${started ? L('Continue: ', 'ادامه: ') + esc(first.title) : L('Start with session 1', 'شروع با جلسه‌ی 1')} ${A.rtl ? '←' : '→'}</a>
@@ -230,10 +231,10 @@
       <section class="wrap" style="gap:var(--s-3)">
         <div class="section-h"><h2>${L('Who this course is for', 'این دوره برای چه کسانی است')}</h2><span class="label">${L('Entry requirements', 'پیش‌نیازها')}</span></div>
         <div class="prereq">
-          <div><h4>${L('Networking', 'شبکه')}</h4><p>${L('You can read an IP plan, explain DNS, DHCP, VLANs and routing, and you have used ping, traceroute and nslookup in anger.', 'می‌توانید یک طرح IP را بخوانید، DNS، DHCP، VLAN و مسیریابی را توضیح دهید و در عمل با ping، traceroute و nslookup عیب‌یابی کرده‌اید.')}</p></div>
-          <div><h4>${L('Security', 'امنیت')}</h4><p>${L('You know least privilege, MFA, phishing, firewall rules and why service accounts need guarding.', 'با اصل کمترین دسترسی، MFA، فیشینگ و قوانین فایروال آشنا هستید و می‌دانید چرا حساب‌های سرویس باید محافظت شوند.')}</p></div>
-          <div><h4>${L('Programming', 'برنامه‌نویسی')}</h4><p>${L('You can read a short Python or PowerShell script, edit YAML and JSON, and work in a Linux shell.', 'می‌توانید یک اسکریپت کوتاه Python یا PowerShell را بخوانید، فایل‌های YAML و JSON را ویرایش کنید و در شل لینوکس کار کنید.')}</p></div>
-          <div><h4>${L('Operations', 'عملیات')}</h4><p>${L('You have worked helpdesk, datacenter or network maintenance and handle tickets, alerts and changes every day.', 'در هلپ‌دسک، دیتاسنتر یا نگهداری شبکه کار کرده‌اید و هر روز با تیکت، هشدار و تغییرات سروکار دارید.')}</p></div>
+          <div><h4>${L('Business track', 'مسیر کسب‌وکار')}</h4><p>${L('No technical background. You can use email, documents and spreadsheets, and you handle sensitive information carefully.', 'بدون پیش‌زمینه‌ی فنی. می‌توانید از ایمیل، سند و صفحه‌گسترده استفاده کنید و با اطلاعات حساس با دقت رفتار می‌کنید.')}</p></div>
+          <div><h4>${L('IT track · networking and security', 'مسیر IT · شبکه و امنیت')}</h4><p>${L('You can read an IP plan, explain DNS, DHCP, VLANs and routing, and you know least privilege, MFA and why service accounts need guarding.', 'می‌توانید یک طرح IP را بخوانید، DNS، DHCP، VLAN و مسیریابی را توضیح دهید و با اصل کمترین دسترسی، MFA و دلیل نیاز حساب‌های سرویس به محافظت آشنا هستید.')}</p></div>
+          <div><h4>${L('IT track · programming', 'مسیر IT · برنامه‌نویسی')}</h4><p>${L('You can read a short Python or PowerShell script, edit YAML and JSON, and work in a Linux shell.', 'می‌توانید یک اسکریپت کوتاه Python یا PowerShell را بخوانید، فایل‌های YAML و JSON را ویرایش کنید و در شل لینوکس کار کنید.')}</p></div>
+          <div><h4>${L('IT track · operations', 'مسیر IT · عملیات')}</h4><p>${L('You have worked helpdesk, datacenter or network maintenance and handle tickets, alerts and changes every day.', 'در هلپ‌دسک، دیتاسنتر یا نگهداری شبکه کار کرده‌اید و هر روز با تیکت، هشدار و تغییرات سروکار دارید.')}</p></div>
         </div>
       </section>
 
@@ -262,7 +263,7 @@
       return `<div class="part-h"><h3>${esc(p.label)}</h3><span class="chip">${ss.length} ${L('sessions', 'جلسه')} · ~${hours(mins)} ${L('h of lessons', 'ساعت درس')}</span></div><div class="modgrid">${ss
         .map((s) => {
           const ports = s.list.map((l) => `<i class="${lessonDone(l) ? 'ok' : (seen[l.id] || []).length ? 'on' : ''}"></i>`).join('');
-          return `<a class="modcard" href="#${s.id}"><span class="eyebrow"><span>${L('Session', 'جلسه')} ${pad(s.n)}</span><span>${s.optional ? L('Optional', 'اختیاری') + ' · ' : ''}${s.list.length} ${L('lessons', 'درس')}</span></span><h3>${esc(s.title)}</h3><p>${esc(s.summary)}</p><div class="ports" aria-label="${sessStats(s).pct}%">${ports}</div></a>`;
+          return `<a class="modcard" href="#${s.id}"><span class="eyebrow"><span>${L('Session', 'جلسه')} ${pad(s.n)}</span><span>${s.biz ? L('Business', 'کسب‌وکار') + ' · ' : ''}${s.optional ? L('Optional', 'اختیاری') + ' · ' : ''}${s.list.length} ${L('lessons', 'درس')}</span></span><h3>${esc(s.title)}</h3><p>${esc(s.summary)}</p><div class="ports" aria-label="${sessStats(s).pct}%">${ports}</div></a>`;
         })
         .join('')}</div>`;
     }).join('');
@@ -275,6 +276,7 @@
       <div class="lesson-head"><span class="eyebrow">${L('Teaching plan', 'برنامه‌ی تدریس')}</span><h1>${L('Session plan', 'برنامه‌ی جلسه‌ها')}</h1>
       <p class="lead muted">${L('{0} two-hour sessions. Each lists its lessons in teaching order. The lesson times add up to roughly an hour and a half; the rest of each session is for exercises, questions and a break.', '{0} جلسه‌ی دوساعته. هر جلسه درس‌هایش را به ترتیب تدریس فهرست می‌کند. زمان درس‌ها روی هم حدود یک ساعت و نیم است؛ بقیه‌ی هر جلسه برای تمرین، پرسش و استراحت است.', sessions.length)}</p></div>
       <div class="callout key"><span class="label">${L('Choosing how many sessions', 'انتخاب تعداد جلسه‌ها')}</span><div>${L('All {0} sessions are the full course. Dropping the {1} optional ones ({2}) leaves a core of {3} sessions. Decide with the class after session 3.', 'هر {0} جلسه، دوره‌ی کامل است. با حذف {1} جلسه‌ی اختیاری ({2}) یک هسته‌ی {3} جلسه‌ای می‌ماند. پس از جلسه‌ی 3 همراه با کلاس تصمیم بگیرید.', sessions.length, opt.length, opt.map((s) => pad(s.n)).join(', '), core.length)}</div></div>
+      <div class="callout tip"><span class="label">${L('Two tracks', 'دو مسیر')}</span><div>${L('<b>IT track:</b> sessions 1 to 34, from the big picture through coding agents and Hermes. <b>Business track:</b> {1} sessions ({0}), no technical background needed, ending with a pilot plan for your own department. In the business track, skip the API lab in session 3.', '<b>مسیر IT:</b> جلسه‌های 1 تا 34، از تصویر کلی تا ایجنت‌های کدنویسی و Hermes. <b>مسیر کسب‌وکار:</b> {1} جلسه ({0})، بدون نیاز به پیش‌زمینه‌ی فنی، که با یک برنامه‌ی پایلوت برای بخش خودتان تمام می‌شود. در مسیر کسب‌وکار، آزمایشگاه API در جلسه‌ی 3 را رد کنید.', sessions.filter((x) => x.biz).map((x) => x.n).join(', '), sessions.filter((x) => x.biz).length)}</div></div>
       ${A.phases.map((p) => {
         const ss = sessions.filter((s) => s.phase === p.key);
         return `<section class="wrap" style="gap:var(--s-2)"><div class="section-h"><h2>${esc(p.label)}</h2></div><div class="tbl-wrap"><table><thead><tr><th>#</th><th>${L('Session', 'جلسه')}</th><th>${L('Lessons', 'درس‌ها')}</th><th>${L('Lesson time', 'زمان درس‌ها')}</th><th>${L('Progress', 'پیشرفت')}</th></tr></thead><tbody>${ss
@@ -294,7 +296,7 @@
     return `<div class="wrap">
       <div class="lesson-head"><span class="eyebrow">${esc(s.phaseObj.label)} — ${L('session {0} of {1}', 'جلسه‌ی {0} از {1}', s.n, sessions.length)}${s.optional ? ' · ' + L('optional', 'اختیاری') : ''}</span><h1>${esc(s.title)}</h1>
       <p class="lead muted">${esc(s.summary)}</p>
-      <div class="meta"><span class="chip">~${sessionMins(s)} ${L('min of lessons', 'دقیقه درس')}</span><span class="chip">${s.list.length} ${L('lessons', 'درس')}</span><span class="chip">${st.pct}% ${L('opened', 'دیده‌شده')}</span></div></div>
+      <div class="meta"><span class="chip">~${sessionMins(s)} ${L('min of lessons', 'دقیقه درس')}</span><span class="chip">${s.list.length} ${L('lessons', 'درس')}</span>${s.biz ? `<span class="chip amber">${L('Business track', 'مسیر کسب‌وکار')}</span>` : ''}<span class="chip">${st.pct}% ${L('opened', 'دیده‌شده')}</span></div></div>
       <div class="callout key"><span class="label">${L('After this session you can', 'پس از این جلسه می‌توانید')}</span>${H_list(s.goals.map(esc))}</div>
       <div class="tbl-wrap"><table><thead><tr><th>#</th><th>${L('Lesson', 'درس')}</th><th>${L('Module', 'ماژول')}</th><th>${L('Slides', 'اسلاید')}</th><th>${L('Time', 'زمان')}</th><th>${L('Progress', 'پیشرفت')}</th></tr></thead><tbody>
       ${s.list.map((l, i) => `<tr><td class="label">${i + 1}</td><td><a href="#${l.id}">${esc(l.title)}</a>${l.lab ? ` <span class="chip amber">${L('Lab', 'آزمایشگاه')}</span>` : ''}</td><td><a href="#${l.module.id}">M${pad(l.module.num)}</a></td><td>${l.slides.length}</td><td>${lessonMins(l)} ${L('min', 'دقیقه')}</td><td><div class="ports">${l.slides.map((_, j) => `<i class="${(seen[l.id] || []).includes(j) ? 'on' : ''}"></i>`).join('')}</div></td></tr>`).join('')}
@@ -326,14 +328,15 @@
 
   function heroArt() {
     const D = A.D;
-    return D.hub({ t: L('Orchestrator', 'هماهنگ‌کننده'), s: L('Hermes profile', 'پروفایل Hermes'), c: 'ink' }, [
-      { t: L('Triage agent', 'ایجنت تریاژ'), s: L('reads tickets', 'تیکت‌ها را می‌خواند') },
-      { t: L('Network agent', 'ایجنت شبکه'), s: 'ping · traceroute · SNMP', c: 'tl' },
-      { t: L('You (L2 engineer)', 'شما (مهندس سطح 2)'), s: L('approve risky steps', 'تأیید گام‌های پرخطر'), c: 'acc' },
-      { t: L('Security agent', 'ایجنت امنیت'), s: L('SIEM · phishing', 'SIEM · فیشینگ'), c: 'tl' },
-      { t: L('KB writer', 'نویسنده‌ی پایگاه دانش'), s: L('turns fixes into skills', 'راه‌حل‌ها را به مهارت تبدیل می‌کند') },
+    return D.hub({ t: L('Your assistant', 'دستیار شما'), s: L('prepares, you approve', 'آماده می‌کند، شما تأیید می‌کنید'), c: 'ink' }, [
+      { t: L('Briefing agent', 'ایجنت گزارش'), s: L('turns reports into one page', 'گزارش‌ها را به یک صفحه تبدیل می‌کند') },
+      { t: L('Comms agent', 'ایجنت ارتباطات'), s: L('drafts from the fact sheet', 'از برگه‌ی واقعیت‌ها پیش‌نویس می‌نویسد'), c: 'tl' },
+      { t: L('You', 'شما'), s: L('approve what goes out', 'آنچه بیرون می‌رود را تأیید می‌کنید'), c: 'acc' },
+      { t: L('Finance agent', 'ایجنت مالی'), s: L('checks invoices', 'فاکتورها را بررسی می‌کند'), c: 'tl' },
+      { t: L('IT agent', 'ایجنت IT'), s: L('triages tickets', 'تیکت‌ها را تریاژ می‌کند') },
     ], { h: 470, rx: 320, ry: 165, bw: 270, bh: 86, r: 92, anim: true });
   }
+
 
   function viewModule(m) {
     const st = modStats(m);

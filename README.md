@@ -1,31 +1,37 @@
 # AI Agents Academy
 
-A presentable, interactive web course that teaches IT infrastructure colleagues
-(helpdesk, datacenter and network teams) how large language models and AI agents
-work, how to use and pay for models through gateways such as OpenRouter and AvalAI,
+A presentable, interactive web course that teaches colleagues in every part of an organisation,
+from IT (helpdesk, datacenter and network teams) to managers, communications and PR, and
+accounting and finance, how large language models and AI agents work, how to use and pay for models through gateways such as OpenRouter and AvalAI,
 how to use the coding agents Claude Code and Codex, and how to install, configure and
 safely delegate work to [Hermes Agent](https://github.com/NousResearch/hermes-agent).
-It closes with a short tour of Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho and Multica.
+It includes a short tour of Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho and Multica, and a
+business track with practical, safe use cases and labs for people outside IT.
 
 **Bilingual: English and Persian (فارسی).** The language button in the top bar
 switches the whole course, including diagrams and exercises, and Persian is shown
 right-to-left. Add `#fa` or `#en` to a link to open it in a given language.
 
 It expands the original deck in [`source/Ai_Agents.pptx`](source/Ai_Agents.pptx)
-(54 slides) into **34 two-hour sessions** (29 core, plus an optional phase H) made of 18 modules, 123 lessons and 464 slides,
+(54 slides) into **38 two-hour sessions** made of 19 modules, 133 lessons and 514 slides,
 with diagrams, speaker notes on every slide, a synced speaker view, checkpoint quizzes
 and 28 in-browser exercises.
 
 ## Audience
 
-Engineers who already know networking, security and basic programming and work
-helpdesk, datacenter or network maintenance. No machine-learning background is needed.
+Two tracks, one course.
+
+- **IT track** (sessions 1 to 34): engineers who know networking, security and basic programming and
+  work helpdesk, datacenter or network maintenance. No machine-learning background is needed.
+- **Business track** (sessions 1, 2, 3, 5, 7, 10, 24 and 35 to 38): managers, communications and PR,
+  accounting and finance, HR, sales, service and admin. No technical background is needed. It
+  skips the code labs and ends with a pilot plan for the learner's own department.
 
 ## Session plan
 
 The teaching order lives in [`assets/js/sessions.js`](assets/js/sessions.js). Each session is two hours
 (about an hour and a half of lessons plus exercises, questions and a break). Sessions marked
-*optional* can be dropped when time is short, which leaves a core of 24 (the optional phase H adds two more).
+*optional* can be dropped when time is short, which leaves a core of 28.
 
 | Phase | Sessions | Content |
 |-------|----------|---------|
@@ -37,6 +43,7 @@ The teaching order lives in [`assets/js/sessions.js`](assets/js/sessions.js). Ea
 | **F · Beyond one agent** | 22–25 | 22 Tour: Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho, Multica · 23 Agent teams · 24 Security · 25 Guardrail policy and the network playbook |
 | **G · Playbooks, workshop, capstone** | 26–29 | 26 Role playbooks *(optional)* · 27 Workshop · 28 Capstone · 29 Roadmap and further learning *(optional)* |
 | **H · Going further (optional)** | 30–34 | 30 The agent ecosystem: DeepSeek Harness, OpenCode, Multica, Orca · 31 Providers, AI gateways (OpenRouter, OmniRoute, 9router), free models and connecting your tools · 32–34 OpenCode tutorial (Module 17): install and first session, agents, permissions and policies · memory, commands, skills, MCP, models and cost · automation, clients, migration and a governed team kit |
+| **I · Agents for every department** | 35–38 | 35 Agents for everyone, and for managers · 36 Communications and PR · 37 Accounting and finance · 38 More departments, and your own pilot |
 
 Every lesson stays in its module and keeps its route (for example `#m8-3`); sessions only decide the
 order. `node tools/i18n.js check` fails if a lesson is in no session or in two.
@@ -63,6 +70,7 @@ order. `node tools/i18n.js check` fails if a lesson is in no session or in two.
 | 15 | A tour of the wider toolbox: Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho, Multica (introductions, no labs) | new |
 | 16 | The agent ecosystem: four layers, DeepSeek Harness, OpenCode, Multica and Orca, OpenRouter provider routing, self-hosted gateways (OmniRoute, 9router), finding free models safely, connecting Claude Code / OpenCode / Codex / Hermes to a gateway, and the always-on personal agents (Grok Bot, Claude Duet, Meta Muse, OpenAI dots) | new |
 | 17 | OpenCode tutorial (OpenCode 2, with V1 differences): install, first session, agents, permission rules and policies, project memory, commands, skills, MCP, models and cost, CI and clients, migration, a governed team kit; plus the OpenCode cheat sheet | new |
+| 18 | Agents for every department: four ways to work, the safe rules, the brief, managers' briefings and decisions, communications and PR, accounting and finance, other departments, three labs on sample data (briefing, fact check, invoice exceptions) and a pilot workshop | new |
 
 The in-app **Deck-to-lesson map** page lists every original slide and where it is taught.
 **Browse by module** shows the same lessons grouped by topic.
