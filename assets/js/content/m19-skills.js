@@ -47,7 +47,7 @@
             b: H.table(['Thing', 'What it gives the agent', 'Loaded', 'Use it for'], [
               ['Instruction file (<code>AGENTS.md</code>, <code>CLAUDE.md</code>)', 'Facts and rules about this project', 'Every session', 'Build and test commands, conventions, hard rules. Keep it short.'],
               ['<b>Skill</b>', 'A procedure with steps, templates and scripts', 'When it matches, or on request', 'A job you repeat: triage a ticket, draft a change request, review a config.'],
-              ['Slash command', 'A saved prompt you type', 'When you type it', 'Older <code>.claude/commands/</code> files still work; skills do the same and add supporting files.'],
+              ['Slash command', 'A saved prompt you type', 'When you type it', 'In Claude Code custom commands are merged into skills: <code>.claude/commands/deploy.md</code> and a skill <code>deploy/SKILL.md</code> both create <code>/deploy</code>. Skills add supporting files and invocation control.'],
               ['MCP server', 'Tools and live data (a ticket system, a monitoring API)', 'Tool list in context', 'Reaching a system. A skill can tell the agent <i>how</i> to use the tools.'],
               ['Subagent', 'A separate worker with its own context and permissions', 'When delegated', 'Isolation: a read-only reviewer, a noisy search.'],
               ['Plugin', 'A bundle of skills, agents, hooks and MCP servers', 'When enabled', 'Installing and updating a whole kit from a marketplace.'],
@@ -59,11 +59,11 @@
             t: 'Where skills live in each tool',
             b: H.table(['Tool', 'Project skills', 'Personal skills', 'Notes'], [
               ['Claude Code', '<code>.claude/skills/&lt;name&gt;/SKILL.md</code> (commit it to share)', '<code>~/.claude/skills/&lt;name&gt;/SKILL.md</code>', 'Also enterprise (managed settings), nested folders, and plugin skills called <code>/plugin:skill</code>. On a name clash enterprise wins over personal, and personal over project.'],
-              ['Codex', '<code>.agents/skills/&lt;name&gt;/SKILL.md</code>', 'Your Codex home folder', 'See the Codex lesson in Module 8; confirm paths in its docs, they change.'],
+              ['Codex', '<code>.agents/skills/&lt;name&gt;/SKILL.md</code>, scanned in every folder from where you start Codex up to the repository root', '<code>~/.agents/skills</code>', 'Also an admin folder, <code>/etc/codex/skills</code>, and bundled system skills. Symlinked folders are followed. Two skills with the same name are not merged: both appear.'],
               ['OpenCode 2', '<code>.opencode/skills/&lt;id&gt;/SKILL.md</code>', '<code>~/.config/opencode/skills</code>', 'Also reads <code>.claude/skills</code> and <code>.agents/skills</code>. The skill ID is the <b>folder name</b>.'],
               ['Hermes Agent', '<code>.hermes/skills/</code> or <code>.agents/skills/</code> in the repository, loaded only after <code>hermes skills trust</code>', '<code>~/.hermes/skills/</code>, plus any folder listed in <code>skills.external_dirs</code>', 'Browse with <code>/skills</code>, run with <code>/&lt;skill-name&gt;</code>; Hermes can also write skills from experience (Module 9).'],
             ]) + H.note('tip', 'In Claude Code edits to a skill are picked up without a restart. If you create a brand-new top-level skills folder during a session, run <code>/reload-skills</code>.'),
-            n: 'The practical gain is the shared folders: a skill placed in .agents/skills or .claude/skills is visible to more than one tool, which is convenient and is also a supply-chain question (who may add skills there?). Codex and Hermes paths follow the earlier modules; Claude Code and OpenCode paths are from their current documentation.',
+            n: 'The practical gain is the shared folders: a skill placed in .agents/skills or .claude/skills is visible to more than one tool, which is convenient and is also a supply-chain question (who may add skills there?). The Codex paths are from OpenAI\'s "Build skills" page and the Claude Code and OpenCode paths from their current documentation; all were checked on 28 October 2026, and they change, so check again before a class.',
           },
           {
             t: 'Who starts a skill, and the fields that matter',
@@ -78,6 +78,25 @@
               ['<code>arguments</code>, <code>$ARGUMENTS</code>, <code>$0</code>…', 'Pass text to the skill: <code>/fix-ticket 1234</code>.'],
             ]) + H.note('warn', 'Unknown fields are ignored silently, so a misspelled field does nothing and gives no error. Uploads to claude.ai and the Skills API accept only <code>name</code>, <code>description</code>, <code>license</code>, <code>compatibility</code>, <code>metadata</code> and <code>allowed-tools</code>; other fields make the upload fail.'),
             n: 'Do not read the table. Pick two rows and demonstrate: a skill with disable-model-invocation (the agent never starts it) and one without. Ask which of our weekly jobs must be manual-only. The warning matters when a skill moves between tools: keep the portable fields (name, description) and treat the rest as Claude Code extras.',
+          },
+          {
+            t: 'The open standard: what the specification asks for',
+            b: H.table(['Field or folder', 'Rule in the Agent Skills specification'], [
+              ['<code>name</code> (required)', '1 to 64 characters: lower-case letters, numbers and hyphens. It must not start or end with a hyphen, must not contain two hyphens in a row, and must match the name of the skill\'s folder.'],
+              ['<code>description</code> (required)', '1 to 1,024 characters. Say what the skill does <b>and</b> when to use it, with the words people really say.'],
+              ['<code>license</code>, <code>compatibility</code>, <code>metadata</code> (optional)', 'A licence name or file; environment needs in at most 500 characters; free key-value pairs for your own use.'],
+              ['<code>allowed-tools</code> (optional)', 'Space-separated pre-approved tools. Marked <b>experimental</b>: support differs between tools.'],
+              ['<code>scripts/</code>, <code>references/</code>, <code>assets/</code>', 'Optional folders for code to run, documents to read when needed, and templates or other resources.'],
+            ]) + H.note('it', 'The checker in the exercise tests these rules. A name such as <code>PDF-Processing</code>, <code>-pdf</code> or <code>pdf--processing</code> is invalid in every tool that follows the standard.'),
+            n: 'This is what makes a skill portable: the spec is small. Ask students which of their planned skill names break a rule. Source: the Agent Skills specification at agentskills.io, checked on 28 October 2026.',
+          },
+          {
+            t: 'The two pages to keep open',
+            b: H.shots([
+              ['site-agentskills', 'agentskills.io: the specification every tool in this module follows.'],
+              ['site-claude-skills', 'Claude Code documentation: skills, with the note that custom commands are merged into skills.'],
+            ]),
+            n: 'These are the primary sources for the lesson. Ask students to find three things on the Claude Code page: where project skills live, how to stop the model from starting a skill, and what the bundled skills are. The next lessons use both pages.',
           },
         ],
       },
@@ -422,7 +441,7 @@
                 ['<b>Claude Code</b>', 'A plugin marketplace (<code>/plugin marketplace add</code>, <code>/plugin install</code>), or copy the folder', '<code>.claude/skills/</code> or <code>~/.claude/skills/</code>'],
                 ['<b>Claude apps</b> (claude.ai, Desktop)', 'Upload the skill folder as a zip in Settings', 'Your account (and the API for apps you build)'],
                 ['<b>OpenCode 2</b>', 'Copy the folder, or list a folder or HTTP catalog in the <code>skills</code> setting', '<code>.opencode/skills/</code>, <code>~/.config/opencode/skills</code>; also reads <code>.claude/skills</code> and <code>.agents/skills</code>'],
-                ['<b>Codex</b>', 'Ask its built-in <code>$skill-installer</code>, or copy the folder', '<code>~/.codex/skills</code> (user) or <code>.agents/skills</code> (project)'],
+                ['<b>Codex</b>', 'Ask its built-in <code>$skill-installer</code> (for example <code>$skill-installer linear</code>), or copy the folder', '<code>~/.agents/skills</code> (user) or <code>.agents/skills</code> (project)'],
                 ['<b>Hermes Agent</b>', '<code>hermes skills install owner/repo/path</code>, a URL to a <code>SKILL.md</code>, the hub or a tap, or copy the folder', '<code>~/.hermes/skills/</code>; project skills in <code>.hermes/skills/</code> or <code>.agents/skills/</code>'],
               ]) + H.note('tip', 'A helper used by many community repositories is <code>npx skills add &lt;owner/repo&gt;</code>, with <code>--global</code> and <code>--agent claude-code</code> or <code>--agent codex</code> (or <code>\'*\'</code> for every agent it finds). It is convenient and it runs third-party code, so read what it will install first.'),
             n: 'Say it early: the core of a skill is just a folder, so every door is a variation on copy it to the right place. The difference between the tools is where they look and how they verify. The npx helper appears in the READMEs of several community skills (for example Humanizer and Marketing Skills); we mention it because students will meet it, not to recommend it.',
@@ -463,15 +482,23 @@
           },
           {
             t: 'Codex: let the installer fetch it',
-            b: H.code('# ask Codex in plain words; $skill-installer is a built-in skill\nUse $skill-installer to list the curated skills.\nUse $skill-installer to install <skill-name> from the curated list.\nUse $skill-installer to install skills/ticket-triage from acme-it/agent-skills.\n\n# what it does for you\n#   installs into $CODEX_HOME/skills/<name>   (default ~/.codex/skills)\n#   refuses to overwrite an existing folder\n#   the new skill is available on your next turn\n\n# project skills live in the repository\n.agents/skills/ticket-triage/SKILL.md', 'text', 'Codex') +
-              H.note('it', 'The installer downloads from GitHub, including private repositories if your git login or a token allows it. Treat it like any download: <b>name the source, read the folder, then approve</b>. The preinstalled system skills (<code>skill-creator</code>, <code>skill-installer</code>) are bundled and need no installing.'),
-            n: 'Codex has the most agent-native way in: you ask the agent to install a skill, which is itself a skill. Ask what could go wrong when the installer fetches from a repository nobody on the team has read. The paths are from the skill-installer shipped with Codex on the course lab machine; confirm in the current Codex docs because they change.',
+            b: H.code('# $skill-installer is a built-in (system) skill: ask for a curated skill by name\n$skill-installer linear\nUse $skill-installer to install skills/ticket-triage from acme-it/agent-skills.\n\n# or copy the folder yourself\n.agents/skills/ticket-triage/SKILL.md      # project: every folder from the current one up to the repo root\n~/.agents/skills/ticket-triage/SKILL.md    # just for you\n/etc/codex/skills/                         # admin: shared by every user of the machine\n\n# Codex notices new skills; if one does not appear, restart Codex\n\n# switch one off without deleting it (~/.codex/config.toml)\n[[skills.config]]\npath = "/path/to/skill/SKILL.md"\nenabled = false\n\n# agents/openai.yaml beside SKILL.md: only a person may start it\npolicy:\n  allow_implicit_invocation: false', 'text', 'Codex') +
+              H.note('it', 'The installer can download skills from other repositories you name. Treat it like any download: <b>name the source, read the folder, then approve</b>. Start a skill with <code>$name</code> or <code>/skills</code>. Codex shows the agent each skill\'s name, description and path, using at most 2% of the context window (8,000 characters if it is unknown); with many skills it shortens descriptions first and may omit some with a warning. <code>skills.max_context_tokens</code> raises the budget up to 10,000 tokens.'),
+            n: 'Codex has the most agent-native way in: you ask the agent to install a skill, which is itself a skill. Ask what could go wrong when the installer fetches from a repository nobody on the team has read. Paths, the disable switch, the invocation policy and the list budget are from OpenAI\'s "Build skills" documentation, checked on 28 October 2026. The page does not say exactly where the installer writes, so look in your skills folder after an install.',
           },
           {
             t: 'Hermes Agent: the hub, a tap or a folder',
             b: H.code('# install straight from a GitHub path, or from a URL\nhermes skills inspect acme-it/agent-skills/skills/ticket-triage   # read it first\nhermes skills install acme-it/agent-skills/skills/ticket-triage   # a security scan runs first\nhermes skills install https://example.com/ticket-triage/SKILL.md --name ticket-triage\n\n# the hub, and our own reviewed repository as a source\nhermes skills browse\nhermes skills search ticket\nhermes skills tap add acme-it/agent-skills\nhermes skills list --source hub\nhermes skills check && hermes skills update\nhermes skills uninstall ticket-triage\n\n# by hand, or share the folder other tools already use (~/.hermes/config.yaml)\n~/.hermes/skills/ticket-triage/SKILL.md\nskills:\n  external_dirs:\n    - ~/.agents/skills\n\n# skills in a repository: trust it once\nhermes skills trust\n\n# turn a procedure into a skill\n/learn how I just diagnosed the Branch-2 tunnel outage', 'bash', 'Hermes') +
               H.note('key', 'Hermes can write skills itself. Keep <code>skills.write_approval: true</code> and review staged changes with <code>/skills pending</code>, <code>/skills diff</code> and <code>/skills approve</code>, so a skill never changes without a person reading the diff. A folder in <code>external_dirs</code> is <b>not</b> write-protected: if Hermes can write there, the agent can change those skills.'),
             n: 'This repeats the Hermes lab on purpose: students should see that the same job (get a skill in, check it, keep control) has a Hermes spelling too. The tap is the team-library idea from the last lesson: one reviewed repository that everyone installs from. Hermes follows the same open SKILL.md standard, so a Claude-format skill usually loads as it is; the Hermes habit is to add When to Use, Procedure, Pitfalls and Verification sections. The commands and the trust step come from the Hermes skills documentation.',
+          },
+          {
+            t: 'The documentation for Codex and Hermes, as it looks',
+            b: H.shots([
+              ['site-codex-skills', 'OpenAI: “Build skills” for ChatGPT and Codex, with the skills list in the app.'],
+              ['site-hermes-skills', 'Hermes Agent: the Skills System page, with “Install from the website”.'],
+            ]),
+            n: 'Keep these two pages open during the lab. On the Codex page, find the table of skill locations; on the Hermes page, find the install-from-the-website section and external skill directories. Skills docs change quickly, so the live page beats this picture.',
           },
           {
             t: 'Moving a skill between tools: what stays and what does not',
@@ -481,6 +508,7 @@
               ['<code>allowed-tools</code>, <code>context: fork</code>, <code>paths</code>, <code>effort</code>', 'Claude Code', 'Treat as local extras; other tools ignore them or reject them'],
               ['<code>$ARGUMENTS</code>, <code>${CLAUDE_SKILL_DIR}</code>, <code>!`cmd`</code>', 'Claude Code', 'Do not rely on them in a skill you share; use plain instructions'],
               ['<code>license</code>, <code>compatibility</code>, <code>metadata</code>', 'Accepted, mostly ignored', 'Use them to say where the skill works'],
+              ['“Only a person may start it”: <code>disable-model-invocation: true</code> (Claude Code), <code>policy.allow_implicit_invocation: false</code> in <code>agents/openai.yaml</code> (Codex)', 'Per tool, spelled differently', 'Set it in every tool you ship the skill to, for anything with side effects'],
               ['Hermes extras: <code>version</code>, <code>platforms</code>, <code>metadata.hermes</code>, and the sections When to Use, Procedure, Pitfalls, Verification', 'Hermes', 'Optional; add them when the skill moves to Hermes'],
             ]) + H.note('tip', 'Write for the <b>portable core</b> first, then add a short “Claude Code extras” block to the file or a separate variant. One portable skill, tested in two tools, beats five forks that drift apart.'),
             n: 'This is the table that saves students an afternoon of wondering why a skill works in one tool and not another. Remind them that unknown frontmatter fields are ignored silently in Claude Code, and cause an error on upload to the Claude app. Ask which of their planned skills use Claude Code extras and could do without.',
@@ -511,6 +539,7 @@
       { q: 'Which description is best for discovery?', a: ['Helps with tickets', 'I can help you triage your helpdesk tickets', 'Triages IT helpdesk tickets and drafts the first reply. Use when the user pastes a ticket or mentions priority or SLA', 'Ticket tool'], c: 2, why: 'It is in the third person and says what the skill does and when to use it, with words people really use.' },
       { q: 'Where do you put a fact the agent must always know, such as the test command?', a: ['In a skill', 'In AGENTS.md or CLAUDE.md', 'In a hook', 'In a plugin'], c: 1, why: 'Facts and rules for every session go in the short instruction file; a skill is for a procedure loaded when needed.' },
       { q: 'A skill says “never push to main”. How do you make sure it never happens?', a: ['Write it in capitals', 'Add a permission or deny rule', 'Add a longer description', 'Ask the model nicely'], c: 1, why: 'A skill can only ask. A deny rule is enforced by the tool.' },
+      { q: 'Which skill name is valid under the Agent Skills specification?', a: ['PDF-Processing', '-pdf', 'pdf--processing', 'pdf-processing'], c: 3, why: 'Names use lower-case letters, numbers and single hyphens, do not start or end with a hyphen, and match the skill\'s folder name.' },
       { q: 'Why must you never put $ARGUMENTS inside a !`command` block in a skill?', a: ['It is slow', 'The command runs when the skill loads, so whoever types the argument can run any command', 'It uses more tokens', 'It does not work in Codex'], c: 1, why: 'Shell steps run before the model sees the skill, outside the normal approval flow.' },
       { q: 'You found a popular skill package with 100,000 stars. What is the right first step?', a: ['Install it in every project', 'Read its files and installer, then try it in a lab VM, pinned to a version', 'Trust it because it is popular', 'Install it globally to save time'], c: 1, why: 'Popularity is not a review. Some packages edit CLAUDE.md, register hooks, start in every session or send telemetry.' },
       { q: 'How do you prove a skill is better than no skill?', a: ['It feels better', 'Run three real tasks with and without it in fresh sessions and compare', 'Ask the model if it likes the skill', 'Count its lines'], c: 1, why: 'A baseline comparison on real tasks shows whether the skill adds anything and where it fails.' },

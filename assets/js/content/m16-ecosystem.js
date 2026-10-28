@@ -651,29 +651,40 @@
               { t: 'Comes back to you', s: 'a brief, or a request to approve', c: 'ok' },
             ], { h: 96 }), 'The common shape of the four products in this lesson. The computer belongs to the vendor, not to you.') +
               H.prose(
-                'Between September and October 2026 four companies launched the same idea within weeks of each other: <b>Grok Bot</b> (xAI, beta from 11 August), <b>OpenAI dots</b> (29 September), <b>Meta Muse</b> (announced 8 September) and <b>Claude Duet</b> (Anthropic, research preview from 21 October).',
+                'Between September and October 2026 four companies launched the same idea within weeks of each other: <b>Grok Bot</b> (SpaceXSI, the company behind Grok; beta from 11 August), <b>OpenAI dots</b> (29 September), <b>Meta Muse</b> (announced 8 September) and <b>Claude Duet</b> (Anthropic, research preview from 21 October).',
                 'Each is an agent that has a <b>persistent identity and its own cloud computer</b>, keeps working after you stop typing, and asks you before it does something sensitive.'
               ) +
               H.note('warn', 'All four are <b>new</b>: betas, research previews or first releases. Plans, countries, models and limits change quickly, and the numbers here are the vendors\' launch statements. Always confirm on the vendor\'s own page before you rely on a detail.'),
-            n: 'Start by asking who has already heard of one of them: colleagues will ask about these within weeks. Say clearly that this is a snapshot of the launches, not a buying guide. We could not open the vendors\' pages from the course build environment, so the facts come from the vendors\' own announcement text as returned by search; ask students to read the vendor pages before a class.',
+            n: 'Start by asking who has already heard of one of them: colleagues will ask about these within weeks. Say clearly that this is a snapshot of the launches, not a buying guide. The facts for all four were checked against the vendors\' own pages on 28 October 2026 (the next slide shows them; the dots facts come from OpenAI\'s documentation, and its 29 September launch date from the announcement as returned by search). Ask students to read the vendor pages before a class.',
           },
           {
             t: 'The four, side by side (launch facts)',
             b: H.table(['Product', 'From', 'What the vendor says it is', 'Model and access at launch'], [
-              ['Grok Bot', 'xAI · beta, 11 Aug 2026', 'Always-on AI agents (“Bots”) that each get their own cloud computer and work across apps and websites. Bots can message each other and share context in threads. Routines: a Bot repeats a job after watching you do it once. A separate Team Bots beta exists for Teams and Enterprise plans.', 'Offered through SuperGrok, SuperGrok Plus and Heavy, and Cursor subscriptions on desktop and iOS; later included with more plans. Bots run on their own usage pool.'],
-              ['OpenAI dots', 'OpenAI · 29 Sep 2026', 'Always-on agents inside ChatGPT. Each dot has its own cloud computer and browser, learns from feedback and works towards your goals around the clock. You message or call it in ChatGPT (desktop, web, mobile), or in Slack and Teams.', 'Runs on GPT-6 Astra. Rolling out to Pro and Business Premium in eligible markets, the first dot at no extra cost; excludes the EEA, Switzerland and the UK at launch; Enterprise is an admin-enabled beta.'],
-              ['Meta Muse', 'Meta · announced 8 Sep 2026', 'A personal agent that takes a goal, builds a plan and advances it on its own: sending email, booking travel and similar errands. It runs on a dedicated, isolated cloud VM that holds the agent and your data.', 'Built on Meta\'s Muse models. Rolled out in the US and Canada first, with Singapore added in October; check Meta\'s page for plans and prices.'],
-              ['Claude Duet', 'Anthropic · research preview, 21 Oct 2026', 'A new app where Claude works as a proactive agent: it handles inbox, calendar and follow-ups on its own cloud computer, and messages you when something needs you.', 'Runs on Claude Opus 5.5. Waitlist for US Pro and Max users, on claude.ai and iOS and Android apps; not on Team or Enterprise plans yet; included in the plan at no extra cost during the preview.'],
+              ['Grok Bot', 'SpaceXSI · beta, 11 Aug 2026', 'Always-on AI agents (“Bots”) that each get their own cloud computer, sign in to the tools you use and work across apps and websites, also ones with no API. Bots can message each other and share context in threads. Routines: a Bot repeats a job after watching you do it once. Team Bots (28 Sep 2026) are Bots you share with a team, with private conversations per person.', 'Beta for SuperGrok, SuperGrok Plus and Heavy, and Cursor Pro, Pro+, Ultra and Teams subscribers, on desktop and iOS; Team Bots in public beta on Teams and Enterprise plans. Bots have their own usage, separate from your Grok and Cursor plans.'],
+              ['OpenAI dots', 'OpenAI · 29 Sep 2026', 'Always-on agents inside ChatGPT. Each dot has its own cloud computer and browser, keeps work moving between conversations and brings you results or decisions. You message or call it in the ChatGPT mobile app, desktop app or a desktop browser, or in Slack and Teams, and you can take over its browser.', 'Powered by GPT-6 Astra. Rolling out gradually: Pro 100, 200 and 500 outside the EEA, UK and Switzerland; Business Premium worldwide; Enterprise worldwide, off until a workspace admin enables the beta. Chatting with a dot does not count against ChatGPT limits; tasks it starts in Work or Codex do.'],
+              ['Meta Muse', 'Meta · announced 8 Sep 2026', 'A personal agent that takes a goal, builds a plan and advances it on its own: sending email, booking travel and similar errands. It runs on a dedicated cloud VM (Muse Secure VM) that holds the agent and your data, and you can message it in the Muse app or in WhatsApp.', 'Powered by Muse Spark. Rolling out in the US on iOS, Android and muse.ai, with AI glasses coming; free for most uses, with subscription plans for more.'],
+              ['Claude Duet', 'Anthropic · research preview, 21 Oct 2026', 'A new app where Claude works as a proactive agent: it handles inbox, calendar and follow-ups on its own cloud computer, and messages you when something needs you.', 'Designed around Claude Opus 5.5. Waitlist, starting with Pro and Max users in the US, on claude.ai and iOS and Android apps; included in those plans during the preview and sharing their usage limits.'],
             ]) + H.note('tip', 'Read the “From” column as the date of the announcement, not of general availability. Three of the four were still betas or previews when this page was written.'),
             n: 'Do not read the table. Ask students to pick the row with the most restrictive access and the one with the broadest. Point out the one thing all four share: an agent with its own computer, run and paid for by the vendor. Prices are deliberately left out because they changed between early reports and the vendors\' pages.',
+          },
+          {
+            t: 'The four announcements, as the vendors show them',
+            b: H.shots([
+              ['site-grok-bot', 'Grok Bot: “your team of always-on agents”, announced 11 August 2026.'],
+              ['site-meta-muse', 'Meta Muse: “the world’s first personal AI agent built for everyone”, announced 8 September 2026.'],
+              ['site-claude-duet', 'Claude Duet: a research preview by waitlist, starting with US Pro and Max subscribers, 21 October 2026.'],
+              ['site-openai-dots', 'OpenAI dots: “an always-on agent that keeps work moving and asks for your input when a decision needs you”.'],
+              ['site-openai-dots-controls', 'OpenAI dots, Controls: review work, how action review works, custom rules and stopping work.'],
+            ]) + H.note('tip', 'Pictures of the vendors\' own pages, taken on 28 October 2026. The vendors change these pages often, so open the live page before you teach from a detail.'),
+            n: 'Show the pages and let students read the first sentence of each. Notice how similar the promises are (own computer, keeps working, asks before it acts). If a student has access to one of them, ask them to show the approval prompt in the next class.',
           },
           {
             t: 'What is different about each one',
             b: H.cards([
               ['Grok Bot', 'The “team of bots” product. Bots talk to each other, work in shared threads and learn routines by watching you. Team Bots add shared teammates for a company workspace.', 'xAI'],
-              ['OpenAI dots', 'The “always on, in ChatGPT” product. You reach a dot where you already chat, or in Slack and Teams, and you can set rules that allow, require approval for, or block specific actions.', 'OpenAI'],
-              ['Meta Muse', 'The “consumer and small business” product, built around a dedicated VM and a separate guard agent called Sentinel that must approve outbound traffic.', 'Meta'],
-              ['Claude Duet', 'The “proactive” product: it brings you what needs your attention instead of waiting to be asked, and a classifier checks messages it drafts before they go out. You cannot watch or take over its browser.', 'Anthropic'],
+              ['OpenAI dots', 'The “always on, in ChatGPT” product. You reach a dot where you already chat, or in Slack and Teams, and you can set custom rules that let it act, make it ask first, or hand a step to you.', 'OpenAI'],
+              ['Meta Muse', 'The “built for everyone” consumer product, built around a dedicated VM and a separate guard agent called Sentinel that must approve everything that reaches the internet.', 'Meta'],
+              ['Claude Duet', 'The “proactive” product: it brings you what needs your attention instead of waiting to be asked, and a classifier checks each message before it goes out. It cannot yet show you its browser.', 'Anthropic'],
             ], 2),
             n: 'Each card is one sentence of positioning, taken from the vendor\'s own description of the launch. Ask: which of these would our helpdesk try first, and what data would they feed it? That question leads straight into the governance slides.',
           },
@@ -705,9 +716,9 @@
             b: H.split(
               H.prose(
                 '<b>Isolation:</b> each agent has its own computer (Muse also separates a guard agent, Sentinel, from the agent itself).',
-                '<b>Approval:</b> asking you before sensitive actions: Duet before it sends, pays, signs or deletes; dots for actions such as changing a password; Muse before sending email or a purchase. dots also let you set allow, approve or block rules.',
-                '<b>Credentials:</b> Duet and Muse say the agent cannot see your passwords or payment methods.',
-                '<b>Visibility:</b> Muse shows an audit trail of its activity. Duet says you cannot watch or take over its browser.'
+                '<b>Approval:</b> asking you before sensitive actions: Duet before it sends, pays, signs or deletes; dots review each action that could affect your accounts and hand some steps to you (a password change); Muse before sending email or a purchase. dots also have custom rules: act without asking, act when you say so, ask first, or hand off to you.',
+                '<b>Credentials:</b> Duet and Muse say the agent cannot see your passwords or payment methods; dots take your sign-in in a private form outside the conversation.',
+                '<b>Visibility:</b> Muse shows an audit trail of its activity; with dots you can review tasks and take over its browser. Duet cannot yet show you its browser.'
               ),
               H.table(['Our question', 'Why it matters'], [
                 ['Which accounts did we connect?', 'The agent can read and act in all of them. Mail and calendar hold customer and credential data.'],

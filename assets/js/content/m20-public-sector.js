@@ -74,7 +74,7 @@
               ['“Why did this happen?”', 'Give the reason in plain words and the facts used; keep the case file'],
               ['“It is wrong. How do I fix it?”', 'A simple way to challenge, with a person who can change the outcome'],
             ]) + H.note('it', 'Automation succeeds in public service when it makes the service <b>faster and more understandable</b> for the person, and fails when it only makes it cheaper for the office.'),
-            n: 'The survey figure is from the OECD material on governing with agentic AI (see the standards lesson). The disclosure rule is Article 50 of the EU AI Act, which sources report as still applying from 2 August 2026; confirm the date for your jurisdiction. Ask students which of the five questions their own service answers badly today.',
+            n: 'The survey figure is from the OECD material on governing with agentic AI (see the standards lesson). The disclosure rule is Article 50 of the EU AI Act, which applies from 2 August 2026 (the Digital Omnibus keeps that date and only gives generative systems already on the market until 2 December 2026 to mark synthetic content); confirm the rule for your jurisdiction. Ask students which of the five questions their own service answers badly today.',
           },
         ],
       },
@@ -240,8 +240,8 @@
               { h: 'Management and risk', c: 'acc', items: ['ISO/IEC 42001', 'NIST AI RMF and GenAI profile', 'OECD AI principles', 'Voluntary, auditable'] },
               { h: 'Security and practice', c: 'tl', items: ['OWASP Top 10 for Agentic Applications', 'UK AI Playbook', 'Singapore agentic framework', 'Guidance'] },
             ], { bh: 42 }), 'Law says what you must do. Management standards say how to organise it. Security guides say what to build and test.') +
-              H.note('warn', 'This is a snapshot of October 2026, from the publishers\' own pages as reported by search. Laws and drafts change: <b>check the current text and your own jurisdiction</b> with legal before you rely on any date.'),
-            n: 'Use the three columns to sort every framework a student mentions. A common mistake is treating a voluntary framework as law or a law as a how-to. We could not open the publishers\' sites from the course environment, so every fact here comes from their published descriptions as returned by search; verify before a class.',
+              H.note('warn', 'This is a snapshot of October 2026. The EU, OECD and OWASP facts were checked on the publishers\' own pages on 28 October 2026; the NIST, ISO, OMB, UK and Singapore facts come from their descriptions as returned by search. Laws and drafts change: <b>check the current text and your own jurisdiction</b> with legal before you rely on any date.'),
+            n: 'Use the three columns to sort every framework a student mentions. A common mistake is treating a voluntary framework as law or a law as a how-to. The EU, OECD and OWASP pages could be opened and are checked; the NIST, ISO, OMB, UK and Singapore sites could not be opened from the course environment, so those facts come from the publishers\' descriptions as returned by search. Verify before a class.',
           },
           {
             t: 'What each one gives you',
@@ -251,21 +251,28 @@
               ['<b>EU AI Act</b>', 'Risk-based law: banned practices, high-risk systems, transparency duties for chatbots and synthetic content', 'Classify each use; plan disclosure and human oversight', 'Binding in the EU'],
               ['<b>US OMB M-25-21</b> (April 2025)', 'Rules for US federal agencies: a “high-impact AI” category with minimum practices (pre-deployment testing, impact assessment, ongoing monitoring, human oversight) and the duty to stop non-compliant uses. A companion, M-25-22, covers buying AI', 'A model for what “high impact” practices look like', 'Binding for US federal agencies'],
               ['<b>UK AI Playbook</b> (February 2025)', 'Ten principles for civil servants, including human control, and a mapping for agentic AI; departments record tools under the Algorithmic Transparency Recording Standard', 'Principles and a public transparency record', 'Guidance; the recording standard is required for central government bodies in scope'],
-              ['<b>Singapore Model AI Governance Framework for Agentic AI</b> (January 2026, updated 2026)', 'Guidance on managing the risk of agents that act, stressing that humans remain accountable', 'Controls for autonomy and third-party agents', 'Voluntary'],
+              ['<b>Singapore Model AI Governance Framework for Agentic AI</b> (January 2026, updated 2026)', 'Guidance in four dimensions: assess risk and limit what an agent may do up front; keep humans meaningfully accountable; put technical controls in place; enable end-user responsibility', 'Four questions before every agent: is the use case suitable, what permissions does it need, who is responsible, how is it tested and monitored', 'Voluntary'],
               ['<b>OWASP Top 10 for Agentic Applications</b> (December 2025)', 'The ten most critical security risks for agents that plan and use tools', 'A security test list (next slides)', 'Guidance'],
             ]),
-            n: 'Do not read this table. Ask students to find the one thing in each row that applies to their organisation within a year. The facts are from the publishers\' own descriptions: NIST for the profile, ISO for 42001, the OMB memo and the UK playbook pages, IMDA and OWASP. The Singapore update date and the OMB deadline are given differently by different sources, so we do not rely on them.',
+            n: 'Do not read this table. Ask students to find the one thing in each row that applies to their organisation within a year. The facts are from the publishers\' own descriptions: NIST for the profile, ISO for 42001, the OMB memo and the UK playbook pages, IMDA and OWASP. The four Singapore dimensions are as the OECD working group describes them (25 September 2026). The Singapore update date and the OMB deadline are given differently by different sources, so we do not rely on them.',
           },
           {
             t: 'EU AI Act: dates moved, duties did not disappear',
-            b: H.table(['What', 'When (as reported, October 2026)', 'Meaning for a public body'], [
-              ['Banned practices and the AI-literacy duty', 'Applied from February 2025; the Omnibus added new banned practices and changed some duties, so check the text', 'Avoid banned uses; train staff who use AI'],
-              ['Transparency (for example telling people they are talking to an AI)', 'Applies from 2 August 2026', 'Disclose chatbots and label synthetic content'],
+            b: H.table(['What', 'When (Regulation (EU) 2026/1744, checked 28 October 2026)', 'Meaning for a public body'], [
+              ['Banned practices', 'From 2 February 2025. The Omnibus adds bans on systems that generate non-consensual intimate material or child sexual abuse material, from 2 December 2026', 'Avoid banned uses'],
+              ['AI literacy (Article 4)', 'The Omnibus rewrote it: providers and deployers must take measures to support the AI literacy of their staff and others who operate AI on their behalf, without guaranteeing a specific level for any person', 'Train staff who use AI, in proportion to their role and the system'],
+              ['Transparency (for example telling people they are talking to an AI)', 'Applies from 2 August 2026; providers of generative systems already on the market before then have until 2 December 2026 to mark synthetic content (Article 50(2))', 'Disclose chatbots and label synthetic content'],
               ['Stand-alone high-risk systems (Annex III: for example access to essential services and benefits)', 'Delayed to 2 December 2027 by the Digital Omnibus on AI', 'Prepare now: risk management, data governance, logging, human oversight'],
               ['High-risk AI inside regulated products (Annex I)', 'Delayed to 2 August 2028', 'Mostly for product makers'],
-              ['Date for systems used by public authorities', 'Sources disagree', 'Check the Official Journal and ask legal'],
+              ['High-risk systems already on the market, used by public authorities', 'The Act applies to systems placed on the market earlier only after a significant design change, but providers and deployers of high-risk systems intended for public authorities must comply by 2 August 2030 (Article 111(2))', 'Not a reason to wait: plan compliance now and ask legal about each system'],
             ]) + H.note('key', 'A delayed deadline is time to <b>prepare</b>, not time to wait. The requirements (risk management, logging, human oversight, records) are the same ones a good automation policy already asks for.'),
-            n: 'The Digital Omnibus on AI (Regulation (EU) 2026/1744) entered into force on 27 July 2026 according to the law-firm summaries we read; they agree on the core dates and disagree on public-authority timing, so we say so. Students outside the EU can still use it: it is a clear picture of what a risk-based regime asks for.',
+            n: 'The Digital Omnibus on AI is Regulation (EU) 2026/1744 of 8 July 2026, in force since 27 July 2026. The dates in the table are read from its text (it amends Articles 4, 111 and 113 of the AI Act), on the AI Act Explorer run by the Future of Life Institute, which links the official EUR-Lex text. Students outside the EU can still use it: it is a clear picture of what a risk-based regime asks for.',
+          },
+          {
+            t: 'Read the primary text: the EU regulation',
+            b: H.shot('site-eu-omnibus', 'The Digital Omnibus on AI, Regulation (EU) 2026/1744, in the AI Act Explorer. It links the official PDF and the EUR-Lex text.') +
+              H.note('tip', 'Ask legal for the exact article that applies to <b>your</b> system. A summary, ours included, is a map. The regulation is the territory.'),
+            n: 'Open the page with the class and find Article 4 (AI literacy) and the dates in Articles 111 and 113 together. The explorer is run by the Future of Life Institute and is not an official EU site; it states that its texts are the official ones published in the Official Journal.',
           },
           {
             t: 'Security: the OWASP list and how our controls answer it',
@@ -282,6 +289,12 @@
               ['Rogue agents', 'An agent acts outside its remit', 'Inventory, monitoring, owner per agent'],
             ]) + H.note('tip', 'We list the categories as summarised from the published OWASP list. Read the official page for exact names and definitions, and map each one to a test in your pilot.'),
             n: 'Students will recognise most of these from earlier modules (prompt injection, guardrails, permissions). The last row is the governance one: an inventory of agents with an owner for each. The most useful exercise is to take one night-shift job and walk it through all ten rows.',
+          },
+          {
+            t: 'Read the primary text: the OWASP list',
+            b: H.shot('site-owasp-agentic', 'The OWASP Top 10 for Agentic Applications for 2026, published 9 December 2025 by the OWASP GenAI Security Project, with the document to download.') +
+              H.note('it', 'The page says the list was developed with more than 100 industry experts, researchers and practitioners. Download the document and use its definitions for your pilot test plan.'),
+            n: 'The category names in the table were cross-checked against several published summaries of the list; the official definitions and mitigations are in the document you can download from this page. Students who run security should read it in full.',
           },
           {
             t: 'A public record for each agent',
@@ -317,10 +330,28 @@
               ['Government-grade clouds', 'Several enterprise agent platforms report FedRAMP High authorisation', 'Vendor statements; check the authorisation list'],
               ['Governance catching up', 'In 2026 Singapore published an agentic-AI governance framework; the UK playbook maps agentic AI to its principles; OWASP published an agentic top ten', 'Official or community publications'],
               ['Trust gap', 'OECD: fewer than four in ten people were confident that government AI would be fair, transparent and keep humans in charge', 'OECD survey'],
-              ['Early practice', 'An OECD paper (September 2026) draws on interviews with 25 organisations, including government agencies', 'Interview-based, early'],
+              ['Early practice', 'The OECD working group of government officials (25 September 2026): pilots such as Estonia\'s Bürokratt and Ukraine\'s Diia.AI exist, and “agentic AI is showing early promise but its value is not yet proven in government”', 'Authors\' views, not official OECD positions; read it in full'],
               ['Adoption numbers', 'Many articles quote percentages of agencies adopting agents', 'Mostly vendor surveys; methods unclear'],
             ]) + H.note('warn', 'Most public stories about agents in government are written by the companies that sell them. Prefer <b>OECD, audit-office and agency reports</b>, and ask for the measured result before the headline.'),
             n: 'Be generous and sceptical at once. Show how to read a source: who wrote it, who pays, what was measured. The Google item is a launch announcement, not evidence of results. The OECD points are the best-quality sources we found; read them in full before relying on them.',
+          },
+          {
+            t: 'What governments are doing now (OECD working group, 25 September 2026)',
+            b: H.table(['Who', 'What they are doing', 'What we take from it'], [
+              ['Estonia', 'Bürokratt, a network of interoperable service agents; in June 2026 it announced an analysis of giving AI agents digital identities (“AI ID codes”) so an agent acts for a person or organisation with limited, auditable powers', 'An agent needs an identity and a written delegation: for whom, with what powers'],
+              ['Ukraine', 'Diia.AI delivers public services directly in a chat', 'Meet people where they already are, with the same rules as the counter'],
+              ['Canada', 'Guidance: adopt agentic AI only where outcomes are clearly defined, decision boundaries explicit, accountability assigned and risks testable', 'Our entry test for every task (lessons 2 and 3)'],
+              ['Australia', 'An addendum to its AI technical standard: human oversight, auditable logs, and the ability to halt or roll back an agent\'s actions', 'Logs and a kill switch from the first pilot'],
+              ['Singapore', 'A framework in four dimensions: limit risk up front, keep humans accountable, technical controls, end-user responsibility', 'Four review questions per agent'],
+              ['Israel', 'A government-wide architecture on open standards and secure interfaces, so agents can call authorised services', 'Plan access and authority before you plan automation'],
+            ]) + H.note('crit', 'The OECD post also describes an incident from April 2026: an AI coding agent at a small software company, working on a routine task, <b>deleted the company\'s database and its backups in nine seconds</b>. It had found a credential it was never meant to use, and the safeguard requiring human approval for irreversible actions did not hold. The same reach inside a case-management system would put people\'s entitlements at stake.'),
+            n: 'The authors are officials from Australia, Canada, Estonia, Israel, Japan, Korea, the UK and Singapore, writing for the OECD working group; the post carries a disclaimer that the views are theirs and not official OECD positions. Use it to show that governments are adapting existing governance rather than starting over. Link the incident to the autonomy ladder: the failure was a missing control on an irreversible action, exactly what level 2 and the stop switch are for.',
+          },
+          {
+            t: 'Read the primary text: the OECD post',
+            b: H.shot('site-oecd-agentic', 'OECD.AI: “Governing with agentic AI: when machines act on government\'s behalf”, by the OECD Working Group on Agentic AI in Government, 25 September 2026.') +
+              H.note('tip', 'The post gives a tax example that matches our levels: an agent that gathers records and drafts an assessment for an officer to approve is useful and relatively low risk; an agent that processes a return and issues a refund or penalty itself needs legal authority, due process, human approval at key points, durable logs and a way to pause or reverse.'),
+            n: 'Ask students to place the two tax examples on the autonomy ladder. The first is level 2, the second is above anything we would start with. The post also says that this does not mean agents in government are always high risk: safeguards must match what the agent may do and its potential impact.',
           },
           {
             t: 'Twelve patterns, with the level they start at',

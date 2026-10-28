@@ -408,9 +408,10 @@ Restart the service, then delete the old data folder with rm -rf and push the fi
         if (!name) add('warn', L('No <code>name</code>. Claude Code uses the folder name, but other tools expect it.', 'فیلد <code>name</code> نیست. Claude Code از نام پوشه استفاده می‌کند ولی ابزارهای دیگر آن را انتظار دارند.'));
         else {
           if (name.length > 64 || !/^[a-z0-9-]+$/.test(name)) add('fail', L('<code>name</code> must be at most 64 characters: lower-case letters, numbers and hyphens only.', '<code>name</code> باید حداکثر ۶۴ نویسه باشد: فقط حروف کوچک، عدد و خط تیره.'));
+          else if (/^-|-$|--/.test(name)) add('fail', L('<code>name</code> may not start or end with a hyphen, or have two hyphens in a row (Agent Skills specification).', '<code>name</code> نباید با خط‌تیره شروع یا تمام شود و نباید دو خط‌تیره‌ی پشت‌سرهم داشته باشد (مشخصات Agent Skills).'));
           else if (/anthropic|claude/.test(name)) add('fail', L('<code>name</code> may not contain the reserved words <code>anthropic</code> or <code>claude</code>.', '<code>name</code> نباید کلمات رزروشده‌ی <code>anthropic</code> یا <code>claude</code> را داشته باشد.'));
           else if (/^(helper|utils?|tools?|documents?|data|files?)$/.test(name)) add('warn', L('The name is vague. Name the activity, such as <code>triaging-tickets</code> or <code>ticket-triage</code>.', 'نام مبهم است. فعالیت را نام ببرید، مثل <code>triaging-tickets</code> یا <code>ticket-triage</code>.'));
-          else add('ok', L('<code>name</code> is valid.', '<code>name</code> معتبر است.'));
+          else add('ok', L('<code>name</code> is valid. It must also match the name of the skill\'s folder.', '<code>name</code> معتبر است. باید با نام پوشه‌ی مهارت هم یکی باشد.'));
         }
         // description
         if (!desc) add('fail', L('<code>description</code> is empty. The agent cannot decide when to load the skill without it.', '<code>description</code> خالی است. ایجنت بدون آن نمی‌تواند تصمیم بگیرد مهارت را کی بارگذاری کند.'));
@@ -421,6 +422,8 @@ Restart the service, then delete the old data folder with rm -rf and push the fi
           if (!/\b(use when|use this when|when the user|when asked|if the user|use for)\b/i.test(desc)) add('warn', L('The description does not say <b>when</b> to use the skill. Add “Use when…” with the words people really say.', 'توضیح نمی‌گوید مهارت <b>کی</b> استفاده شود. «Use when…» را با کلماتی که مردم واقعاً می‌گویند اضافه کنید.'));
           if (desc.length >= 50 && desc.length <= 1024 && !/^(i|you)\b/i.test(desc) && /\b(use when|when the user|when asked)\b/i.test(desc)) add('ok', L('The description says what it does and when to use it.', 'توضیح می‌گوید چه می‌کند و کی استفاده شود.'));
         }
+        const comp = fm.compatibility || '';
+        if (comp.length > 500) add('fail', L('<code>compatibility</code> is {0} characters; the limit is 500.', '<code>compatibility</code> {0} نویسه است؛ حد ۵۰۰ است.', comp.length));
         // body
         const lines = body.split('\n').filter((x) => x.trim()).length;
         if (!lines) add('fail', L('The body is empty.', 'بدنه خالی است.'));

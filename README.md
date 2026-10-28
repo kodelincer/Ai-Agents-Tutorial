@@ -80,7 +80,7 @@ The in-app **Deck-to-lesson map** page lists every original slide and where it i
 ## Pictures
 
 Lessons show the real interfaces and home pages of the tools they teach (Claude Code, Codex, OpenCode, Hermes,
-Multica, Orca, 9router, OmniRoute, OpenRouter, Ollama, LM Studio and more) with `H.shot('<id>', 'caption')`. Pictures are registered in
+Multica, Orca, 9router, OmniRoute, OpenRouter, Ollama, LM Studio, vLLM, Honcho, Grok Bot, Claude Duet, Meta Muse, OpenAI dots and the OWASP, EU and OECD pages for module 20) with `H.shot('<id>', 'caption')`. Pictures are registered in
 [`assets/js/shots.js`](assets/js/shots.js) with their source and licence, live in `assets/img/shots/`, open
 larger on click, and are listed on the in-app **Image credits** page. The single-file build inlines them.
 To add one, convert it to WebP (about 1100 px wide), add an entry to `shots.js` with where it came from,

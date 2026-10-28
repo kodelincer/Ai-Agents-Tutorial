@@ -77,6 +77,12 @@
             n: 'Keep it conceptual. The one sentence to remember: Honcho does not just save what was said, it builds a model of the person and answers questions about them. Compare it with the MEMORY.md file in Hermes, which is a short list of notes the agent writes itself.',
           },
           {
+            t: 'Honcho, as its own page shows it',
+            b: H.shot('site-honcho', 'The Honcho home page: “Memory that reasons”, continual learning for stateful agents.') +
+              H.note('warn', 'The page leads with benchmark results for accuracy, cost, speed and tokens. Those are the project\'s own claims: test with your own conversations before you trust them.'),
+            n: 'Show the page, then ask what students would need to measure to believe the claim on the banner. The Honcho documentation site could not be reached from the course environment, so the details in this lesson come from the project\'s repository and home page.',
+          },
+          {
             t: 'Peers, sessions and what it builds',
             b: H.table(['Concept', 'What it is'], [
               ['Workspace', 'The top-level container. It keeps data for different assistants or products apart.'],
