@@ -189,5 +189,14 @@
       summary: 'Five patterns that repeat across HR, sales, service, legal and admin, the extra care needed with people and the law, and a workshop that plans a real two-week pilot.',
       goals: ['Place any task on one of five patterns and see what a person must still decide', 'Leave with a one-page pilot plan for your own department'],
       lessons: ['m18-9', 'm18-10'] },
+    // ---------- H · Going further: agent skills (IT track, after the business sessions in the list) ----------
+    { n: 39, phase: 'H', optional: true, title: 'Agent skills I: how they work and which ones matter',
+      summary: 'What a skill is and how an agent loads it, how skills differ from instruction files, commands, MCP servers and plugins, the official and community skills worth knowing (checked against their repositories), and how to import a skill into Claude Code, the Claude apps, OpenCode, Codex and Hermes.',
+      goals: ['Explain progressive disclosure and where each tool looks for skills', 'Choose a short list of skills to trial for an IT team, with reasons', 'Import a skill into each tool, check it loaded, and keep one reviewed team library'],
+      lessons: ['m19-1', 'm19-2', 'm19-6'] },
+    { n: 40, phase: 'H', optional: true, title: 'Agent skills II: build, test, trust and share',
+      summary: 'Write a SKILL.md with a strong description and a lean body, test it against a baseline, review other people\'s skills before you install them, and share your own through a repository.',
+      goals: ['Build and test a skill, and fix it with the SKILL.md checker', 'Review a third-party skill, name the controls that limit it, and share your own with an owner'],
+      lessons: ['m19-3', 'm19-4', 'm19-5'] },
   ];
 })();
