@@ -198,5 +198,14 @@
       summary: 'Write a SKILL.md with a strong description and a lean body, test it against a baseline, review other people\'s skills before you install them, and share your own through a repository.',
       goals: ['Build and test a skill, and fix it with the SKILL.md checker', 'Review a third-party skill, name the controls that limit it, and share your own with an owner'],
       lessons: ['m19-3', 'm19-4', 'm19-5'] },
+    // ---------- I · Agents in government and public organisations (business track) ----------
+    { n: 41, biz: true, phase: 'I', title: 'Public organisations: why agents, and what to automate first',
+      summary: 'Why public organisations look at agents that can work through the night, how to find out what the organisation really does for people, and how to score tasks and choose a safe first wave.',
+      goals: ['Explain the benefits of agents for a public body and the night-shift rules that keep them safe', 'Map a service, break it into tasks and choose a first wave with the right autonomy level'],
+      lessons: ['m20-1', 'm20-2'] },
+    { n: 42, biz: true, phase: 'I', title: 'Public organisations: policy, standards and a pilot plan',
+      summary: 'Migrating little by little with an autonomy ladder and a one-page automation policy, the standards and laws that matter in 2026, creative patterns that stay safe, and a workshop that ends with a pilot plan.',
+      goals: ['Write an automation policy extract and a migration plan with gates', 'Use NIST, ISO/IEC 42001, the EU AI Act and OWASP as a checklist, and present a pilot plan to a review panel'],
+      lessons: ['m20-3', 'm20-4', 'm20-5', 'm20-6'] },
   ];
 })();

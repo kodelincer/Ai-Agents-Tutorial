@@ -13,9 +13,9 @@ switches the whole course, including diagrams and exercises, and Persian is show
 right-to-left. Add `#fa` or `#en` to a link to open it in a given language.
 
 It expands the original deck in [`source/Ai_Agents.pptx`](source/Ai_Agents.pptx)
-(54 slides) into **40 two-hour sessions** made of 20 modules, 139 lessons and 552 slides,
+(54 slides) into **42 two-hour sessions** made of 21 modules, 145 lessons and 584 slides,
 with diagrams, speaker notes on every slide, a synced speaker view, checkpoint quizzes
-and 30 in-browser exercises.
+and 31 in-browser exercises.
 
 ## Audience
 
@@ -43,7 +43,7 @@ The teaching order lives in [`assets/js/sessions.js`](assets/js/sessions.js). Ea
 | **F · Beyond one agent** | 22–25 | 22 Tour: Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho, Multica · 23 Agent teams · 24 Security · 25 Guardrail policy and the network playbook |
 | **G · Playbooks, workshop, capstone** | 26–29 | 26 Role playbooks *(optional)* · 27 Workshop · 28 Capstone · 29 Roadmap and further learning *(optional)* |
 | **H · Going further (optional)** | 30–34, 39–40 | 30 The agent ecosystem: DeepSeek Harness, OpenCode, Multica, Orca · 31 Providers, AI gateways (OpenRouter, OmniRoute, 9router), free models and connecting your tools · 32–34 OpenCode tutorial (Module 17): install and first session, agents, permissions and policies · memory, commands, skills, MCP, models and cost · automation, clients, migration and a governed team kit · 39–40 Agent skills (Module 19): how skills work, the skills worth knowing, importing them into each tool, building, testing, trusting and sharing your own |
-| **I · Agents for every department** | 35–38 | 35 Agents for everyone, and for managers · 36 Communications and PR · 37 Accounting and finance · 38 More departments, and your own pilot |
+| **I · Agents for every department** | 35–38, 41–42 | 35 Agents for everyone, and for managers · 36 Communications and PR · 37 Accounting and finance · 38 More departments, and your own pilot · 41–42 Government and public organisations (Module 20): why agents, mapping services, autonomy ladder, automation policy, standards, trends and a pilot workshop |
 
 Every lesson stays in its module and keeps its route (for example `#m8-3`); sessions only decide the
 order. `node tools/i18n.js check` fails if a lesson is in no session or in two.
@@ -72,6 +72,7 @@ order. `node tools/i18n.js check` fails if a lesson is in no session or in two.
 | 17 | OpenCode tutorial (OpenCode 2, with V1 differences): install, first session, agents, permission rules and policies, project memory, commands, skills, MCP, models and cost, CI and clients, migration, a governed team kit; plus the OpenCode cheat sheet | new |
 | 18 | Agents for every department: four ways to work, the safe rules, the brief, managers' briefings and decisions, communications and PR, accounting and finance, other departments, three labs on sample data (briefing, fact check, invoice exceptions) and a pilot workshop | new |
 | 19 | Agent skills: what a skill is and how it loads, the important official and community skills (checked against their repositories), writing, testing, trusting and sharing your own, how to import a skill into Claude Code, the Claude apps, OpenCode, Codex and Hermes, plus the SKILL.md checker and import-helper exercises and a creator roundup in pictures | new |
+| 20 | Agents in government and public organisations: benefits and safe night-time work, service catalogue and task scoring (with an exercise), autonomy ladder and automation policy, standards and laws (NIST, ISO/IEC 42001, EU AI Act, OMB, OWASP, UK and Singapore guidance), trends and twelve safe patterns, and a pilot workshop | new |
 
 The in-app **Deck-to-lesson map** page lists every original slide and where it is taught.
 **Browse by module** shows the same lessons grouped by topic.
@@ -155,7 +156,7 @@ assets/css/academy.css        design tokens (light/dark) and components
 assets/js/core.js             H.* HTML helpers and D.* SVG diagram generators
 assets/js/widgets.js          concept exercises
 assets/js/widgets-labs.js     agent and Hermes lab exercises
-assets/js/widgets-eco.js      ecosystem, gateway, OpenCode and skills exercises (Modules 16, 17 and 19)
+assets/js/widgets-eco.js      ecosystem, gateway, OpenCode, skills and public-sector exercises (Modules 16, 17, 19 and 20)
 assets/js/content/mNN-*.js    one file per module
 assets/js/sessions.js         the session plan: which lessons are taught in which session
 assets/js/notes.js            speaker notes (one place to edit what you say per slide)

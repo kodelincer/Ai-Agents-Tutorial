@@ -9,7 +9,7 @@ Whenever you add or change any visible text, add the Persian at the same time.
 
 - Lesson content, speaker notes, quizzes and reference pages: write English in
   `assets/js/content/*.js`, `notes.js` or `pages.js`, then add Persian to
-  `assets/i18n/fa/<group>.js` (groups: `m00`…`m19`, `sessions`, `pages`).
+  `assets/i18n/fa/<group>.js` (groups: `m00`…`m20`, `sessions`, `pages`).
   `node tools/i18n.js missing <group>` lists what is missing.
 - UI and widget strings (`app.js`, `core.js`, `widgets*.js`): write `L('English', 'فارسی')`
   inline; for data arrays use `[en, fa]` pairs read with `T()`.
@@ -29,7 +29,7 @@ python3 tools/build_single.py       # dist/ai-agents-academy.html (dist/ is giti
 
 ## Content conventions
 
-- The teaching order is `assets/js/sessions.js` (40 two-hour sessions). Lessons stay in their
+- The teaching order is `assets/js/sessions.js` (42 two-hour sessions). Lessons stay in their
   modules and keep their routes; every lesson id must be in exactly one session
   (`node tools/i18n.js check` enforces it). A new lesson needs a session.
 - The course covers Hermes Agent as the agent harness, and Claude Code and Codex as
@@ -43,6 +43,8 @@ python3 tools/build_single.py       # dist/ai-agents-academy.html (dist/ is giti
   opencode.ai/docs (V1) and the V2 docs before changing commands, config fields or defaults.
 - Module 19 teaches agent skills (progressive disclosure, important skills, building and trusting them). Check the Claude Code
   skills reference and Anthropic's authoring guide before changing field names, limits or paths.
+- Module 20 covers agents in government and public organisations (benefits, process inventory, autonomy ladder, standards, trends). Standards and
+  dates (EU AI Act, NIST, ISO/IEC 42001, OMB, OWASP) change: re-check the publishers' pages before updating them.
 - Open WebUI, LangChain, LangGraph, LlamaIndex, Honcho and Multica are short introductions in
   module 15 (no labs). The depth of the course is in coding agents (module 8) and Hermes (module 9).
 - Gateway details (OpenRouter and AvalAI base URLs, model names, prices, cache rules) change often.

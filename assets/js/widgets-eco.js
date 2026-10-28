@@ -517,4 +517,70 @@ Restart the service, then delete the old data folder with rm -rf and push the fi
     run();
   };
 
+
+  /* ---------------- Which tasks to automate first? (Module 20) ---------------- */
+  W.govTriage = function (el) {
+    const b = A.frame(el, L('Which tasks first, and how much autonomy?', 'کدام کارها اول، و با چه میزان خودمختاری؟'), L('Exercise', 'تمرین'));
+    const id = uid('gt');
+    // [name, volume, rule clarity, data sensitivity, impact if wrong, reversibility, decides a person's rights or money]
+    let rows = [
+      [L('Answer “where is my application?” questions', 'پاسخ به پرسش «درخواست من کجاست؟»'), 5, 4, 2, 1, 5, 0],
+      [L('Triage and route incoming complaints and emails', 'اولویت‌بندی و ارجاع شکایت‌ها و نامه‌های ورودی'), 5, 3, 3, 2, 4, 0],
+      [L('Check applications for missing documents', 'بررسی کامل‌بودن مدارک درخواست‌ها'), 4, 4, 3, 2, 4, 0],
+      [L('Draft replies to information requests', 'پیش‌نویس پاسخ به درخواست‌های اطلاعات'), 4, 3, 3, 2, 4, 0],
+      [L('Summarise long case files for caseworkers', 'خلاصه‌ی پرونده‌های بلند برای کارشناسان'), 3, 3, 4, 3, 5, 0],
+      [L('Watch network and server alerts overnight', 'پایش هشدارهای شبکه و سرور در شب'), 5, 4, 2, 2, 5, 0],
+      [L('Translate public notices into other languages', 'ترجمه‌ی اطلاعیه‌های عمومی به زبان‌های دیگر'), 3, 4, 1, 3, 4, 0],
+      [L('Reset staff passwords', 'بازنشانی گذرواژه‌ی کارکنان'), 4, 5, 4, 4, 3, 0],
+      [L('Decide eligibility and pay a benefit', 'تعیین استحقاق و پرداخت یک مزایا'), 4, 3, 5, 5, 1, 1],
+      [L('Issue fines and enforcement notices', 'صدور جریمه و اخطار اجرایی'), 3, 4, 4, 5, 2, 1],
+    ];
+    const LV = [
+      [L('0 · People do it', '۰ · انسان‌ها انجام می‌دهند'), 'crit'],
+      [L('1 · Agent assists', '۱ · ایجنت کمک می‌کند'), 'warn'],
+      [L('2 · Agent prepares, a person approves', '۲ · ایجنت آماده می‌کند، انسان تأیید می‌کند'), 'warn'],
+      [L('3 · Agent acts within limits', '۳ · ایجنت در محدوده‌ی تعیین‌شده عمل می‌کند'), 'tip'],
+      [L('4 · Runs end to end, monitored', '۴ · سرتاسر اجرا می‌کند، با پایش'), 'tip'],
+    ];
+    const sel = (i, k, v) => `<select data-i="${i}" data-k="${k}" aria-label="${k}">${[1, 2, 3, 4, 5].map((n) => `<option value="${n}"${n === v ? ' selected' : ''}>${n}</option>`).join('')}</select>`;
+    b.innerHTML = `<p class="muted" style="margin:0 0 8px">${L('Score each task from 1 (low) to 5 (high). Volume: how often it happens. Clarity: how clear the rules are. Sensitivity: how sensitive the data is. Impact: the harm if the agent is wrong. Undo: how easily a mistake is reversed.', 'هر کار را از ۱ (کم) تا ۵ (زیاد) امتیاز دهید. حجم: چقدر رخ می‌دهد. وضوح: قواعد چقدر روشن‌اند. حساسیت: داده چقدر حساس است. اثر: آسیب اگر ایجنت اشتباه کند. بازگشت: اشتباه چقدر راحت برگردانده می‌شود.')}</p>
+      <div class="tbl-wrap"><table><thead><tr><th>${L('Task', 'کار')}</th><th>${L('Volume', 'حجم')}</th><th>${L('Clarity', 'وضوح')}</th><th>${L('Sensitivity', 'حساسیت')}</th><th>${L('Impact', 'اثر')}</th><th>${L('Undo', 'بازگشت')}</th><th>${L('Decides rights or money', 'درباره‌ی حقوق یا پول تصمیم می‌گیرد')}</th></tr></thead><tbody id="${id}-t"></tbody></table></div>
+      <div class="w-row" style="margin-top:8px"><input type="text" id="${id}-n" dir="auto" placeholder="${L('Add your own task…', 'کار خودتان را اضافه کنید…')}" style="flex:1;min-width:180px"><button type="button" class="cmdchip" id="${id}-a">${L('Add', 'افزودن')}</button></div>
+      <h4 style="margin:14px 0 6px">${L('Result: first wave and autonomy level', 'نتیجه: موج اول و سطح خودمختاری')}</h4><div id="${id}-r"></div>`;
+    const draw = () => {
+      $('#' + id + '-t', b).innerHTML = rows.map((r, i) => `<tr><td>${esc(r[0])}</td>${[1, 2, 3, 4, 5].map((k) => `<td>${sel(i, k, r[k])}</td>`).join('')}<td><input type="checkbox" data-i="${i}" data-k="6" ${r[6] ? 'checked' : ''} aria-label="rights"></td></tr>`).join('');
+      calc();
+    };
+    const level = (r) => {
+      const [, vol, clar, sens, imp, rev, rights] = r;
+      const risk = (sens + imp + (6 - rev)) / 3;
+      let lv;
+      if (risk <= 1.5 && clar >= 4 && rev >= 4 && !rights) lv = 4;
+      else if (risk <= 2.3 && clar >= 3) lv = 3;
+      else if (risk <= 3.2 && clar >= 3) lv = 2;
+      else if (risk <= 4) lv = 1;
+      else lv = 0;
+      if (rights) lv = Math.min(lv, 2);
+      const benefit = (vol + clar) / 2;
+      return { risk, lv, benefit, pri: benefit * 2 - risk };
+    };
+    function calc() {
+      const out = rows.map((r, i) => Object.assign({ i, name: r[0], rights: r[6] }, level(r))).sort((a, b2) => b2.pri - a.pri);
+      const first = out.filter((o) => !o.rights && o.lv >= 1).slice(0, 3).map((o) => o.i);
+      $('#' + id + '-r', b).innerHTML = `<div class="tbl-wrap"><table><thead><tr><th>#</th><th>${L('Task', 'کار')}</th><th>${L('Benefit', 'سود')}</th><th>${L('Risk', 'ریسک')}</th><th>${L('Suggested level', 'سطح پیشنهادی')}</th></tr></thead><tbody>${out.map((o, n) => `<tr${first.includes(o.i) ? ' style="background:var(--panel-2)"' : ''}><td>${n + 1}</td><td>${esc(o.name)}${first.includes(o.i) ? ` <span class="chip">${L('first wave', 'موج اول')}</span>` : ''}${o.rights ? ` <span class="chip">${L('a person decides', 'انسان تصمیم می‌گیرد')}</span>` : ''}</td><td>${o.benefit.toFixed(1)}</td><td>${o.risk.toFixed(1)}</td><td>${LV[o.lv][0]}</td></tr>`).join('')}</tbody></table></div>
+        <div class="callout key" style="margin-top:8px"><span class="label">${L('How to read it', 'چطور بخوانیم')}</span><div>${L('Benefit is the average of volume and rule clarity. Risk is the average of sensitivity, impact and how hard a mistake is to undo. A task that decides a person\'s rights or money never goes above level 2: <b>a person decides</b>. The first wave is the three tasks with the best benefit for the lowest risk. This is a conversation starter, not a rule: change the numbers until the room agrees.', 'سود میانگین حجم و وضوح قواعد است. ریسک میانگین حساسیت، اثر و دشواری برگرداندن یک اشتباه است. کاری که درباره‌ی حقوق یا پول یک فرد تصمیم می‌گیرد هرگز بالاتر از سطح ۲ نمی‌رود: <b>انسان تصمیم می‌گیرد</b>. موج اول سه کاری است که بهترین سود را با کمترین ریسک دارند. این یک شروع گفتگوست، نه قاعده: اعداد را تغییر دهید تا اتاق موافقت کند.')}</div></div>`;
+    }
+    b.addEventListener('change', (e) => {
+      const t = e.target.closest('[data-i]'); if (!t) return;
+      const i = +t.dataset.i, k = +t.dataset.k;
+      rows[i][k] = k === 6 ? (t.checked ? 1 : 0) : +t.value;
+      calc();
+    });
+    $('#' + id + '-a', b).addEventListener('click', () => {
+      const inp = $('#' + id + '-n', b); const nm = inp.value.trim(); if (!nm) return;
+      rows.push([nm, 3, 3, 3, 3, 3, 0]); inp.value = ''; draw();
+    });
+    draw();
+  };
+
 })();
